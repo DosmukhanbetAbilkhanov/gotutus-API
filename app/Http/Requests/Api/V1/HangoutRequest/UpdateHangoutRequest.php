@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Api\V1\HangoutRequest;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateHangoutRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function rules(): array
+    {
+        return [
+            'place_id' => ['nullable', 'integer', 'exists:places,id'],
+            'date' => ['sometimes', 'date', 'after_or_equal:today'],
+            'time' => ['nullable', 'date_format:H:i'],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ];
+    }
+}

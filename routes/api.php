@@ -1,0 +1,136 @@
+<?php
+
+use App\Http\Controllers\Api\V1\ActivityTypeController;
+use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\LogoutController;
+use App\Http\Controllers\Api\V1\Auth\PhoneVerificationController;
+use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\BlockedUserController;
+use App\Http\Controllers\Api\V1\CityController;
+use App\Http\Controllers\Api\V1\ConversationController;
+use App\Http\Controllers\Api\V1\HangoutRequestController;
+use App\Http\Controllers\Api\V1\JoinRequestController;
+use App\Http\Controllers\Api\V1\MessageController;
+use App\Http\Controllers\Api\V1\PlaceController;
+use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\UserPhotoController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes (No Authentication)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('cities', [CityController::class, 'index']);
+Route::get('activity-types', [ActivityTypeController::class, 'index']);
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('auth')->group(function () {
+    Route::post('register', RegisterController::class)
+        ->middleware('throttle:5,1');
+
+    Route::post('login', LoginController::class)
+        ->middleware('throttle:5,1');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', LogoutController::class);
+
+        Route::prefix('phone')->group(function () {
+            Route::post('send-code', [PhoneVerificationController::class, 'sendCode'])
+                ->middleware('throttle:3,1');
+            Route::post('verify', [PhoneVerificationController::class, 'verify']);
+        });
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (Authenticated + Phone Verified)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Profile Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'show']);
+        Route::put('/', [UserController::class, 'update']);
+
+        // User photos
+        Route::get('photos', [UserPhotoController::class, 'index']);
+        Route::post('photos', [UserPhotoController::class, 'store']);
+        Route::delete('photos/{photo}', [UserPhotoController::class, 'destroy']);
+
+        // User's own hangouts and join requests
+        Route::get('hangout-requests', [HangoutRequestController::class, 'myRequests']);
+        Route::get('join-requests', [JoinRequestController::class, 'myJoinRequests']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Places Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('places', [PlaceController::class, 'index']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hangout Requests Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::apiResource('hangout-requests', HangoutRequestController::class);
+
+    // Nested join request creation and listing
+    Route::post('hangout-requests/{hangoutRequest}/join', [JoinRequestController::class, 'store']);
+    Route::get('hangout-requests/{hangoutRequest}/join-requests', [JoinRequestController::class, 'index']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Join Requests Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('join-requests/{joinRequest}')->group(function () {
+        Route::post('approve', [JoinRequestController::class, 'approve']);
+        Route::post('decline', [JoinRequestController::class, 'decline']);
+        Route::post('confirm', [JoinRequestController::class, 'confirm']);
+        Route::delete('/', [JoinRequestController::class, 'cancel']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Conversation & Message Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
+    Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
+    Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Safety Routes (Blocking & Reporting)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('blocked-users', [BlockedUserController::class, 'index']);
+    Route::post('blocked-users', [BlockedUserController::class, 'store']);
+    Route::delete('blocked-users/{blockedUser}', [BlockedUserController::class, 'destroy']);
+
+    Route::post('reports', [ReportController::class, 'store']);
+});
