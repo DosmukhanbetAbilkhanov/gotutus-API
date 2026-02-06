@@ -178,20 +178,34 @@ php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 
 ## Phase 4: Testing & Polish
 
-### 4.1 Create Factories
-All models need factories for testing
+### 4.1 Create Factories [DONE]
+- [x] `UserFactory.php` - Updated with phone, city_id, status
+- [x] `CityFactory.php` - With translations
+- [x] `ActivityTypeFactory.php` - With translations
+- [x] `PlaceFactory.php` - With translations
+- [x] `UserPhotoFactory.php`
+- [x] `HangoutRequestFactory.php` - With status states
+- [x] `JoinRequestFactory.php` - With status states
+- [x] `ConversationFactory.php`
+- [x] `MessageFactory.php`
+- [x] `ReportFactory.php`
+- [x] `BlockedUserFactory.php`
 
-### 4.2 Feature Tests (Pest)
-- Auth flow tests
-- Hangout CRUD tests
-- Join request workflow tests
-- Messaging tests
-- Blocking behavior tests
+### 4.2 Feature Tests (Pest) [DONE]
+- [x] `tests/Feature/Api/AuthTest.php` - Registration, login, logout, phone verification
+- [x] `tests/Feature/Api/HangoutRequestTest.php` - CRUD, filtering, permissions
+- [x] `tests/Feature/Api/JoinRequestTest.php` - Full workflow, permissions
+- [x] `tests/Feature/Api/MessagingTest.php` - Conversations, messages, permissions
+- [x] `tests/Feature/Api/BlockingTest.php` - Block/unblock, visibility, reports
 
-### 4.3 Run Pint
+### 4.3 Run Pint [DONE]
 ```bash
 vendor/bin/pint --dirty
 ```
+
+---
+
+## Phase 4 Status: COMPLETED
 
 ---
 
