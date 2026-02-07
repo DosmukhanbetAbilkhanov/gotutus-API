@@ -12,6 +12,8 @@ describe('Registration', function () {
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'John Doe',
             'phone' => '+77001234567',
+            'age' => 25,
+            'gender' => 'male',
             'password' => 'password123',
             'password_confirmation' => 'password123',
             'city_id' => $this->city->id,
@@ -30,6 +32,8 @@ describe('Registration', function () {
         $this->assertDatabaseHas('users', [
             'phone' => '+77001234567',
             'name' => 'John Doe',
+            'age' => 25,
+            'gender' => 'male',
         ]);
     });
 
@@ -37,6 +41,8 @@ describe('Registration', function () {
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'John Doe',
             'phone' => 'invalid-phone',
+            'age' => 25,
+            'gender' => 'male',
             'password' => 'password123',
             'password_confirmation' => 'password123',
             'city_id' => $this->city->id,
@@ -50,6 +56,8 @@ describe('Registration', function () {
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'John Doe',
             'phone' => '+77001234567',
+            'age' => 25,
+            'gender' => 'male',
             'password' => 'password123',
             'password_confirmation' => 'different',
             'city_id' => $this->city->id,
@@ -63,6 +71,8 @@ describe('Registration', function () {
         $response = $this->postJson('/api/v1/auth/register', [
             'name' => 'John Doe',
             'phone' => '+77001234567',
+            'age' => 25,
+            'gender' => 'male',
             'password' => 'password123',
             'password_confirmation' => 'password123',
             'city_id' => 999,

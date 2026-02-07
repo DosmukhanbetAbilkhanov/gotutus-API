@@ -1,0 +1,20 @@
+meta {
+  name: Unblock User
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{base_url}}/blocked-users/1
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

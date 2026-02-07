@@ -1,0 +1,25 @@
+meta {
+  name: Get Places
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/places?city_id=1&activity_type_id=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  city_id: 1
+  activity_type_id: 1
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

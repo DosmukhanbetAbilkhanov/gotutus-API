@@ -1,0 +1,20 @@
+meta {
+  name: Send Phone Verification Code
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/auth/phone/send-code
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

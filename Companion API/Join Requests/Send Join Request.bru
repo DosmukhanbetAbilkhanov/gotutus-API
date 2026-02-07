@@ -1,0 +1,28 @@
+meta {
+  name: Send Join Request
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/hangout-requests/1/join
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "message": "I'd love to join!",
+      "place_id": 2
+  }
+}
+
+settings {
+  encodeUrl: true
+}

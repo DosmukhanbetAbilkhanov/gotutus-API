@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Api\V1\Auth;
 
+use App\Enums\Gender;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -21,6 +23,8 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^\+?[0-9]{10,15}$/', 'unique:users,phone'],
+            'age' => ['required', 'integer', 'min:18', 'max:100'],
+            'gender' => ['required', 'string', Rule::enum(Gender::class)],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'city_id' => ['required', 'integer', 'exists:cities,id'],
         ];

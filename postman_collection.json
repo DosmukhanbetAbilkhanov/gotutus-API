@@ -1,0 +1,666 @@
+{
+	"info": {
+		"_postman_id": "companion-api-collection",
+		"name": "Companion API",
+		"description": "API collection for Companion mobile app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://companion.test/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Get Cities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Accept-Language", "value": "ru"}
+						],
+						"url": {
+							"raw": "{{base_url}}/cities",
+							"host": ["{{base_url}}"],
+							"path": ["cities"]
+						}
+					}
+				},
+				{
+					"name": "Get Activity Types",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Accept-Language", "value": "ru"}
+						],
+						"url": {
+							"raw": "{{base_url}}/activity-types",
+							"host": ["{{base_url}}"],
+							"path": ["activity-types"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"phone\": \"+77005551234\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"city_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"+77001111111\",\n    \"password\": \"password\",\n    \"device_name\": \"Postman\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Send Phone Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/phone/send-code",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "phone", "send-code"]
+						}
+					}
+				},
+				{
+					"name": "Verify Phone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/phone/verify",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "phone", "verify"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": ["{{base_url}}"],
+							"path": ["user"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"city_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": ["{{base_url}}"],
+							"path": ["user"]
+						}
+					}
+				},
+				{
+					"name": "Get User Photos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/photos",
+							"host": ["{{base_url}}"],
+							"path": ["user", "photos"]
+						}
+					}
+				},
+				{
+					"name": "Upload Photo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/user/photos",
+							"host": ["{{base_url}}"],
+							"path": ["user", "photos"]
+						}
+					}
+				},
+				{
+					"name": "Delete Photo",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/photos/1",
+							"host": ["{{base_url}}"],
+							"path": ["user", "photos", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get My Hangout Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/hangout-requests",
+							"host": ["{{base_url}}"],
+							"path": ["user", "hangout-requests"]
+						}
+					}
+				},
+				{
+					"name": "Get My Join Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/join-requests",
+							"host": ["{{base_url}}"],
+							"path": ["user", "join-requests"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Get Places",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/places?city_id=1&activity_type_id=1",
+							"host": ["{{base_url}}"],
+							"path": ["places"],
+							"query": [
+								{"key": "city_id", "value": "1"},
+								{"key": "activity_type_id", "value": "1"}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Hangout Requests",
+			"item": [
+				{
+					"name": "Browse Hangout Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/hangout-requests?activity_type_id=1&date=2024-12-25",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests"],
+							"query": [
+								{"key": "activity_type_id", "value": "1", "disabled": true},
+								{"key": "date", "value": "2024-12-25", "disabled": true}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Hangout Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"activity_type_id\": 1,\n    \"date\": \"2024-12-25\",\n    \"time\": \"18:00\",\n    \"place_id\": 1,\n    \"notes\": \"Looking for company to grab a beer\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/hangout-requests",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests"]
+						}
+					}
+				},
+				{
+					"name": "Get Hangout Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/hangout-requests/1",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Hangout Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2024-12-26\",\n    \"time\": \"19:00\",\n    \"notes\": \"Updated notes\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/hangout-requests/1",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests", "1"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Hangout Request",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/hangout-requests/1",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Join Requests",
+			"item": [
+				{
+					"name": "Send Join Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"I'd love to join!\",\n    \"place_id\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/hangout-requests/1/join",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests", "1", "join"]
+						}
+					}
+				},
+				{
+					"name": "Get Join Requests for Hangout",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/hangout-requests/1/join-requests",
+							"host": ["{{base_url}}"],
+							"path": ["hangout-requests", "1", "join-requests"]
+						}
+					}
+				},
+				{
+					"name": "Approve Join Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/join-requests/1/approve",
+							"host": ["{{base_url}}"],
+							"path": ["join-requests", "1", "approve"]
+						}
+					}
+				},
+				{
+					"name": "Decline Join Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/join-requests/1/decline",
+							"host": ["{{base_url}}"],
+							"path": ["join-requests", "1", "decline"]
+						}
+					}
+				},
+				{
+					"name": "Confirm Participation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/join-requests/1/confirm",
+							"host": ["{{base_url}}"],
+							"path": ["join-requests", "1", "confirm"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Join Request",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/join-requests/1",
+							"host": ["{{base_url}}"],
+							"path": ["join-requests", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Get Conversations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/conversations",
+							"host": ["{{base_url}}"],
+							"path": ["conversations"]
+						}
+					}
+				},
+				{
+					"name": "Get Conversation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/conversations/1",
+							"host": ["{{base_url}}"],
+							"path": ["conversations", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/conversations/1/messages",
+							"host": ["{{base_url}}"],
+							"path": ["conversations", "1", "messages"]
+						}
+					}
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"Hello! Looking forward to meeting you!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/conversations/1/messages",
+							"host": ["{{base_url}}"],
+							"path": ["conversations", "1", "messages"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Safety",
+			"item": [
+				{
+					"name": "Get Blocked Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/blocked-users",
+							"host": ["{{base_url}}"],
+							"path": ["blocked-users"]
+						}
+					}
+				},
+				{
+					"name": "Block User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"blocked_user_id\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/blocked-users",
+							"host": ["{{base_url}}"],
+							"path": ["blocked-users"]
+						}
+					}
+				},
+				{
+					"name": "Unblock User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{base_url}}/blocked-users/1",
+							"host": ["{{base_url}}"],
+							"path": ["blocked-users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Submit Report",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reported_user_id\": 2,\n    \"reason\": \"Inappropriate behavior\",\n    \"hangout_request_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reports",
+							"host": ["{{base_url}}"],
+							"path": ["reports"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

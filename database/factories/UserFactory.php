@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Gender;
 use App\Enums\UserStatus;
 use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,6 +25,8 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => '+7700'.fake()->unique()->numerify('#######'),
+            'age' => fake()->numberBetween(18, 65),
+            'gender' => fake()->randomElement(Gender::cases()),
             'password' => static::$password ??= Hash::make('password'),
             'city_id' => City::factory(),
             'status' => UserStatus::Active,

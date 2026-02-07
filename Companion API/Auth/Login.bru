@@ -1,0 +1,35 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/auth/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "phone": "+77001111111",
+      "password": "password",
+      "device_name": "Postman"
+  }
+}
+
+script:post-response {
+  var jsonData = res.getBody();
+  if (jsonData.data && jsonData.data.token) {
+      bru.setVar('token', jsonData.data.token);
+  }
+}
+
+settings {
+  encodeUrl: true
+}

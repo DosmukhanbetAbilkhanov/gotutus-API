@@ -1,0 +1,24 @@
+meta {
+  name: Upload Photo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/user/photos
+  body: multipartForm
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:multipart-form {
+  photo: @file()
+}
+
+settings {
+  encodeUrl: true
+}

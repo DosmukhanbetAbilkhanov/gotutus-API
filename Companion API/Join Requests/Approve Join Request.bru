@@ -1,0 +1,20 @@
+meta {
+  name: Approve Join Request
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/join-requests/1/approve
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Decline Join Request
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/join-requests/1/decline
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

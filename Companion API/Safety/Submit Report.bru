@@ -1,0 +1,29 @@
+meta {
+  name: Submit Report
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/reports
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "reported_user_id": 2,
+      "reason": "Inappropriate behavior",
+      "hangout_request_id": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+}

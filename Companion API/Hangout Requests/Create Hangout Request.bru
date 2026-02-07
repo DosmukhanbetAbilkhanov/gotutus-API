@@ -1,0 +1,31 @@
+meta {
+  name: Create Hangout Request
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/hangout-requests
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "activity_type_id": 1,
+      "date": "2024-12-25",
+      "time": "18:00",
+      "place_id": 1,
+      "notes": "Looking for company to grab a beer"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

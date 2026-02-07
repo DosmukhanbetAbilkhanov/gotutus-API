@@ -1,0 +1,20 @@
+meta {
+  name: Cancel Join Request
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}/join-requests/1
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

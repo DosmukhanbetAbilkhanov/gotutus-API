@@ -1,0 +1,20 @@
+meta {
+  name: Get My Hangout Requests
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{base_url}}/user/hangout-requests
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

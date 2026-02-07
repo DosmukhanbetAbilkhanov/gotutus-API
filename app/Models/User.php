@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Gender;
 use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,7 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens;
+
     use HasFactory;
     use Notifiable;
 
@@ -24,9 +26,12 @@ class User extends Authenticatable
         'name',
         'email',
         'phone',
+        'age',
+        'gender',
         'password',
         'city_id',
         'status',
+        'phone_verified_at',
     ];
 
     protected $hidden = [
@@ -39,6 +44,8 @@ class User extends Authenticatable
         return [
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'age' => 'integer',
+            'gender' => Gender::class,
             'status' => UserStatus::class,
         ];
     }

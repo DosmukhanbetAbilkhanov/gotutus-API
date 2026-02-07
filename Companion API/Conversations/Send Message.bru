@@ -1,0 +1,27 @@
+meta {
+  name: Send Message
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/conversations/1/messages
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "message": "Hello! Looking forward to meeting you!"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Get Activity Types
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/activity-types
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Accept-Language: ru
+}
+
+settings {
+  encodeUrl: true
+}

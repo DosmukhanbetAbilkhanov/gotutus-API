@@ -1,0 +1,20 @@
+meta {
+  name: Confirm Participation
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/join-requests/1/confirm
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

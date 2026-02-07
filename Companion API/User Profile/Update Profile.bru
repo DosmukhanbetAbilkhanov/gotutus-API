@@ -1,0 +1,28 @@
+meta {
+  name: Update Profile
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}/user
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "name": "Updated Name",
+      "city_id": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+}

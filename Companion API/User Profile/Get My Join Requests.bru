@@ -1,0 +1,20 @@
+meta {
+  name: Get My Join Requests
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/user/join-requests
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

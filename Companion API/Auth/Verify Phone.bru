@@ -1,0 +1,27 @@
+meta {
+  name: Verify Phone
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/auth/phone/verify
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "code": "123456"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

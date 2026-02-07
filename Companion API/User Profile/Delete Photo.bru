@@ -1,0 +1,20 @@
+meta {
+  name: Delete Photo
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/user/photos/1
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

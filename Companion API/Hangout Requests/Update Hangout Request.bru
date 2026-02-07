@@ -1,0 +1,29 @@
+meta {
+  name: Update Hangout Request
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/hangout-requests/1
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+      "date": "2024-12-26",
+      "time": "19:00",
+      "notes": "Updated notes"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
