@@ -25,7 +25,7 @@ class JoinRequestResource extends JsonResource
             'status' => $this->status->value,
             'message' => $this->message,
             'confirmed_at' => $this->confirmed_at?->toIso8601String(),
-            'created_at' => $this->created_at->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

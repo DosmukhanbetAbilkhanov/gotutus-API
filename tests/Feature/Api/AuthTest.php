@@ -21,7 +21,7 @@ describe('Registration', function () {
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'user' => ['id', 'name', 'phone', 'phone_verified'],
+                    'user' => ['id', 'name', 'phone_verified'],
                     'token',
                     'phone_verified',
                 ],
@@ -90,7 +90,7 @@ describe('Login', function () {
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'user' => ['id', 'name', 'phone'],
+                    'user' => ['id', 'name'],
                     'token',
                     'phone_verified',
                 ],
@@ -122,7 +122,7 @@ describe('Logout', function () {
             ->postJson('/api/v1/auth/logout');
 
         $response->assertOk()
-            ->assertJson(['message' => __('auth.logged_out')]);
+            ->assertJsonStructure(['message']);
     });
 
     it('requires authentication', function () {

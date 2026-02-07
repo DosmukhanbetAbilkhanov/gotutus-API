@@ -36,8 +36,8 @@ class ConversationResource extends JsonResource
             'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
             'other_user' => $otherUser ? new UserResource($otherUser) : null,
             'latest_message' => new MessageResource($this->whenLoaded('latestMessage')),
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

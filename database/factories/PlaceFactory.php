@@ -17,7 +17,6 @@ class PlaceFactory extends Factory
     {
         return [
             'city_id' => City::factory(),
-            'is_active' => true,
         ];
     }
 
@@ -27,17 +26,10 @@ class PlaceFactory extends Factory
             $name = fake()->company();
             $address = fake()->streetAddress();
             $place->translations()->createMany([
-                ['locale' => 'ru', 'name' => $name, 'address' => $address],
-                ['locale' => 'kz', 'name' => $name, 'address' => $address],
-                ['locale' => 'en', 'name' => $name, 'address' => $address],
+                ['language_code' => 'ru', 'name' => $name, 'address' => $address],
+                ['language_code' => 'kz', 'name' => $name, 'address' => $address],
+                ['language_code' => 'en', 'name' => $name, 'address' => $address],
             ]);
         });
-    }
-
-    public function inactive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-        ]);
     }
 }

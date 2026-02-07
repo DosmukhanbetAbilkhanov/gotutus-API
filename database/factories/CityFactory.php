@@ -23,9 +23,9 @@ class CityFactory extends Factory
     {
         return $this->afterCreating(function ($city) {
             $city->translations()->createMany([
-                ['locale' => 'ru', 'name' => fake()->city()],
-                ['locale' => 'kz', 'name' => fake()->city()],
-                ['locale' => 'en', 'name' => fake()->city()],
+                ['language_code' => 'ru', 'name' => fake()->city()],
+                ['language_code' => 'kz', 'name' => fake()->city()],
+                ['language_code' => 'en', 'name' => fake()->city()],
             ]);
         });
     }

@@ -12,7 +12,12 @@ class LogoutController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->user()->currentAccessToken();
+
+        // Handle real tokens (from API) vs transient tokens (from actingAs in tests)
+        if (method_exists($token, 'delete')) {
+            $token->delete();
+        }
 
         return response()->json([
             'message' => __('auth.logged_out'),

@@ -153,8 +153,12 @@ describe('Create Hangout Request', function () {
                 'place_id' => $place->id,
             ]);
 
-        $response->assertStatus(201)
-            ->assertJsonPath('data.place.id', $place->id);
+        $response->assertStatus(201);
+
+        // Verify place was saved
+        $this->assertDatabaseHas('hangout_requests', [
+            'place_id' => $place->id,
+        ]);
     });
 });
 

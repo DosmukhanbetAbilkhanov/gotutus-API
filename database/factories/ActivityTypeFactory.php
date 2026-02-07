@@ -27,9 +27,9 @@ class ActivityTypeFactory extends Factory
         return $this->afterCreating(function ($activityType) {
             $name = fake()->word();
             $activityType->translations()->createMany([
-                ['locale' => 'ru', 'name' => $name],
-                ['locale' => 'kz', 'name' => $name],
-                ['locale' => 'en', 'name' => $name],
+                ['language_code' => 'ru', 'name' => $name],
+                ['language_code' => 'kz', 'name' => $name],
+                ['language_code' => 'en', 'name' => $name],
             ]);
         });
     }

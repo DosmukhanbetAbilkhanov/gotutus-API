@@ -20,7 +20,7 @@ class BlockedUserResource extends JsonResource
         return [
             'id' => $this->id,
             'blocked_user' => new UserResource($this->whenLoaded('blockedUser')),
-            'created_at' => $this->created_at->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

@@ -33,7 +33,7 @@ class HangoutRequestResource extends JsonResource
                 fn () => $request->user()->id === $this->user_id
             ),
             'my_join_request' => new JoinRequestResource($this->whenLoaded('myJoinRequest')),
-            'created_at' => $this->created_at->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }
