@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login to Your City</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6236FF", // Electric Indigo
+                        "background-light": "#f8f9ff",
+                        "background-dark": "#0f111a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --electric-indigo: #6236FF;
+        }
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center">
+<div class="relative flex h-full min-h-screen w-full max-w-[430px] flex-col bg-white dark:bg-background-dark overflow-x-hidden shadow-2xl">
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between">
+<button class="text-background-dark dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-background-dark dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12">Login</h2>
+</div>
+<div class="px-6 pt-8 pb-4">
+<div class="mb-6 h-32 w-full rounded-xl bg-gradient-to-br from-primary/30 to-primary/5 flex items-center justify-center overflow-hidden">
+<img alt="Modern city skyline" class="w-full h-full object-cover opacity-60 mix-blend-multiply grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC69jAlwpYDcYiFElm7xySKU0akzNmF81Rl668FmKUnqr5W12jeCGukDESQxp2aD9AYTskGhKdl5cmJDzJvzaRY04UObAMYUhctfkru0s3YOHS_kzR_ga9qpga1gQSfc0dprfTLr6iHiB_pRq_oHFEGls97bcYnpeR7MbdY87lq9RFVpRQUUAUTQRaD0s4ego4fqMr2L6dif6Z8H8ZpQ568nFtnt0IOaDPmVLYfeZusjXT5mqlfse23eAjUgJcMA7jfvG1GQrhpxo0"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+</div>
+<h1 class="text-background-dark dark:text-white tracking-tight text-[32px] font-extrabold leading-tight">Login to Your City</h1>
+<p class="text-background-dark/70 dark:text-white/70 text-base font-medium leading-normal pt-2">Join spontaneous hangouts and shared activities near you.</p>
+</div>
+<div class="flex flex-col gap-4 px-6 py-4 flex-1">
+<div class="flex flex-col gap-2">
+<p class="text-background-dark dark:text-white text-sm font-semibold leading-normal ml-1">Phone Number</p>
+<div class="flex gap-3">
+<div class="relative flex items-center">
+<div class="flex items-center gap-1 h-14 px-4 rounded-xl border border-primary/20 bg-background-light dark:bg-background-dark/50 text-background-dark dark:text-white font-medium cursor-pointer hover:border-primary/40 transition-colors">
+<span>🇺🇸</span>
+<span class="text-base">+1</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<label class="flex flex-col flex-1">
+<input class="form-input flex w-full min-w-0 flex-1 rounded-xl text-background-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-background-light dark:bg-background-dark/50 h-14 placeholder:text-background-dark/40 dark:placeholder:text-white/40 px-4 text-base font-medium transition-all" placeholder="Mobile number" type="tel"/>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-background-dark dark:text-white text-sm font-semibold leading-normal ml-1">Password</p>
+<div class="relative flex w-full items-stretch rounded-xl">
+<input class="form-input flex w-full min-w-0 flex-1 rounded-xl text-background-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 border border-primary/20 bg-background-light dark:bg-background-dark/50 h-14 placeholder:text-background-dark/40 dark:placeholder:text-white/40 px-4 text-base font-medium pr-12 transition-all" placeholder="Enter your password" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-background-dark/50 dark:text-white/50 flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+<div class="flex justify-end pt-1">
+<a class="text-primary text-sm font-bold hover:underline" href="#">Forgot Password?</a>
+</div>
+</div>
+<div class="pt-6">
+<button class="w-full bg-primary hover:bg-primary/90 text-white h-14 rounded-full text-lg font-extrabold shadow-lg shadow-primary/25 transition-all active:scale-[0.98]">
+                    Login
+                </button>
+</div>
+<div class="flex items-center gap-4 py-6">
+<div class="h-px flex-1 bg-background-dark/10 dark:bg-white/10"></div>
+<span class="text-background-dark/40 dark:text-white/40 text-xs font-bold uppercase tracking-widest">Or continue with</span>
+<div class="h-px flex-1 bg-background-dark/10 dark:bg-white/10"></div>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 flex items-center justify-center gap-2 h-14 border border-background-dark/10 dark:border-white/10 rounded-full hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+<img alt="Google icon" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbiysGM9LLvZV3meqyDG_8Yq0Mqzf6VcE6E2NNdswt2mSvDEqt_tLeV4SWPaxtEaTasAcJNUe7HZ1Yx7nlfSuqz7U25e9xVzuINQ-SDyK7-gMhIvMnqZosgolL5eTXEJO0Uwn_JBcY5IERJKRp8dIw379OEmzE3l2jId8Ol1nT1SZPZtJSUOYbG2O_4nrtpEeAT8UAgZnoEgDrMuCKmQj-BBPsVbjVNgMcLlg6YUCVs6lN9xtnBqatTnEq5U7DrNeRA0TzEjOOYvY"/>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 h-14 border border-background-dark/10 dark:border-white/10 rounded-full hover:bg-background-light dark:hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-background-dark dark:text-white">ios</span>
+</button>
+</div>
+</div>
+<div class="p-8 text-center bg-background-light/50 dark:bg-background-dark/20 mt-auto">
+<p class="text-background-dark/60 dark:text-white/60 text-sm font-medium">
+                New to the city? 
+                <a class="text-primary font-extrabold ml-1 hover:underline" href="#">Create an account</a>
+</p>
+</div>
+<div class="flex justify-center pb-2 pt-4">
+<div class="w-32 h-1.5 bg-background-dark/20 dark:bg-white/20 rounded-full"></div>
+</div>
+</div>
+
+</body></html>

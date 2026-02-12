@@ -124,7 +124,7 @@ describe('Blocking Hides Hangouts', function () {
         ]);
 
         $response = $this->actingAs($this->user)
-            ->getJson('/api/v1/hangout-requests');
+            ->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
 
         $response->assertOk()
             ->assertJsonCount(0, 'data');
@@ -146,7 +146,7 @@ describe('Blocking Hides Hangouts', function () {
         ]);
 
         $response = $this->actingAs($this->otherUser)
-            ->getJson('/api/v1/hangout-requests');
+            ->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
 
         $response->assertOk()
             ->assertJsonCount(0, 'data');

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registration Step 3: Complete Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5850EC", // Electric Indigo
+                        "primary-dark": "#4F46E5",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#0F172A",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                min-height: max(884px, 100dvh);
+            }
+        }
+        .ios-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen">
+<div class="max-w-[480px] mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-900 relative pb-32">
+<header class="flex items-center p-4 pt-6">
+<button class="text-slate-900 dark:text-white p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined align-middle">arrow_back_ios_new</span>
+</button>
+<div class="flex-1 text-center pr-8">
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Step 3 of 3</span>
+</div>
+</header>
+<div class="px-6 pt-2 pb-6">
+<h1 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">Complete Profile</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-2 text-base">You're almost there! Finalize your details to start hanging out.</p>
+</div>
+<form class="px-6 space-y-5" onsubmit="return false;">
+<div class="space-y-1.5 opacity-80">
+<div class="flex justify-between items-center ml-1">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200">Phone Number</label>
+<span class="flex items-center text-[10px] font-bold uppercase text-emerald-500">
+<span class="material-symbols-outlined text-[14px] mr-1">verified</span> Verified
+                    </span>
+</div>
+<div class="relative">
+<input class="w-full h-14 bg-slate-100 dark:bg-slate-800/50 border-0 rounded-2xl px-5 text-slate-500 dark:text-slate-400 cursor-not-allowed outline-none" disabled="" readonly="" type="tel" value="+1 (555) 000-0000"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">phone_iphone</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200 ml-1">Full Name</label>
+<div class="relative">
+<input class="w-full h-14 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl px-5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="John Doe" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary text-xl">person</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200 ml-1">Age</label>
+<div class="flex items-center h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl px-2 justify-between">
+<button class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 rounded-xl shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-primary">remove</span>
+</button>
+<span class="text-lg font-bold text-slate-900 dark:text-white">24</span>
+<button class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 rounded-xl shadow-sm active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-primary">add</span>
+</button>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200 ml-1">Gender</label>
+<div class="flex h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl p-1 relative">
+<div class="absolute inset-y-1 left-1 w-[32%] bg-primary rounded-xl transition-all shadow-md shadow-primary/20"></div>
+<button class="flex-1 relative z-10 text-white text-xs font-bold" type="button">Man</button>
+<button class="flex-1 relative z-10 text-slate-500 dark:text-slate-400 text-xs font-bold" type="button">Woman</button>
+<button class="flex-1 relative z-10 text-slate-500 dark:text-slate-400 text-xs font-bold" type="button">Other</button>
+</div>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between items-center ml-1">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200">Email</label>
+<span class="text-[10px] font-bold uppercase text-slate-400">Optional</span>
+</div>
+<div class="relative">
+<input class="w-full h-14 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl px-5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="email@example.com" type="email"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 text-xl">mail</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200 ml-1">City</label>
+<div class="relative">
+<input class="w-full h-14 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl pl-12 pr-5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="Search your city" type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary text-xl">location_on</span>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">unfold_more</span>
+</div>
+</div>
+<div class="space-y-1.5 pb-8">
+<label class="text-sm font-semibold text-slate-900 dark:text-slate-200 ml-1">Password</label>
+<div class="relative">
+<input class="w-full h-14 bg-slate-50 dark:bg-slate-800 border-0 rounded-2xl px-5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined align-middle">visibility</span>
+</button>
+</div>
+</div>
+</form>
+<div class="px-8 text-center pb-8">
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                By tapping Complete Registration, you agree to our 
+                <a class="text-primary font-bold hover:underline" href="#">Terms of Service</a> and 
+                <a class="text-primary font-bold hover:underline" href="#">Privacy Policy</a>.
+            </p>
+</div>
+<div class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-20">
+<button class="w-full bg-primary hover:bg-primary-dark text-white h-16 rounded-2xl font-bold text-lg shadow-lg shadow-primary/25 active:scale-[0.98] transition-all">
+                Complete Registration
+            </button>
+</div>
+</div>
+
+</body></html>

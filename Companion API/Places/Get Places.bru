@@ -10,14 +10,14 @@ get {
   auth: inherit
 }
 
-params:query {
-  city_id: 1
-  activity_type_id: 1
-}
-
 headers {
   Accept: application/json
   Authorization: Bearer {{token}}
+}
+
+params:query {
+  city_id: 1
+  activity_type_id: 1
 }
 
 settings {

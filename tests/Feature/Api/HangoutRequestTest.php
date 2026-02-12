@@ -14,8 +14,7 @@ beforeEach(function () {
 });
 
 describe('Browse Hangout Requests', function () {
-    it('lists open hangout requests in user city', function () {
-        // Create hangout in same city
+    it('lists open hangout requests in specified city', function () {
         $hangout = HangoutRequest::factory()->create([
             'city_id' => $this->city->id,
             'activity_type_id' => $this->activityType->id,
@@ -30,15 +29,35 @@ describe('Browse Hangout Requests', function () {
             'activity_type_id' => $this->activityType->id,
         ]);
 
-        $response = $this->actingAs($this->user)
-            ->getJson('/api/v1/hangout-requests');
+        $response = $this->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
 
         $response->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $hangout->id);
     });
 
-    it('excludes own hangout requests', function () {
+    it('allows unauthenticated access', function () {
+        HangoutRequest::factory()->create([
+            'city_id' => $this->city->id,
+            'activity_type_id' => $this->activityType->id,
+            'status' => HangoutRequestStatus::Open,
+            'date' => now()->addDays(1)->format('Y-m-d'),
+        ]);
+
+        $response = $this->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
+
+        $response->assertOk()
+            ->assertJsonCount(1, 'data');
+    });
+
+    it('requires city_id parameter', function () {
+        $response = $this->getJson('/api/v1/hangout-requests');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['city_id']);
+    });
+
+    it('excludes own hangout requests when authenticated', function () {
         HangoutRequest::factory()->create([
             'user_id' => $this->user->id,
             'city_id' => $this->city->id,
@@ -47,7 +66,7 @@ describe('Browse Hangout Requests', function () {
         ]);
 
         $response = $this->actingAs($this->user)
-            ->getJson('/api/v1/hangout-requests');
+            ->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
 
         $response->assertOk()
             ->assertJsonCount(0, 'data');
@@ -68,8 +87,7 @@ describe('Browse Hangout Requests', function () {
             'date' => now()->addDays(1)->format('Y-m-d'),
         ]);
 
-        $response = $this->actingAs($this->user)
-            ->getJson('/api/v1/hangout-requests?activity_type_id='.$this->activityType->id);
+        $response = $this->getJson('/api/v1/hangout-requests?city_id='.$this->city->id.'&activity_type_id='.$this->activityType->id);
 
         $response->assertOk()
             ->assertJsonCount(1, 'data');
@@ -91,8 +109,7 @@ describe('Browse Hangout Requests', function () {
             'date' => $nextWeek,
         ]);
 
-        $response = $this->actingAs($this->user)
-            ->getJson('/api/v1/hangout-requests?date='.$tomorrow);
+        $response = $this->getJson('/api/v1/hangout-requests?city_id='.$this->city->id.'&date='.$tomorrow);
 
         $response->assertOk()
             ->assertJsonCount(1, 'data');

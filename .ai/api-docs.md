@@ -68,21 +68,97 @@ Returns list of active activity types.
 
 ## Authentication Endpoints
 
-### Register
+### Register (3-Step Flow)
+
+Registration is a 3-step process: send code → verify code → complete profile.
+
+#### Step 1: Send Registration Code
 ```
-POST /auth/register
+POST /auth/register/send-code
 ```
 
 **Request Body:**
 ```json
 {
-  "name": "John Doe",
-  "phone": "+77001234567",
-  "password": "password123",
-  "password_confirmation": "password123",
-  "city_id": 1
+  "phone": "+77001234567"
 }
 ```
+
+**Response (200):**
+```json
+{
+  "message": "Verification code sent"
+}
+```
+
+**Rate Limit:** 5 requests per minute
+
+**Errors:**
+- `422` — Invalid phone format or phone already registered (verified)
+
+---
+
+#### Step 2: Verify Registration Code
+```
+POST /auth/register/verify-code
+```
+
+**Request Body:**
+```json
+{
+  "phone": "+77001234567",
+  "code": "123456"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Phone verified",
+  "data": {
+    "verification_token": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+**Rate Limit:** 10 requests per minute
+
+**Errors:**
+- `422` with `error_code: "INVALID_CODE"` — Wrong or expired code
+
+**Note:** The `verification_token` is valid for 30 minutes and must be used in Step 3.
+
+---
+
+#### Step 3: Complete Registration
+```
+POST /auth/register/complete
+```
+
+**Request Body:**
+```json
+{
+  "verification_token": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "age": 25,
+  "gender": "male",
+  "email": "john@example.com",
+  "city_id": 1,
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `verification_token` | uuid | Yes | Token from Step 2 |
+| `name` | string | Yes | Display name (max 255) |
+| `age` | integer | Yes | User age (18–100) |
+| `gender` | string | Yes | `male`, `female`, or `other` |
+| `email` | string | No | Email address (unique) |
+| `city_id` | integer | Yes | City ID |
+| `password` | string | Yes | Min 8 characters |
+| `password_confirmation` | string | Yes | Must match password |
 
 **Response (201):**
 ```json
@@ -92,18 +168,23 @@ POST /auth/register
     "user": {
       "id": 1,
       "name": "John Doe",
+      "age": 25,
+      "gender": "male",
       "phone": "+77001234567",
       "city": { "id": 1, "name": "Алматы" },
-      "phone_verified": false,
+      "phone_verified": true,
       "created_at": "2024-01-15T10:30:00Z"
     },
-    "token": "1|abc123...",
-    "phone_verified": false
+    "token": "1|abc123..."
   }
 }
 ```
 
-**Note:** A verification code is sent to the phone number after registration.
+**Rate Limit:** 5 requests per minute
+
+**Errors:**
+- `422` with `error_code: "INVALID_TOKEN"` — Token expired or invalid
+- `409` with `error_code: "PHONE_TAKEN"` — Phone was verified by another user during registration
 
 ---
 
@@ -129,6 +210,8 @@ POST /auth/login
     "user": {
       "id": 1,
       "name": "John Doe",
+      "age": 25,
+      "gender": "male",
       "phone": "+77001234567",
       "city": { "id": 1, "name": "Алматы" },
       "phone_verified": true,
@@ -236,6 +319,8 @@ GET /user
   "data": {
     "id": 1,
     "name": "John Doe",
+    "age": 25,
+    "gender": "male",
     "phone": "+77001234567",
     "email": "john@example.com",
     "city": { "id": 1, "name": "Алматы" },
@@ -247,6 +332,38 @@ GET /user
   }
 }
 ```
+
+---
+
+### Get User Profile
+```
+GET /users/{id}
+```
+
+Returns public profile information for a specific user.
+
+**Response:**
+```json
+{
+  "data": {
+    "id": 2,
+    "name": "Jane Doe",
+    "age": 28,
+    "gender": "female",
+    "city": { "id": 1, "name": "Алматы" },
+    "photos": [
+      { "id": 1, "url": "/storage/user-photos/abc.jpg", "is_approved": true }
+    ],
+    "phone_verified": true,
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Note:** Private fields (`phone`, `email`) are not included when viewing another user's profile.
+
+**Errors:**
+- `404` — User not found
 
 ---
 
@@ -369,14 +486,15 @@ GET /places
 GET /hangout-requests
 ```
 
-Returns open hangout requests in user's city (excludes own and blocked users).
+Returns open hangout requests in the specified city. **Authentication is optional.** When authenticated, excludes own and blocked users' requests.
 
 **Query Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `activity_type_id` | int | Filter by activity type |
-| `date` | string | Filter by date (YYYY-MM-DD) |
-| `page` | int | Page number for pagination |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `city_id` | int | **Yes** | City to browse hangout requests in |
+| `activity_type_id` | int | No | Filter by activity type |
+| `date` | string | No | Filter by date (YYYY-MM-DD) |
+| `page` | int | No | Page number for pagination |
 
 **Response:**
 ```json
@@ -387,6 +505,8 @@ Returns open hangout requests in user's city (excludes own and blocked users).
       "user": {
         "id": 2,
         "name": "Jane Doe",
+        "age": 28,
+        "gender": "female",
         "photos": [{ "id": 1, "url": "...", "is_approved": true }]
       },
       "city": { "id": 1, "name": "Алматы" },
@@ -450,6 +570,8 @@ POST /hangout-requests
 ```
 GET /hangout-requests/{id}
 ```
+
+**Authentication is optional.** When authenticated, includes `is_owner` and `my_join_request` fields.
 
 **Response:**
 ```json

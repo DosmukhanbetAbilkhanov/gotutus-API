@@ -1,0 +1,26 @@
+meta {
+  name: Register - Send Code
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/auth/register/send-code
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "phone": "+77001234567"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

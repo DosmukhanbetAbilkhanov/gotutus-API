@@ -5,14 +5,20 @@ meta {
 }
 
 get {
-  url: {{base_url}}/hangout-requests
+  url: {{base_url}}/hangout-requests?city_id=2
   body: none
-  auth: inherit
+  auth: none
+}
+
+params:query {
+  city_id: 2
+  ~activity_type_id: 1
+  ~date: 2026-02-15
+  ~page: 1
 }
 
 headers {
   Accept: application/json
-  Authorization: Bearer {{token}}
 }
 
 settings {

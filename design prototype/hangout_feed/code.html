@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hangout Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#6366F1",
+                "accent": "#10B981",
+                "background-light": "#F9FAFB",
+                "background-dark": "#0F172A",
+              },
+              fontFamily: {
+                "display": ["Plus Jakarta Sans", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#1F2937] dark:text-[#F3F4F6]">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1E293B]">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCjPITonNPCcNUeHHU46qGWzVpIAY9FtzRTN1GLpZG6KBM8_U-bMQbMc3sfIGD0Kso2f-Vyyt6bddwYjbcoDID4Lng_RW3OqfnTAxKvvX6N2MNhBKRPgwoHcZpKPi71XCPP9Xfq61ho4PxzvTfPPl0YidwzkvmQZq3x-9t8GWIBACyorZjdkeYXBEWJpYAGrF-iLREIBDCbsTm2prED4a8TXvpKqr2cqHt6_Q7YZ-4Z-p2TD4sOeNbDa4fpR9jCpHjqwEJuANESwFs");'>
+</div>
+</div>
+<h2 class="text-[#111827] dark:text-white text-xl font-bold leading-tight tracking-tight flex-1 text-center">Hangout Feed</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-white dark:bg-[#1E293B] shadow-sm text-[#111827] dark:text-white border border-[#E5E7EB] dark:border-none">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+<div class="px-4 py-2">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-full h-full bg-white dark:bg-[#1E293B] shadow-sm border border-[#E5E7EB] dark:border-none">
+<div class="text-[#6B7280] flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-0 focus:ring-0 text-[#111827] dark:text-white placeholder:text-[#9CA3AF] px-3 text-base font-normal leading-normal" placeholder="Find a hangout..." value=""/>
+<div class="flex items-center pr-4 text-[#6B7280]">
+<span class="material-symbols-outlined">tune</span>
+</div>
+</div>
+</label>
+</div>
+<div class="flex gap-3 px-4 py-3 overflow-x-auto no-scrollbar pb-4">
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-4 shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">explore</span>
+<p class="text-sm font-semibold">All</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1E293B] px-4 border border-[#E5E7EB] dark:border-none shadow-sm text-[#4B5563] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-[20px]">coffee</span>
+<p class="text-sm font-medium">Coffee</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1E293B] px-4 border border-[#E5E7EB] dark:border-none shadow-sm text-[#4B5563] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-[20px]">sports_bar</span>
+<p class="text-sm font-medium">Drinks</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1E293B] px-4 border border-[#E5E7EB] dark:border-none shadow-sm text-[#4B5563] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-[20px]">directions_walk</span>
+<p class="text-sm font-medium">Walk</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1E293B] px-4 border border-[#E5E7EB] dark:border-none shadow-sm text-[#4B5563] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+<p class="text-sm font-medium">Dinner</p>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 pt-2 pb-24 space-y-5">
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] bg-white dark:bg-[#1E293B] overflow-hidden border border-[#F1F5F9] dark:border-none">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Nightlife activity" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmXJn3Oq2Y8Kxp5QfqyXpSeAYAE4mPksvbcKoW-GZ9ZuknJ-3gGrMIzTuYdqVTQsm4rk--P9mZM3RVJI-cpJh0_oq1O6cFKjz4RceTZ2c8bGrdbd92ZfW_QoG1bqH9ioxwu5RzwCZcl9OqzyUQEMx2hncsCkw7R9B_qW9vG7gxZ2jA_X3QA90puDH8ORgSGje03d5z-iusyMMLkBjeSku7PeXMpTQMTFnK4MM_YH3MRnf_RKyHfuBuQuJF9Fb_Ahh9ShLU6jenIZQ");'>
+<div class="absolute top-3 left-3 bg-white/95 dark:bg-[#0F172A]/80 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm font-bold">nightlife</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-[#111827] dark:text-white">Nightlife</span>
+</div>
+</div>
+<div class="flex w-full grow flex-col items-stretch justify-center gap-3 p-4">
+<div class="flex items-center gap-3">
+<div class="size-7 rounded-full bg-cover ring-2 ring-primary/10" data-alt="Alex profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6vKt-Vjw0buDT-tGgmbgXHwGerrv3NnaYTxuBLmNlRNEdBZmoWBDesGD-Vi-j0yvnVtRiD7K4K37Ede8BAvU8OiUADtCmQflYYl3DWxMabW-zkmSBNZi271ttcOsrLiOoM0eznqP3mVieqzKrkCqPrIaKnXUJYvART5h8GXrL_jPPf2qp5CmwYZ6H1zuSuVRUmLuyFxMxqJdJLQmLUuqPUqZ4UAgqffFBp-Lxi5PvROcVHiK2zrUt2Ri0tK9N8JdHjpZfIM3dzOE')"></div>
+<p class="text-[#111827] dark:text-white text-lg font-bold leading-tight">Alex is looking for a Beer</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[#6B7280] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<p class="text-sm font-medium">Today, 7:00 PM</p>
+</div>
+<div class="flex items-center gap-2 text-[#6B7280] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-sm text-primary">location_on</span>
+<p class="text-sm font-medium">The Rusty Anchor</p>
+</div>
+<p class="text-[#4B5563] dark:text-[#CBD5E1] text-sm leading-relaxed mt-1">Hey! Looking for someone to join for a quick pint after work.</p>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-8 rounded-full border-2 border-white dark:border-[#1E293B] bg-cover shadow-sm" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOlAdBivB7VLoGX-HMGTjXoClaolq77E9Poo1nsByii5JidlI0V-4Pg_n58e0j8u8ZDvxSUMM5n4uPnuZQun-rhaboJoRgDCEPF3nfdnOVnI6cpbFTKAYAoBS1zzRU74me8QqIkdqkbW-8m1pKflJDWfZ0Ztys0IDmcS-CLmnlUK23SFjiz9mK_5k-UtIWUAX0EVVxDgSPpJY7FNrP6HYdlazRmRSOOfxfUD6r7nQ33NGWs4O0pu-Ym5trteqms5EAW6Hv5ijZpZ0')"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-[#1E293B] bg-cover shadow-sm" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAAHW7LoCDCnsm_qa2F2_3XjVsP2c-9iBpWCxp23PRu46k1gW-7L_9o04ZPdh384xBJZwsa2nIVTY832m8fP-yzyzYhIXzQwyEOzkTN0Q9aMbpe4Ky1T5ReJBNIgtXZoXjLCuFNPMy1HbfxISUoiDRKaT_EHOcKiX1_6tOkB5jF7wtd_HVSpf5e7DH_g5EdHyNeH2p4iFrVmtX2Dagez4IbFnAP1LtZ0TvDVZjsm3kueClGSJ0s24VOeYiStMkgCj4PqzGPhWo5PdA')"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-[#1E293B] bg-[#F1F5F9] dark:bg-[#334155] flex items-center justify-center text-[10px] font-bold text-[#4B5563] dark:text-white shadow-sm">+3</div>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/25 active:scale-95 transition-all">
+<span>Join</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] bg-white dark:bg-[#1E293B] overflow-hidden border border-[#F1F5F9] dark:border-none">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Outdoor walk" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCZLej__3bXctqCSsEHbpK9NTRHyFqlsviD3nQkTev5YLSsoXz_09gm_clP35l6z92NwNSmEcRcENGsZnhHyP8jywMn9cXDfHQty5rruhGs789ZVk-4h9KyWLUZoTndoe18jMudv5EzUlbcoPq2s8jqsoOKCZrk-eKObNYGbr2ygNQPUWnFSfO3jCn__QHp7SRwYU_c03NJuN9gdL7vvA4ukepsNRcxP6pBihoa9qXsruysGU5Yq9vfKmI1Z8--PQA3HKDcaAgSE1c");'>
+<div class="absolute top-3 left-3 bg-white/95 dark:bg-[#0F172A]/80 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-accent text-sm font-bold">nature_people</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-[#111827] dark:text-white">Outdoors</span>
+</div>
+</div>
+<div class="flex w-full grow flex-col items-stretch justify-center gap-3 p-4">
+<div class="flex items-center gap-3">
+<div class="size-7 rounded-full bg-cover ring-2 ring-primary/10" data-alt="Sarah profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8wxigO0rDnNiK7lPtuX4Q7KooYNtF18nXyzccRlqXna0BvN1pBWjjaTErtHdr5npOn40eOMcZJQWi5Wx9nQRQc51aVyUsSceg3iQfjIn_h5iHG8TclnKjDY63Ljrm0E32R4ruoP1tW0El0wSMQ95e6iL0Xa7bAAPboQcEkTwjFkRz-3HDIf4K5S068DFQZT6Ww0nqgpdHzcuATN99g3yenXAjp1p9l3BfRlpR3efqn10qTyPJTXt0eLGK97gcocnP0aUAAUIOe-U')"></div>
+<p class="text-[#111827] dark:text-white text-lg font-bold leading-tight">Sarah wants to go for a Walk</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[#6B7280] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<p class="text-sm font-medium">Today, 5:30 PM</p>
+</div>
+<div class="flex items-center gap-2 text-accent font-semibold">
+<span class="material-symbols-outlined text-sm">help</span>
+<p class="text-sm">To be decided</p>
+</div>
+<p class="text-[#4B5563] dark:text-[#CBD5E1] text-sm leading-relaxed mt-1">Sun is out! Let's walk the loop and catch the sunset.</p>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div class="flex items-center text-xs text-accent font-medium italic">
+                            Be the first to join!
+                        </div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/25 active:scale-95 transition-all">
+<span>Join</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] bg-white dark:bg-[#1E293B] overflow-hidden border border-[#F1F5F9] dark:border-none">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Sports activity" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAYm0ykXcq2zx6yNfmAcdcL8xP-Sh9KksAvmDiRiqVw1eiW2PvgOO4IAWjZdGQjWvUNaveXKqGlCYxZtDihYenoj-x1y6ZhKwS9frjOW9IUB-0i67Frb7bKJnxPzs6VUgkvdlkSUigShkFPaK878WimBarkEbgW1vVzfTMTvYr9sVhfJ0UZLGAKgM4qYB-1VNGfv2QWNC4TP1edn6_oLmRvAt5SHkOYTgfJXP5IRZga6qXqCsw7rZs-y9KNeya4EoQjAQQYY0rBVqA");'>
+<div class="absolute top-3 left-3 bg-white/95 dark:bg-[#0F172A]/80 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-accent text-sm font-bold">sports_basketball</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-[#111827] dark:text-white">Sports</span>
+</div>
+</div>
+<div class="flex w-full grow flex-col items-stretch justify-center gap-3 p-4">
+<div class="flex items-center gap-3">
+<div class="size-7 rounded-full bg-cover ring-2 ring-primary/10" data-alt="Marcus profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRJNSlKUiGIFondLkEwSGnF-RkmbVo1zgBlRXHj1uo1as1vM1213vrC5VSUAtRYZkGTccOnatGxsReiZzliqxzrYduUIJgOMjxmYA8J1RDFHWUCXN5u2cIowKVB-WNhAyfqgEfRtAwzVr9rj3JUYfAiydD3Hw2y5Z6qdfJAEm3dB9YFI2D0-RzboNhnS60q9Wmy-__GQkPpuLih8mDhL2SNi5__BA8JrrL6k17suKPYQO7R3tvV-0BjbuMDxJQm_qIcTPDRM3U4Ss')"></div>
+<p class="text-[#111827] dark:text-white text-lg font-bold leading-tight">Marcus wants to play Hoops</p>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-[#6B7280] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<p class="text-sm font-medium">Sat, 10:00 AM</p>
+</div>
+<div class="flex items-center gap-2 text-[#6B7280] dark:text-[#94A3B8]">
+<span class="material-symbols-outlined text-sm text-primary">location_on</span>
+<p class="text-sm font-medium">Brooklyn Bridge Park</p>
+</div>
+<p class="text-[#4B5563] dark:text-[#CBD5E1] text-sm leading-relaxed mt-1">Looking for 2 more for some 3v3 half-court. All levels welcome!</p>
+</div>
+<div class="pt-2 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-8 rounded-full border-2 border-white dark:border-[#1E293B] bg-cover shadow-sm" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD9b87RwSpRNsjNZOJiSn1AC2ZdxlFQ-6gAICIxrjpvubrjJLlMMjpqrwrDTVumj96uJY0wKmKe5Aanco-sKo89bnrIIsErkyP-IgNTKkNR3GpZCqT_sQwDKldmodntluVBwMipuKUgrQfqfSUAlISXPp5q7-jVrYu41vn_bYsjv41uh8sKxFVaqxkRWwcbs0_-BBQZGcwT6DmKI0IPLDMyoNPrZDXH0m4RIBhFxk8jJkDkeciTTl-_uXuHOmVBEghchY4mwjrGihc')"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-[#1E293B] bg-cover shadow-sm" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPEKiDubOr_svNSqxAWn0xaHWBVdI-mBfqP9mhl3dQE_xHAY041Z_I504zcvvN6ayYzH23_mSvvpHqfu0Xa0_egHttv3FQGhK1qG_X2tm8HtFmoR2w5MVD8kSWe-fKf7pmmXk7c8saEAgMf523GalVCzZVT0RbS0VKhYJQ-WREgbEmKaRVDAFlA54mhD8gX65I70DiQAAugn3REtVlh8LYcJPIjweEvIzIoyKurLfMpafZ25semslhIjj6mK8hL-mo8e32LyG7Pe8')"></div>
+</div>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/25 active:scale-95 transition-all">
+<span>Join</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-24 right-6 z-50">
+<button class="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-[0_8px_24px_rgba(99,102,241,0.4)] active:scale-90 transition-all border-2 border-white dark:border-[#0F172A]">
+<span class="material-symbols-outlined text-[32px] font-bold">add</span>
+</button>
+</div>
+<nav class="fixed bottom-0 w-full bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl border-t border-[#E5E7EB] dark:border-[#1E293B] flex justify-around items-center pt-3 pb-8 px-6">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined !fill-1">home</span>
+<span class="text-[10px] font-bold">Feed</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#9CA3AF] dark:text-[#64748B]">
+<span class="material-symbols-outlined">map</span>
+<span class="text-[10px] font-medium">Explore</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#9CA3AF] dark:text-[#64748B]">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-medium">Chats</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#9CA3AF] dark:text-[#64748B]">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</div>
+</nav>
+</div>
+
+</body></html>

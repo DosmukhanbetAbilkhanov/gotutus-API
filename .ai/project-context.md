@@ -2,6 +2,20 @@ This is a mobile-first social application designed to help people find companion
 
 All users are registered and associated with a specific city. Activity requests are visible only to users within the same city, ensuring local relevance and practical meetups. The app emphasizes flexibility, mutual agreement, and real-world connections rather than online socializing or dating
 
+This Laravel 12 application serves as a RESTful API backend for a mobile social application built with Flutter. The backend is responsible for all core business logic, authentication, authorization, data persistence, and system rules.
+
+The API enables users to create and join casual, real-life hangout requests within their city. Hangouts are activity-based (e.g., grabbing a beer, coffee, walking, bathhouse), date-driven, and visible only to users registered in the same city.
+
+The backend manages:
+	•	User authentication and profile data
+	•	City-based access control
+	•	Activity types and related places
+	•	Hangout request lifecycle (creation, joining, approval, confirmation, closure)
+	•	Messaging between matched participants
+	•	Notifications and moderation tools
+
+This application does not render any UI and does not use Blade or Livewire. All interactions occur through JSON-based API endpoints consumed by a Flutter mobile application. The backend acts as the single source of truth for application state and business rules.
+
 How It Works
 
 1. Registration & City Setup

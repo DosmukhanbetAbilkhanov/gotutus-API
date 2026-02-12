@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('cities', [CityController::class, 'index']);
 Route::get('activity-types', [ActivityTypeController::class, 'index']);
+Route::get('hangout-requests', [HangoutRequestController::class, 'index']);
+Route::get('hangout-requests/{hangoutRequest}', [HangoutRequestController::class, 'show']);
 
 /*
 |--------------------------------------------------------------------------
@@ -33,8 +35,14 @@ Route::get('activity-types', [ActivityTypeController::class, 'index']);
 */
 
 Route::prefix('auth')->group(function () {
-    Route::post('register', RegisterController::class)
-        ->middleware('throttle:5,1');
+    Route::prefix('register')->group(function () {
+        Route::post('send-code', [RegisterController::class, 'sendCode'])
+            ->middleware('throttle:5,1');
+        Route::post('verify-code', [RegisterController::class, 'verifyCode'])
+            ->middleware('throttle:10,1');
+        Route::post('complete', [RegisterController::class, 'complete'])
+            ->middleware('throttle:5,1');
+    });
 
     Route::post('login', LoginController::class)
         ->middleware('throttle:5,1');
@@ -64,6 +72,8 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    Route::get('users/{user}', [UserController::class, 'profile']);
+
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'show']);
         Route::put('/', [UserController::class, 'update']);
@@ -92,7 +102,8 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('hangout-requests', HangoutRequestController::class);
+    Route::apiResource('hangout-requests', HangoutRequestController::class)
+        ->except(['index', 'show']);
 
     // Nested join request creation and listing
     Route::post('hangout-requests/{hangoutRequest}/join', [JoinRequestController::class, 'store']);

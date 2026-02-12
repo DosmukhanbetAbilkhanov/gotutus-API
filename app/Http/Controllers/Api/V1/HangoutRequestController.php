@@ -19,11 +19,17 @@ use Symfony\Component\HttpFoundation\Response;
 class HangoutRequestController extends Controller
 {
     /**
-     * Browse hangout requests in user's city.
+     * Browse hangout requests by city. Authentication is optional.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $user = $request->user();
+        $request->validate([
+            'city_id' => ['required', 'integer', 'exists:cities,id'],
+            'activity_type_id' => ['sometimes', 'integer', 'exists:activity_types,id'],
+            'date' => ['sometimes', 'date_format:Y-m-d'],
+        ]);
+
+        $user = auth('sanctum')->user();
 
         $query = HangoutRequest::query()
             ->with([
@@ -33,19 +39,20 @@ class HangoutRequestController extends Controller
                 'place.translations',
             ])
             ->withCount('joinRequests')
-            ->inCity($user->city_id)
+            ->inCity((int) $request->input('city_id'))
             ->open()
             ->upcoming()
-            ->notOwnedBy($user->id)
-            ->excludeBlockedUsers($user->id)
             ->latest('date');
 
-        // Filter by activity type
+        if ($user) {
+            $query->notOwnedBy($user->id)
+                ->excludeBlockedUsers($user->id);
+        }
+
         if ($request->filled('activity_type_id')) {
             $query->forActivityType($request->input('activity_type_id'));
         }
 
-        // Filter by date
         if ($request->filled('date')) {
             $query->forDate($request->input('date'));
         }
@@ -87,12 +94,10 @@ class HangoutRequestController extends Controller
     }
 
     /**
-     * Show a specific hangout request.
+     * Show a specific hangout request. Authentication is optional.
      */
-    public function show(Request $request, HangoutRequest $hangoutRequest): HangoutRequestResource|JsonResponse
+    public function show(HangoutRequest $hangoutRequest): HangoutRequestResource
     {
-        Gate::authorize('view', $hangoutRequest);
-
         $hangoutRequest->load([
             'user.photos' => fn ($q) => $q->approved(),
             'city.translations',
@@ -100,13 +105,16 @@ class HangoutRequestController extends Controller
             'place.translations',
         ]);
 
-        // Load user's join request if exists
-        $myJoinRequest = $hangoutRequest->joinRequests()
-            ->where('user_id', $request->user()->id)
-            ->first();
+        $user = auth('sanctum')->user();
 
-        if ($myJoinRequest) {
-            $hangoutRequest->setRelation('myJoinRequest', $myJoinRequest);
+        if ($user) {
+            $myJoinRequest = $hangoutRequest->joinRequests()
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($myJoinRequest) {
+                $hangoutRequest->setRelation('myJoinRequest', $myJoinRequest);
+            }
         }
 
         return new HangoutRequestResource($hangoutRequest);

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding - Find Your Circle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1313ec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111118] dark:text-white antialiased">
+<!-- iOS Status Bar Placeholder -->
+<div class="h-12 w-full"></div>
+<div class="relative flex min-h-[calc(100vh-3rem)] w-full flex-col bg-white dark:bg-background-dark overflow-hidden">
+<!-- Top Navigation -->
+<div class="flex items-center justify-end px-6 py-4">
+<button class="text-primary/80 dark:text-primary/60 text-base font-semibold leading-normal tracking-wide hover:opacity-70 transition-opacity">
+                Skip
+            </button>
+</div>
+<!-- Illustration Section -->
+<div class="flex flex-col items-center justify-center flex-grow px-6">
+<div class="@container w-full max-w-sm">
+<div class="aspect-square w-full rounded-xl overflow-hidden bg-primary/5 dark:bg-primary/10 relative flex items-center justify-center">
+<!-- Placeholder for illustration of two people meeting for coffee in city -->
+<div class="absolute inset-0 bg-cover bg-center opacity-90" data-alt="Two people laughing and drinking coffee at an outdoor city cafe" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBFp8_o-52hV7t0K2VOQahGCby2tzdbrmhG_x7AJvPDTvnlwwX7W5oBa7PDT9zjEVW_tQ7Rkqmy4cy6rOvA6f13lb0-A95bWs1mZU33_5MH-Geje1NxeMKyW8ekBNJnzwV1ERrQ75UPOLxKJ98680M8cxZlnUAg5aY1g1MEGHOColYVULbFf5kkbWyiVdCIu2kJoanZqlNmXcQRkw1bnKN7AMKYRSFVxr8-xjtw2y3C-zeq_yfzl0x6R4mIETF4tekJY43K4wJI3vA')">
+</div>
+<!-- Decorative Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent"></div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="mt-10 text-center max-w-xs">
+<h1 class="text-[#111118] dark:text-white tracking-tight text-[32px] font-extrabold leading-tight mb-4">
+                    Find Your Circle
+                </h1>
+<p class="text-[#4e4e6a] dark:text-gray-400 text-lg font-medium leading-relaxed">
+                    Discover people in your city looking for casual hangouts.
+                </p>
+</div>
+</div>
+<!-- Bottom Navigation & Progress -->
+<div class="px-6 pb-12 pt-6">
+<!-- Progress Indicators -->
+<div class="flex w-full flex-row items-center justify-center gap-2.5 mb-10">
+<div class="h-2.5 w-6 rounded-full bg-primary transition-all"></div>
+<div class="h-2.5 w-2.5 rounded-full bg-primary/20 dark:bg-primary/10"></div>
+<div class="h-2.5 w-2.5 rounded-full bg-primary/20 dark:bg-primary/10"></div>
+</div>
+<!-- Primary Action -->
+<div class="flex flex-col gap-4">
+<button class="w-full bg-primary text-white py-5 rounded-full text-lg font-bold tracking-wide shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    Next
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- iOS Home Indicator Placeholder -->
+<div class="h-2 w-32 bg-gray-200 dark:bg-gray-800 rounded-full mx-auto mb-2"></div>
+</div>
+</body></html>

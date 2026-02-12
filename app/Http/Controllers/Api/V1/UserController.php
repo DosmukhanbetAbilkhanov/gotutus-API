@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\User\UpdateProfileRequest;
 use App\Http\Resources\Api\V1\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,16 @@ class UserController extends Controller
     public function show(Request $request): UserResource
     {
         $user = $request->user()->load(['city.translations', 'photos']);
+
+        return new UserResource($user);
+    }
+
+    public function profile(User $user): UserResource
+    {
+        $user->load([
+            'city.translations',
+            'photos' => fn ($q) => $q->approved(),
+        ]);
 
         return new UserResource($user);
     }

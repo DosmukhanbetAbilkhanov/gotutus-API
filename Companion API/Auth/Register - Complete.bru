@@ -1,11 +1,11 @@
 meta {
-  name: Register
+  name: Register - Complete
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
-  url: {{base_url}}/auth/register
+  url: {{base_url}}/auth/register/complete
   body: json
   auth: inherit
 }
@@ -17,13 +17,13 @@ headers {
 
 body:json {
   {
-      "name": "Dos2",
-      "phone": "+77078835953",
+      "verification_token": "{{verification_token}}",
+      "name": "John Doe",
+      "age": 25,
+      "gender": "male",
+      "city_id": 1,
       "password": "password123",
-      "password_confirmation": "password123",
-      "age": 25,  
-      "gender": "male", 
-      "city_id": 1
+      "password_confirmation": "password123"
   }
 }
 
@@ -36,5 +36,4 @@ script:post-response {
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

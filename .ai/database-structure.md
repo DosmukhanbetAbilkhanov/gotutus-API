@@ -14,7 +14,7 @@ status
 created_at
 updated_at
 
-1. user_photo 
+1-2. user_photo 
 
 Columns	
 id

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding - Choose Activities</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f06f9",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#190f23",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 flex justify-center items-center min-h-screen">
+<!-- Mobile Container (Phone Form Factor) -->
+<div class="relative w-full max-w-[390px] h-[844px] bg-white dark:bg-background-dark shadow-2xl overflow-hidden flex flex-col">
+<!-- Status Bar Space (iOS) -->
+<div class="h-12 w-full"></div>
+<!-- Top Navigation -->
+<div class="flex items-center justify-end px-6 py-2">
+<button class="text-primary font-semibold text-base py-2">Skip</button>
+</div>
+<!-- Illustration Area (3 Grid Layout inspired by component) -->
+<div class="flex-1 flex flex-col justify-center px-6">
+<div class="grid grid-cols-2 gap-4 w-full max-w-[320px] mx-auto mb-8">
+<!-- Activity Icon 1: Coffee -->
+<div class="aspect-square bg-primary/10 rounded-xl flex items-center justify-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors"></div>
+<div class="bg-white dark:bg-slate-800 p-4 rounded-full shadow-lg z-10">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1">coffee</span>
+</div>
+</div>
+<!-- Activity Icon 2: Beer -->
+<div class="aspect-square bg-amber-100 dark:bg-amber-900/20 rounded-xl flex items-center justify-center mt-8 relative overflow-hidden">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-full shadow-lg z-10">
+<span class="material-symbols-outlined text-amber-500 text-4xl" style="font-variation-settings: 'FILL' 1">sports_bar</span>
+</div>
+</div>
+<!-- Activity Icon 3: Walking -->
+<div class="aspect-square bg-emerald-100 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center -mt-4 relative overflow-hidden">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-full shadow-lg z-10">
+<span class="material-symbols-outlined text-emerald-500 text-4xl" style="font-variation-settings: 'FILL' 1">directions_walk</span>
+</div>
+</div>
+<!-- Activity Icon 4: Social/Chat -->
+<div class="aspect-square bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center mt-4 relative overflow-hidden">
+<div class="bg-white dark:bg-slate-800 p-4 rounded-full shadow-lg z-10">
+<span class="material-symbols-outlined text-blue-500 text-4xl" style="font-variation-settings: 'FILL' 1">chat_bubble</span>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="text-center space-y-4">
+<h1 class="text-[#141118] dark:text-white text-3xl font-bold leading-tight tracking-tight">
+                    Choose Your Activity
+                </h1>
+<p class="text-slate-600 dark:text-slate-400 text-base leading-relaxed px-4">
+                    From a quick walk to a relaxed drink, pick what suits your mood.
+                </p>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="px-6 pb-12 pt-4 flex flex-col items-center gap-8">
+<!-- Pagination Indicator (Variant 2 of 3) -->
+<div class="flex flex-row items-center justify-center gap-2">
+<div class="h-2 w-2 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+<div class="h-2 w-6 rounded-full bg-primary"></div>
+<div class="h-2 w-2 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full bg-primary text-white font-bold py-4 rounded-full text-lg shadow-xl shadow-primary/20 active:scale-[0.98] transition-transform">
+                Next
+            </button>
+</div>
+<!-- iOS Home Indicator Space -->
+<div class="h-2 w-32 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-2"></div>
+</div>
+</body></html>

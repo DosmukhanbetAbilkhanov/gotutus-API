@@ -22,6 +22,8 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'age' => $this->age,
+            'gender' => $this->gender?->value,
             'phone' => $this->when($isOwner, $this->phone),
             'email' => $this->when($isOwner, $this->email),
             'city' => new CityResource($this->whenLoaded('city')),
