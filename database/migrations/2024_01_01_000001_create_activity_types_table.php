@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('activity_type_id')->constrained()->cascadeOnDelete();
             $table->string('language_code', 5);
             $table->string('name');
-
             $table->unique(['activity_type_id', 'language_code']);
         });
     }

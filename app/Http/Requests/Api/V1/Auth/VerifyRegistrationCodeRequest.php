@@ -19,19 +19,8 @@ class VerifyRegistrationCodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => ['required', 'string', 'regex:/^\+?[0-9]{10,15}$/'],
-            'code' => ['required', 'string', 'size:6'],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'phone.regex' => __('validation.phone_format'),
-            'code.size' => __('validation.code_length'),
+            'phone' => ['required', 'string', 'regex:/^\+7[0-9]{10}$/'],
+            'code' => ['required', 'string', 'size:4'],
         ];
     }
 }

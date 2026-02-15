@@ -19,12 +19,12 @@ class JoinRequestResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
-            'suggested_place' => new PlaceResource($this->whenLoaded('place')),
             'status' => $this->status->value,
             'message' => $this->message,
             'confirmed_at' => $this->confirmed_at?->toIso8601String(),
+            'user' => new UserResource($this->whenLoaded('user')),
+            'place' => new PlaceResource($this->whenLoaded('place')),
+            'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

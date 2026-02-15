@@ -20,8 +20,8 @@ class StoreReportRequest extends FormRequest
     {
         return [
             'reported_user_id' => ['required', 'integer', 'exists:users,id'],
-            'reason' => ['required', 'string', 'max:1000'],
             'hangout_request_id' => ['nullable', 'integer', 'exists:hangout_requests,id'],
+            'reason' => ['required', 'string', 'max:2000'],
         ];
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('message');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('created_at')->nullable();
 
             $table->index(['conversation_id', 'created_at']);
         });

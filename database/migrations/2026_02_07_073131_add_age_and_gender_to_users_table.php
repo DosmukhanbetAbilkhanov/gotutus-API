@@ -6,20 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedTinyInteger('age')->after('phone');
-            $table->string('gender')->after('age');
+            $table->unsignedTinyInteger('age')->nullable()->after('phone');
+            $table->string('gender')->nullable()->after('age');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {

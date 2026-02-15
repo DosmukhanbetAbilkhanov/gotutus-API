@@ -21,18 +21,16 @@ class LoginController extends Controller
         if (! $user || ! Hash::check($request->validated('password'), $user->password)) {
             return response()->json([
                 'message' => __('auth.failed'),
-                'error_code' => 'INVALID_CREDENTIALS',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $token = $user->createToken($request->validated('device_name'))->plainTextToken;
+        $token = $user->createToken('mobile')->plainTextToken;
 
         return response()->json([
             'message' => __('auth.login_success'),
             'data' => [
-                'user' => new UserResource($user->load('city')),
+                'user' => new UserResource($user->load('city.translations')),
                 'token' => $token,
-                'phone_verified' => $user->isPhoneVerified(),
             ],
         ]);
     }

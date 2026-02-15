@@ -22,7 +22,6 @@ class PlaceResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'city' => new CityResource($this->whenLoaded('city')),
-            'activity_types' => ActivityTypeResource::collection($this->whenLoaded('activityTypes')),
         ];
     }
 }

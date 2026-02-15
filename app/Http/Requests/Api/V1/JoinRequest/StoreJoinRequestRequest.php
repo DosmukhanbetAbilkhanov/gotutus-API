@@ -20,7 +20,7 @@ class StoreJoinRequestRequest extends FormRequest
     {
         return [
             'place_id' => ['nullable', 'integer', 'exists:places,id'],
-            'message' => ['nullable', 'string', 'max:300'],
+            'message' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

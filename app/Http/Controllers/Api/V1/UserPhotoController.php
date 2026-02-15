@@ -11,7 +11,6 @@ use App\Models\UserPhoto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserPhotoController extends Controller
@@ -28,12 +27,11 @@ class UserPhotoController extends Controller
         $path = $request->file('photo')->store('user-photos', 'public');
 
         $photo = $request->user()->photos()->create([
-            'photo_url' => Storage::url($path),
-            'is_approved' => false,
+            'photo_url' => $path,
         ]);
 
         return response()->json([
-            'message' => __('user.photo_uploaded'),
+            'message' => __('photo.uploaded'),
             'data' => new UserPhotoResource($photo),
         ], Response::HTTP_CREATED);
     }
@@ -41,20 +39,13 @@ class UserPhotoController extends Controller
     public function destroy(Request $request, UserPhoto $photo): JsonResponse
     {
         if ($photo->user_id !== $request->user()->id) {
-            return response()->json([
-                'message' => __('auth.unauthorized'),
-                'error_code' => 'UNAUTHORIZED',
-            ], Response::HTTP_FORBIDDEN);
+            abort(Response::HTTP_FORBIDDEN);
         }
-
-        // Delete file from storage
-        $path = str_replace('/storage/', '', $photo->photo_url);
-        Storage::disk('public')->delete($path);
 
         $photo->delete();
 
         return response()->json([
-            'message' => __('user.photo_deleted'),
+            'message' => __('photo.deleted'),
         ]);
     }
 }

@@ -14,50 +14,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PhoneVerificationController extends Controller
 {
-    public function __construct(
-        private readonly MobizonSmsService $smsService
-    ) {}
+    public function __construct(private MobizonSmsService $smsService) {}
 
     public function sendCode(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $phone = $request->user()->phone;
+        $code = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
 
-        if ($user->isPhoneVerified()) {
-            return response()->json([
-                'message' => __('auth.phone_already_verified'),
-            ]);
-        }
+        Cache::put("phone_verification:{$phone}", $code, now()->addMinutes(5));
 
-        $code = $this->smsService->generateCode();
-        Cache::put("phone_verification:{$user->phone}", $code, now()->addMinutes(10));
-        $this->smsService->sendVerificationCode($user->phone, $code);
+        $this->smsService->send($phone, "Your verification code: {$code}");
 
         return response()->json([
-            'message' => __('auth.verification_code_sent'),
+            'message' => __('auth.code_sent'),
         ]);
     }
 
     public function verify(VerifyPhoneRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $phone = $request->user()->phone;
+        $code = $request->validated('code');
 
-        if ($user->isPhoneVerified()) {
+        $cachedCode = Cache::get("phone_verification:{$phone}");
+
+        if (! $cachedCode || $cachedCode !== $code) {
             return response()->json([
-                'message' => __('auth.phone_already_verified'),
-            ]);
-        }
-
-        $cachedCode = Cache::get("phone_verification:{$user->phone}");
-
-        if (! $cachedCode || $cachedCode !== $request->validated('code')) {
-            return response()->json([
-                'message' => __('auth.invalid_verification_code'),
-                'error_code' => 'INVALID_CODE',
+                'message' => __('auth.invalid_code'),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user->update(['phone_verified_at' => now()]);
-        Cache::forget("phone_verification:{$user->phone}");
+        $request->user()->update(['phone_verified_at' => now()]);
+
+        Cache::forget("phone_verification:{$phone}");
 
         return response()->json([
             'message' => __('auth.phone_verified'),

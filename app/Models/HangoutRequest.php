@@ -68,7 +68,7 @@ class HangoutRequest extends Model
 
     public function confirmedJoinRequest(): HasOne
     {
-        return $this->hasOne(JoinRequest::class)->where('status', 'confirmed');
+        return $this->hasOne(JoinRequest::class)->confirmed();
     }
 
     public function scopeOpen(Builder $query): Builder
@@ -98,12 +98,8 @@ class HangoutRequest extends Model
 
     public function scopeExcludeBlockedUsers(Builder $query, int $userId): Builder
     {
-        return $query->whereDoesntHave('user.blockedByUsers', function (Builder $q) use ($userId) {
-            $q->where('user_id', $userId);
-        })->whereDoesntHave('user', function (Builder $q) use ($userId) {
-            $q->whereHas('blockedUsers', function (Builder $blocked) use ($userId) {
-                $blocked->where('blocked_user_id', $userId);
-            });
+        return $query->whereHas('user', function (Builder $q) use ($userId) {
+            $q->notBlockedBy($userId);
         });
     }
 

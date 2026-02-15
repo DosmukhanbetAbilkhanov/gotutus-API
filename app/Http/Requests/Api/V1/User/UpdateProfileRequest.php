@@ -20,7 +20,10 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,'.$this->user()->id],
             'city_id' => ['sometimes', 'integer', 'exists:cities,id'],
+            'age' => ['sometimes', 'integer', 'min:18', 'max:100'],
+            'gender' => ['sometimes', 'string', 'in:male,female,other'],
         ];
     }
 }

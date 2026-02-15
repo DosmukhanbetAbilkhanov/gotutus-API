@@ -19,17 +19,7 @@ class VerifyPhoneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'size:6'],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'code.size' => __('validation.code_length'),
+            'code' => ['required', 'string', 'size:4'],
         ];
     }
 }

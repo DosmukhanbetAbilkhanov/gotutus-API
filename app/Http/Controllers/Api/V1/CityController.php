@@ -13,10 +13,7 @@ class CityController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $cities = City::query()
-            ->active()
-            ->with('translations')
-            ->get();
+        $cities = City::active()->with('translations')->get();
 
         return CityResource::collection($cities);
     }

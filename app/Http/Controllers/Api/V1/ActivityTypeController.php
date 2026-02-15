@@ -13,10 +13,7 @@ class ActivityTypeController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $activityTypes = ActivityType::query()
-            ->active()
-            ->with('translations')
-            ->get();
+        $activityTypes = ActivityType::active()->with('translations')->get();
 
         return ActivityTypeResource::collection($activityTypes);
     }

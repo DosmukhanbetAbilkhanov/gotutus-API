@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\City;
+use App\Models\Place;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,9 +11,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PlaceFactory extends Factory
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -22,14 +20,14 @@ class PlaceFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function ($place) {
-            $name = fake()->company();
-            $address = fake()->streetAddress();
-            $place->translations()->createMany([
-                ['language_code' => 'ru', 'name' => $name, 'address' => $address],
-                ['language_code' => 'kz', 'name' => $name, 'address' => $address],
-                ['language_code' => 'en', 'name' => $name, 'address' => $address],
-            ]);
+        return $this->afterCreating(function (Place $place) {
+            foreach (['ru', 'kz', 'en'] as $locale) {
+                $place->translations()->create([
+                    'language_code' => $locale,
+                    'name' => fake()->company(),
+                    'address' => fake()->streetAddress(),
+                ]);
+            }
         });
     }
 }

@@ -20,15 +20,12 @@ return new class extends Migration
             $table->string('language_code', 5);
             $table->string('name');
             $table->string('address')->nullable();
-
             $table->unique(['place_id', 'language_code']);
         });
 
         Schema::create('activity_type_place', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('activity_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('place_id')->constrained()->cascadeOnDelete();
-
             $table->unique(['activity_type_id', 'place_id']);
         });
     }

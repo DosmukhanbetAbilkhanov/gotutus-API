@@ -19,6 +19,7 @@ class UpdateHangoutRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'activity_type_id' => ['sometimes', 'integer', 'exists:activity_types,id'],
             'place_id' => ['nullable', 'integer', 'exists:places,id'],
             'date' => ['sometimes', 'date', 'after_or_equal:today'],
             'time' => ['nullable', 'date_format:H:i'],

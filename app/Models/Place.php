@@ -33,7 +33,7 @@ class Place extends Model
 
     public function activityTypes(): BelongsToMany
     {
-        return $this->belongsToMany(ActivityType::class, 'activity_type_place');
+        return $this->belongsToMany(ActivityType::class);
     }
 
     public function hangoutRequests(): HasMany
@@ -46,11 +46,6 @@ class Place extends Model
         return $this->hasMany(JoinRequest::class);
     }
 
-    public function getAddressAttribute(): ?string
-    {
-        return $this->getTranslatedAttribute('address');
-    }
-
     public function scopeInCity(Builder $query, int $cityId): Builder
     {
         return $query->where('city_id', $cityId);
@@ -61,5 +56,10 @@ class Place extends Model
         return $query->whereHas('activityTypes', function (Builder $q) use ($activityTypeId) {
             $q->where('activity_types.id', $activityTypeId);
         });
+    }
+
+    public function getAddressAttribute(): ?string
+    {
+        return $this->getTranslatedAttribute('address');
     }
 }

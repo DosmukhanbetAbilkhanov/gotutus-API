@@ -19,18 +19,7 @@ class StoreUserPhotoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo' => ['required', 'image', 'max:5120', 'dimensions:min_width=200,min_height=200'],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'photo.max' => __('validation.photo_max_size'),
-            'photo.dimensions' => __('validation.photo_min_dimensions'),
+            'photo' => ['required', 'image', 'max:5120'],
         ];
     }
 }

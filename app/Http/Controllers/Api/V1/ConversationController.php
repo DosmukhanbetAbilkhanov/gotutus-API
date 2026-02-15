@@ -7,52 +7,35 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\ConversationResource;
 use App\Models\Conversation;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Gate;
 
 class ConversationController extends Controller
 {
-    /**
-     * List user's conversations.
-     */
+    use AuthorizesRequests;
+
     public function index(Request $request): AnonymousResourceCollection
     {
         $user = $request->user();
 
         $conversations = Conversation::query()
-            ->with([
-                'hangoutRequest.user.photos' => fn ($q) => $q->approved(),
-                'hangoutRequest.activityType.translations',
-                'hangoutRequest.confirmedJoinRequest.user.photos' => fn ($q) => $q->approved(),
-                'latestMessage.user',
-            ])
-            ->whereHas('hangoutRequest', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                    ->orWhereHas('confirmedJoinRequest', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    });
+            ->whereHas('hangoutRequest', function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('joinRequests', fn ($jq) => $jq->confirmed()->where('user_id', $user->id));
             })
-            ->latest('updated_at')
-            ->paginate(15);
+            ->with(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'latestMessage'])
+            ->latest()
+            ->paginate(20);
 
         return ConversationResource::collection($conversations);
     }
 
-    /**
-     * Show a specific conversation.
-     */
     public function show(Conversation $conversation): ConversationResource
     {
-        Gate::authorize('view', $conversation);
+        $this->authorize('view', $conversation);
 
-        $conversation->load([
-            'hangoutRequest.user.photos' => fn ($q) => $q->approved(),
-            'hangoutRequest.activityType.translations',
-            'hangoutRequest.place.translations',
-            'hangoutRequest.confirmedJoinRequest.user.photos' => fn ($q) => $q->approved(),
-            'latestMessage.user',
-        ]);
+        $conversation->load(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'messages.user']);
 
         return new ConversationResource($conversation);
     }

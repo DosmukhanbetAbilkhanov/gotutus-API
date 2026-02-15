@@ -37,7 +37,7 @@ class ActivityType extends Model
 
     public function places(): BelongsToMany
     {
-        return $this->belongsToMany(Place::class, 'activity_type_place');
+        return $this->belongsToMany(Place::class);
     }
 
     public function hangoutRequests(): HasMany

@@ -19,9 +19,8 @@ class MessageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => new UserResource($this->whenLoaded('user')),
             'message' => $this->message,
-            'is_mine' => $request->user()?->id === $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

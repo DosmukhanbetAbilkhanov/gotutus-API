@@ -14,19 +14,11 @@ class PlaceController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Place::query()
-            ->with(['translations', 'city.translations', 'activityTypes.translations']);
-
-        // Filter by city (default to user's city)
-        $cityId = $request->input('city_id', $request->user()->city_id);
-        $query->inCity($cityId);
-
-        // Filter by activity type if provided
-        if ($request->filled('activity_type_id')) {
-            $query->forActivityType($request->input('activity_type_id'));
-        }
-
-        $places = $query->get();
+        $places = Place::query()
+            ->with('translations')
+            ->inCity($request->user()->city_id)
+            ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
+            ->get();
 
         return PlaceResource::collection($places);
     }

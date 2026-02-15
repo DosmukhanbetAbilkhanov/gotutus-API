@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ActivityType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,28 +10,26 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ActivityTypeFactory extends Factory
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'slug' => fake()->unique()->slug(2),
-            'icon' => 'icon-'.fake()->word().'.png',
-            'bg_photo' => 'bg-'.fake()->word().'.jpg',
+            'slug' => fake()->unique()->slug(),
+            'icon' => fake()->word().'.png',
+            'bg_photo' => fake()->word().'-bg.jpg',
             'is_active' => true,
         ];
     }
 
     public function configure(): static
     {
-        return $this->afterCreating(function ($activityType) {
+        return $this->afterCreating(function (ActivityType $activityType) {
             $name = fake()->word();
-            $activityType->translations()->createMany([
-                ['language_code' => 'ru', 'name' => $name],
-                ['language_code' => 'kz', 'name' => $name],
-                ['language_code' => 'en', 'name' => $name],
-            ]);
+            foreach (['ru', 'kz', 'en'] as $locale) {
+                $activityType->translations()->create([
+                    'language_code' => $locale,
+                    'name' => $name,
+                ]);
+            }
         });
     }
 
