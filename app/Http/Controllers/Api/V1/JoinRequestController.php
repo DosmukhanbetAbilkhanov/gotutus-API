@@ -37,6 +37,7 @@ class JoinRequestController extends Controller
         $joinRequest = $hangoutRequest->joinRequests()->create([
             ...$request->validated(),
             'user_id' => $request->user()->id,
+            'status' => JoinRequestStatus::Pending,
         ]);
 
         $joinRequest->load(['user', 'place.translations']);

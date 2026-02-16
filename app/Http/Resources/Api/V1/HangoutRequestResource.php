@@ -6,6 +6,7 @@ namespace App\Http\Resources\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @mixin \App\Models\HangoutRequest
@@ -17,6 +18,8 @@ class HangoutRequestResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = Auth::guard('sanctum')->user();
+
         return [
             'id' => $this->id,
             'user' => new UserResource($this->whenLoaded('user')),
@@ -29,8 +32,8 @@ class HangoutRequestResource extends JsonResource
             'notes' => $this->notes,
             'join_requests_count' => $this->whenCounted('joinRequests'),
             'is_owner' => $this->when(
-                $request->user() !== null,
-                fn () => $request->user()->id === $this->user_id
+                $user !== null,
+                fn () => $user->id === $this->user_id
             ),
             'my_join_request' => new JoinRequestResource($this->whenLoaded('myJoinRequest')),
             'created_at' => $this->created_at?->toIso8601String(),

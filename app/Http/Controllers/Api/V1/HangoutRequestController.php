@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class HangoutRequestController extends Controller
@@ -21,6 +22,8 @@ class HangoutRequestController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
+        $user = Auth::guard('sanctum')->user();
+
         $hangouts = HangoutRequest::query()
             ->with(['user', 'city.translations', 'activityType.translations', 'place.translations'])
             ->open()
@@ -28,6 +31,14 @@ class HangoutRequestController extends Controller
             ->when($request->query('city_id'), fn ($q, $id) => $q->inCity((int) $id))
             ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
             ->when($request->query('date'), fn ($q, $date) => $q->forDate($date))
+            ->when($user, function ($q) use ($user) {
+                $blockedIds = $user->blockedUsers()->pluck('blocked_user_id');
+                $blockedByIds = $user->blockedByUsers()->pluck('user_id');
+
+                $q->where('user_id', '!=', $user->id)
+                    ->whereNotIn('user_id', $blockedIds)
+                    ->whereNotIn('user_id', $blockedByIds);
+            })
             ->latest()
             ->paginate(20);
 
@@ -37,6 +48,18 @@ class HangoutRequestController extends Controller
     public function show(HangoutRequest $hangoutRequest): HangoutRequestResource
     {
         $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+
+        $user = Auth::guard('sanctum')->user();
+        if ($user) {
+            $hangoutRequest->load(['joinRequests' => function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            }]);
+            $hangoutRequest->setRelation(
+                'myJoinRequest',
+                $hangoutRequest->joinRequests->first()
+            );
+            $hangoutRequest->unsetRelation('joinRequests');
+        }
 
         return new HangoutRequestResource($hangoutRequest);
     }

@@ -72,6 +72,50 @@ describe('Browse Hangout Requests', function () {
             ->assertJsonCount(0, 'data');
     });
 
+    it('excludes blocked users hangout requests when authenticated', function () {
+        $blockedUser = User::factory()->create(['city_id' => $this->city->id]);
+
+        HangoutRequest::factory()->create([
+            'user_id' => $blockedUser->id,
+            'city_id' => $this->city->id,
+            'activity_type_id' => $this->activityType->id,
+            'date' => now()->addDays(1)->format('Y-m-d'),
+        ]);
+
+        \App\Models\BlockedUser::factory()->create([
+            'user_id' => $this->user->id,
+            'blocked_user_id' => $blockedUser->id,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    });
+
+    it('excludes hangout requests from users who blocked the authenticated user', function () {
+        $blockerUser = User::factory()->create(['city_id' => $this->city->id]);
+
+        HangoutRequest::factory()->create([
+            'user_id' => $blockerUser->id,
+            'city_id' => $this->city->id,
+            'activity_type_id' => $this->activityType->id,
+            'date' => now()->addDays(1)->format('Y-m-d'),
+        ]);
+
+        \App\Models\BlockedUser::factory()->create([
+            'user_id' => $blockerUser->id,
+            'blocked_user_id' => $this->user->id,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->getJson('/api/v1/hangout-requests?city_id='.$this->city->id);
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    });
+
     it('filters by activity type', function () {
         $otherType = ActivityType::factory()->create();
 

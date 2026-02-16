@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::create('pulse_values', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('timestamp');
