@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\NewMessageBroadcast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Message\StoreMessageRequest;
 use App\Http\Resources\Api\V1\MessageResource;
@@ -39,6 +40,8 @@ class MessageController extends Controller
         ]);
 
         $message->load('user');
+
+        NewMessageBroadcast::dispatch($message);
 
         return response()->json([
             'message' => __('message.sent'),

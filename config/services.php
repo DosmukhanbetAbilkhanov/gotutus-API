@@ -28,4 +28,8 @@ return [
         'sender_name' => env('MOBIZON_SENDER_NAME'),
     ],
 
+    'fcm' => [
+        'credentials' => env('FIREBASE_CREDENTIALS', storage_path('app/firebase-credentials.json')),
+    ],
+
 ];

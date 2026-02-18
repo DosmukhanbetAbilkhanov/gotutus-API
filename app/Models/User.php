@@ -50,6 +50,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function deviceTokens(): HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function routeNotificationForFcm(): array
+    {
+        return $this->deviceTokens()->pluck('token')->toArray();
+    }
+
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);

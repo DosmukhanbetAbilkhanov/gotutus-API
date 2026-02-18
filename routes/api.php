@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\BlockedUserController;
 use App\Http\Controllers\Api\V1\CityController;
 use App\Http\Controllers\Api\V1\ConversationController;
+use App\Http\Controllers\Api\V1\DeviceTokenController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\HangoutRequestController;
 use App\Http\Controllers\Api\V1\JoinRequestController;
 use App\Http\Controllers\Api\V1\MessageController;
@@ -15,7 +17,18 @@ use App\Http\Controllers\Api\V1\PlaceController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserPhotoController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Broadcasting Auth (Sanctum)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')->group(function () {
+    Broadcast::routes();
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -144,4 +157,26 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     Route::delete('blocked-users/{blockedUser}', [BlockedUserController::class, 'destroy']);
 
     Route::post('reports', [ReportController::class, 'store']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notification Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::post('/{notification}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Device Token Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('device-tokens', [DeviceTokenController::class, 'store']);
+    Route::delete('device-tokens', [DeviceTokenController::class, 'destroy']);
 });
