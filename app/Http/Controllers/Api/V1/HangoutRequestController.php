@@ -26,6 +26,7 @@ class HangoutRequestController extends Controller
 
         $hangouts = HangoutRequest::query()
             ->with(['user', 'city.translations', 'activityType.translations', 'place.translations'])
+            ->withCount('joinRequests')
             ->open()
             ->upcoming()
             ->when($request->query('city_id'), fn ($q, $id) => $q->inCity((int) $id))
@@ -110,6 +111,7 @@ class HangoutRequestController extends Controller
         $hangouts = $request->user()
             ->hangoutRequests()
             ->with(['city.translations', 'activityType.translations', 'place.translations', 'joinRequests.user'])
+            ->withCount('joinRequests')
             ->latest()
             ->paginate(20);
 
