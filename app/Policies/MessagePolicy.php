@@ -15,16 +15,14 @@ class MessagePolicy
     public function view(User $user, Message $message): bool
     {
         $conversation = $message->conversation;
-        $hangoutRequest = $conversation->hangoutRequest;
 
         // Is the hangout owner
-        if ($hangoutRequest->user_id === $user->id) {
+        if ($conversation->hangoutRequest->user_id === $user->id) {
             return true;
         }
 
-        // Is the confirmed joiner
-        $confirmedJoinRequest = $hangoutRequest->confirmedJoinRequest;
-
-        return $confirmedJoinRequest && $confirmedJoinRequest->user_id === $user->id;
+        // Is the specific joiner for this conversation
+        return $conversation->join_request_id !== null
+            && $conversation->joinRequest->user_id === $user->id;
     }
 }

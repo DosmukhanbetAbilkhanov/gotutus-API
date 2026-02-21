@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Enums\HangoutRequestStatus;
 use App\Enums\JoinRequestStatus;
 use App\Events\JoinRequestReceived;
 use App\Events\JoinRequestStatusChanged;
 use App\Http\Controllers\Controller;
-use App\Services\NotificationService;
 use App\Http\Requests\Api\V1\JoinRequest\StoreJoinRequestRequest;
 use App\Http\Resources\Api\V1\JoinRequestResource;
 use App\Models\Conversation;
 use App\Models\HangoutRequest;
 use App\Models\JoinRequest;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -71,13 +70,19 @@ class JoinRequestController extends Controller
 
         $joinRequest->update(['status' => JoinRequestStatus::Approved]);
 
+        $hangout = $joinRequest->hangoutRequest;
+        Conversation::firstOrCreate([
+            'hangout_request_id' => $hangout->id,
+            'join_request_id' => $joinRequest->id,
+        ]);
+
         JoinRequestStatusChanged::dispatch($joinRequest, 'approved');
 
         app(NotificationService::class)->send(
             user: $joinRequest->user,
             type: 'join_request_approved',
             title: __('notifications.join_request_approved_title'),
-            body: __('notifications.join_request_approved_body', ['name' => $joinRequest->hangoutRequest->user->name]),
+            body: __('notifications.join_request_approved_body', ['name' => $hangout->user->name]),
             data: [
                 'hangout_request_id' => $joinRequest->hangout_request_id,
                 'join_request_id' => $joinRequest->id,
@@ -114,38 +119,6 @@ class JoinRequestController extends Controller
         ]);
     }
 
-    public function confirm(JoinRequest $joinRequest): JsonResponse
-    {
-        $this->authorize('confirm', $joinRequest);
-
-        $joinRequest->update([
-            'status' => JoinRequestStatus::Confirmed,
-            'confirmed_at' => now(),
-        ]);
-
-        $hangout = $joinRequest->hangoutRequest;
-        $hangout->update(['status' => HangoutRequestStatus::Matched]);
-
-        Conversation::create(['hangout_request_id' => $hangout->id]);
-
-        JoinRequestStatusChanged::dispatch($joinRequest, 'confirmed');
-
-        app(NotificationService::class)->send(
-            user: $joinRequest->user,
-            type: 'join_request_confirmed',
-            title: __('notifications.join_request_confirmed_title'),
-            body: __('notifications.join_request_confirmed_body', ['name' => $hangout->user->name]),
-            data: [
-                'hangout_request_id' => $hangout->id,
-                'join_request_id' => $joinRequest->id,
-            ],
-        );
-
-        return response()->json([
-            'message' => __('join_request.confirmed'),
-        ]);
-    }
-
     public function cancel(JoinRequest $joinRequest): JsonResponse
     {
         $this->authorize('cancel', $joinRequest);
@@ -161,7 +134,7 @@ class JoinRequestController extends Controller
     {
         $joinRequests = $request->user()
             ->joinRequests()
-            ->with(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'place.translations'])
+            ->with(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'place.translations'])
             ->latest()
             ->paginate(20);
 

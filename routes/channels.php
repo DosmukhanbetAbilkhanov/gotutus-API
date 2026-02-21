@@ -8,22 +8,18 @@ Broadcast::channel('user.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    $conversation = Conversation::with('hangoutRequest.joinRequests')->find($conversationId);
+    $conversation = Conversation::with(['hangoutRequest', 'joinRequest'])->find($conversationId);
 
     if (! $conversation) {
         return false;
     }
 
-    $hangout = $conversation->hangoutRequest;
-
     // Owner of the hangout request
-    if ($hangout->user_id === $user->id) {
+    if ($conversation->hangoutRequest->user_id === $user->id) {
         return true;
     }
 
-    // The confirmed join request sender
-    return $hangout->joinRequests
-        ->where('user_id', $user->id)
-        ->where('status', 'confirmed')
-        ->isNotEmpty();
+    // The specific joiner for this conversation
+    return $conversation->join_request_id !== null
+        && $conversation->joinRequest->user_id === $user->id;
 });

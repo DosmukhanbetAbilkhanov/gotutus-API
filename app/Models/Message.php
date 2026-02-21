@@ -12,12 +12,13 @@ class Message extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'conversation_id',
         'user_id',
         'message',
+        'image_url',
     ];
 
     protected function casts(): array

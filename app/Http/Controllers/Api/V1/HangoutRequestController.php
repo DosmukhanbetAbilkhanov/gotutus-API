@@ -53,7 +53,7 @@ class HangoutRequestController extends Controller
         $user = Auth::guard('sanctum')->user();
         if ($user) {
             $hangoutRequest->load(['joinRequests' => function ($q) use ($user) {
-                $q->where('user_id', $user->id);
+                $q->where('user_id', $user->id)->with('conversation');
             }]);
             $hangoutRequest->setRelation(
                 'myJoinRequest',

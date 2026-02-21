@@ -34,12 +34,21 @@ class MessageController extends Controller
     {
         $this->authorize('sendMessage', $conversation);
 
-        $message = $conversation->messages()->create([
+        $data = [
             'user_id' => $request->user()->id,
             'message' => $request->validated('message'),
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image_url'] = $request->file('image')->store('message-images', 'public');
+        }
+
+        $message = $conversation->messages()->create($data);
 
         $message->load('user');
+
+        // Mark conversation as read for the sender
+        $conversation->markAsReadFor($request->user()->id);
 
         NewMessageBroadcast::dispatch($message);
 

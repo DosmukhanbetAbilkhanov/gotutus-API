@@ -61,9 +61,9 @@ class HangoutRequest extends Model
         return $this->hasMany(JoinRequest::class);
     }
 
-    public function conversation(): HasOne
+    public function conversations(): HasMany
     {
-        return $this->hasOne(Conversation::class);
+        return $this->hasMany(Conversation::class);
     }
 
     public function confirmedJoinRequest(): HasOne

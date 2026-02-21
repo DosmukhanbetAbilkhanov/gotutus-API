@@ -36,6 +36,17 @@ class HangoutRequestResource extends JsonResource
                 fn () => $user->id === $this->user_id
             ),
             'my_join_request' => new JoinRequestResource($this->whenLoaded('myJoinRequest')),
+            'conversation_id' => $this->when(
+                $user !== null,
+                function () use ($user) {
+                    $jr = $this->joinRequests()
+                        ->where('user_id', $user->id)
+                        ->whereIn('status', ['approved', 'confirmed'])
+                        ->first();
+
+                    return $jr?->conversation?->id;
+                },
+            ),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

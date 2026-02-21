@@ -9,10 +9,10 @@ use App\Http\Controllers\Api\V1\BlockedUserController;
 use App\Http\Controllers\Api\V1\CityController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DeviceTokenController;
-use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\HangoutRequestController;
 use App\Http\Controllers\Api\V1\JoinRequestController;
 use App\Http\Controllers\Api\V1\MessageController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PlaceController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -131,7 +131,6 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     Route::prefix('join-requests/{joinRequest}')->group(function () {
         Route::post('approve', [JoinRequestController::class, 'approve']);
         Route::post('decline', [JoinRequestController::class, 'decline']);
-        Route::post('confirm', [JoinRequestController::class, 'confirm']);
         Route::delete('/', [JoinRequestController::class, 'cancel']);
     });
 
@@ -142,9 +141,12 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     */
 
     Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations/unread-count', [ConversationController::class, 'unreadCount']);
     Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::post('conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
+    Route::post('conversations/{conversation}/typing', [ConversationController::class, 'typing']);
 
     /*
     |--------------------------------------------------------------------------

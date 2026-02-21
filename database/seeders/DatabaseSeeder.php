@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\Gender;
+use App\Enums\HangoutRequestStatus;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->seedCities();
         $this->seedActivityTypes();
         $this->seedPlaces();
+        $this->seedUsers();
+        $this->seedHangoutRequests();
     }
 
     private function seedCities(): void
@@ -1292,5 +1297,104 @@ class DatabaseSeeder extends Seeder
             ];
         }
         DB::table('activity_type_place')->insert($pivotRows);
+    }
+
+    private function seedUsers(): void
+    {
+        $now = now();
+        $password = Hash::make('password');
+
+        $cityNames = DB::table('city_translations')
+            ->where('language_code', 'en')
+            ->pluck('city_id', 'name');
+
+        $cities = [
+            $cityNames['Almaty'],
+            $cityNames['Astana'],
+            $cityNames['Shymkent'],
+        ];
+
+        $names = [
+            ['name' => 'Arman Bekmuratov', 'gender' => Gender::Male],
+            ['name' => 'Daulet Nurzhanov', 'gender' => Gender::Male],
+            ['name' => 'Aibek Suleimenov', 'gender' => Gender::Male],
+            ['name' => 'Timur Kairbekov', 'gender' => Gender::Male],
+            ['name' => 'Ruslan Omarov', 'gender' => Gender::Male],
+            ['name' => 'Asel Zhunusova', 'gender' => Gender::Female],
+            ['name' => 'Dinara Muratova', 'gender' => Gender::Female],
+            ['name' => 'Madina Tulegenova', 'gender' => Gender::Female],
+            ['name' => 'Kamila Aitbayeva', 'gender' => Gender::Female],
+            ['name' => 'Zhanna Sarsenbayeva', 'gender' => Gender::Female],
+        ];
+
+        $phoneCounter = 1;
+
+        foreach ($cities as $cityId) {
+            foreach ($names as $person) {
+                DB::table('users')->insert([
+                    'name' => $person['name'],
+                    'email' => 'user'.str_pad((string) $phoneCounter, 3, '0', STR_PAD_LEFT).'@companion.test',
+                    'phone' => '+770000'.str_pad((string) $phoneCounter, 5, '0', STR_PAD_LEFT),
+                    'age' => rand(20, 40),
+                    'gender' => $person['gender']->value,
+                    'password' => $password,
+                    'city_id' => $cityId,
+                    'status' => 'active',
+                    'phone_verified_at' => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+                $phoneCounter++;
+            }
+        }
+    }
+
+    private function seedHangoutRequests(): void
+    {
+        $now = now();
+        $activityTypeIds = DB::table('activity_types')->pluck('id')->toArray();
+
+        $cityNames = DB::table('city_translations')
+            ->where('language_code', 'en')
+            ->pluck('city_id', 'name');
+
+        $cities = [
+            $cityNames['Almaty'],
+            $cityNames['Astana'],
+            $cityNames['Shymkent'],
+        ];
+
+        $notes = [
+            'Looking for company!',
+            'First time, would be fun together',
+            'Anyone free today?',
+            'Let\'s hang out!',
+            'Relaxed vibes only',
+            null,
+            null,
+        ];
+
+        $users = DB::table('users')
+            ->whereIn('city_id', $cities)
+            ->get(['id', 'city_id']);
+
+        foreach ($users as $user) {
+            $selectedActivities = collect($activityTypeIds)->shuffle()->take(rand(1, 3));
+
+            foreach ($selectedActivities as $activityTypeId) {
+                DB::table('hangout_requests')->insert([
+                    'user_id' => $user->id,
+                    'city_id' => $user->city_id,
+                    'activity_type_id' => $activityTypeId,
+                    'place_id' => null,
+                    'date' => $now->copy()->addDays(rand(0, 10))->format('Y-m-d'),
+                    'time' => sprintf('%02d:00', rand(10, 22)),
+                    'status' => HangoutRequestStatus::Open->value,
+                    'notes' => $notes[array_rand($notes)],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            }
+        }
     }
 }

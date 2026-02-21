@@ -26,20 +26,19 @@ class ConversationPolicy
     }
 
     /**
-     * Determine if user is a participant (hangout owner or confirmed joiner).
+     * Determine if user is a participant (hangout owner or approved joiner).
      */
     private function isParticipant(User $user, Conversation $conversation): bool
     {
-        $hangoutRequest = $conversation->hangoutRequest;
+        $hangout = $conversation->hangoutRequest;
 
-        // Is the hangout owner
-        if ($hangoutRequest->user_id === $user->id) {
+        // Owner of the hangout
+        if ($hangout->user_id === $user->id) {
             return true;
         }
 
-        // Is the confirmed joiner
-        $confirmedJoinRequest = $hangoutRequest->confirmedJoinRequest;
-
-        return $confirmedJoinRequest && $confirmedJoinRequest->user_id === $user->id;
+        // The specific joiner for this conversation
+        return $conversation->join_request_id !== null
+            && $conversation->joinRequest->user_id === $user->id;
     }
 }

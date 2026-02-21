@@ -907,6 +907,7 @@ Returns list of user's conversations (from matched hangouts).
         "is_mine": false,
         "created_at": "2024-01-15T12:00:00Z"
       },
+      "unread_count": 3,
       "created_at": "2024-01-15T11:30:00Z",
       "updated_at": "2024-01-15T12:00:00Z"
     }
@@ -914,6 +915,8 @@ Returns list of user's conversations (from matched hangouts).
   "meta": { ... }
 }
 ```
+
+`other_user` correctly returns the **other** participant (hangout owner sees the joiner, joiner sees the owner).
 
 ---
 
@@ -930,9 +933,44 @@ GET /conversations/{id}
     "hangout_request": { ... },
     "other_user": { ... },
     "latest_message": { ... },
+    "unread_count": 3,
     "created_at": "2024-01-15T11:30:00Z",
     "updated_at": "2024-01-15T12:00:00Z"
   }
+}
+```
+
+**Error (403):** Not a participant in this conversation.
+
+---
+
+### Get Unread Message Count (Total)
+```
+GET /conversations/unread-count
+```
+
+Returns the total number of unread messages across all conversations.
+
+**Response:**
+```json
+{
+  "unread_count": 5
+}
+```
+
+---
+
+### Mark Conversation as Read
+```
+POST /conversations/{id}/read
+```
+
+Marks all messages in a conversation as read for the current user.
+
+**Response:**
+```json
+{
+  "message": "ok"
 }
 ```
 

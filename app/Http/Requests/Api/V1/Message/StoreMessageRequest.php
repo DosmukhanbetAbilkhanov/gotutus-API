@@ -19,7 +19,17 @@ class StoreMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'message' => ['required', 'string', 'max:2000'],
+            'message' => ['nullable', 'string', 'max:2000'],
+            'image' => ['nullable', 'image', 'max:5120'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (! $this->filled('message') && ! $this->hasFile('image')) {
+                $validator->errors()->add('message', 'A message or image is required.');
+            }
+        });
     }
 }

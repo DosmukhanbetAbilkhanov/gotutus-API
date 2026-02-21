@@ -25,6 +25,10 @@ class JoinRequestResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'place' => new PlaceResource($this->whenLoaded('place')),
             'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
+            'conversation_id' => $this->when(
+                $this->relationLoaded('conversation'),
+                fn () => $this->conversation?->id,
+            ),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
