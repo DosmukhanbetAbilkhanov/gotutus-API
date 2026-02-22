@@ -227,7 +227,7 @@ POST /auth/password-reset/verify-code
 ```json
 {
   "phone": "+77001234567",
-  "code": "1234"
+  "code": "123456"
 }
 ```
 
