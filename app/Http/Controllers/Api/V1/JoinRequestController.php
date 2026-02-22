@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\HangoutRequestStatus;
 use App\Enums\JoinRequestStatus;
 use App\Events\JoinRequestReceived;
 use App\Events\JoinRequestStatusChanged;
@@ -68,9 +69,15 @@ class JoinRequestController extends Controller
     {
         $this->authorize('approve', $joinRequest);
 
-        $joinRequest->update(['status' => JoinRequestStatus::Approved]);
-
         $hangout = $joinRequest->hangoutRequest;
+
+        if ($hangout->isFull()) {
+            return response()->json([
+                'message' => __('hangout.full'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $joinRequest->update(['status' => JoinRequestStatus::Approved]);
         Conversation::firstOrCreate([
             'hangout_request_id' => $hangout->id,
             'join_request_id' => $joinRequest->id,
@@ -88,6 +95,11 @@ class JoinRequestController extends Controller
                 'join_request_id' => $joinRequest->id,
             ],
         );
+
+        // Auto-close if hangout is now full
+        if ($hangout->fresh()->isFull()) {
+            $hangout->update(['status' => HangoutRequestStatus::Closed]);
+        }
 
         return response()->json([
             'message' => __('join_request.approved'),
@@ -123,7 +135,14 @@ class JoinRequestController extends Controller
     {
         $this->authorize('cancel', $joinRequest);
 
+        $wasClosed = $joinRequest->hangoutRequest->status === HangoutRequestStatus::Closed;
+
         $joinRequest->update(['status' => JoinRequestStatus::Cancelled]);
+
+        // Re-open hangout if it was closed due to being full and now has room
+        if ($wasClosed && ! $joinRequest->hangoutRequest->fresh()->isFull()) {
+            $joinRequest->hangoutRequest->update(['status' => HangoutRequestStatus::Open]);
+        }
 
         return response()->json([
             'message' => __('join_request.cancelled'),

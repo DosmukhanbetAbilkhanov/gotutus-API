@@ -24,6 +24,7 @@ class StoreHangoutRequest extends FormRequest
             'date' => ['required', 'date', 'after_or_equal:today'],
             'time' => ['nullable', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:500'],
+            'max_participants' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 }

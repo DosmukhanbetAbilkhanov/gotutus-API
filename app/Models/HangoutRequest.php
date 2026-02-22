@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\HangoutRequestStatus;
+use App\Enums\JoinRequestStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class HangoutRequest extends Model
         'time',
         'status',
         'notes',
+        'max_participants',
     ];
 
     protected function casts(): array
@@ -106,5 +108,35 @@ class HangoutRequest extends Model
     public function scopeNotOwnedBy(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', '!=', $userId);
+    }
+
+    public function approvedCount(): int
+    {
+        return $this->joinRequests()
+            ->whereIn('status', [JoinRequestStatus::Approved->value, JoinRequestStatus::Confirmed->value])
+            ->count();
+    }
+
+    public function isFull(): bool
+    {
+        if ($this->max_participants === null) {
+            return false;
+        }
+
+        return $this->approvedCount() >= $this->max_participants;
+    }
+
+    public function scopeAvailable(Builder $query): Builder
+    {
+        return $query->open()->where(function (Builder $q) {
+            $q->whereNull('max_participants')
+                ->orWhereColumn(
+                    'max_participants',
+                    '>',
+                    \Illuminate\Support\Facades\DB::raw(
+                        '(SELECT COUNT(*) FROM join_requests WHERE join_requests.hangout_request_id = hangout_requests.id AND join_requests.status IN (\'approved\', \'confirmed\'))'
+                    )
+                );
+        });
     }
 }

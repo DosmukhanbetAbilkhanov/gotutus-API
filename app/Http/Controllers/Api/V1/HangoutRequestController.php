@@ -27,6 +27,9 @@ class HangoutRequestController extends Controller
         $hangouts = HangoutRequest::query()
             ->with(['user', 'city.translations', 'activityType.translations', 'place.translations'])
             ->withCount('joinRequests')
+            ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
+                $q->whereIn('status', ['approved', 'confirmed']);
+            }])
             ->open()
             ->upcoming()
             ->when($request->query('city_id'), fn ($q, $id) => $q->inCity((int) $id))
@@ -49,6 +52,9 @@ class HangoutRequestController extends Controller
     public function show(HangoutRequest $hangoutRequest): HangoutRequestResource
     {
         $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
+            $q->whereIn('status', ['approved', 'confirmed']);
+        }]);
 
         $user = Auth::guard('sanctum')->user();
         if ($user) {
@@ -112,6 +118,9 @@ class HangoutRequestController extends Controller
             ->hangoutRequests()
             ->with(['city.translations', 'activityType.translations', 'place.translations', 'joinRequests.user'])
             ->withCount('joinRequests')
+            ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
+                $q->whereIn('status', ['approved', 'confirmed']);
+            }])
             ->latest()
             ->paginate(20);
 

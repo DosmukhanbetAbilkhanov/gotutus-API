@@ -88,6 +88,11 @@ class HangoutRequestPolicy
             return false;
         }
 
+        // Must not be full
+        if ($hangoutRequest->isFull()) {
+            return false;
+        }
+
         // Check if user hasn't already sent a join request
         $alreadyRequested = $hangoutRequest->joinRequests()
             ->where('user_id', $user->id)
