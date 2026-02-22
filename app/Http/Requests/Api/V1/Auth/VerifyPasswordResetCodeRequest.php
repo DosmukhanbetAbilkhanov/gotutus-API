@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Api\V1\Auth;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class VerifyPasswordResetCodeRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'phone' => ['required', 'string', 'regex:/^\+7[0-9]{10}$/'],
+            'code' => ['required', 'string', 'size:6'],
+        ];
+    }
+}

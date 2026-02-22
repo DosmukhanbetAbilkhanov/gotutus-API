@@ -188,6 +188,101 @@ POST /auth/register/complete
 
 ---
 
+### Password Reset (3-Step Flow)
+
+Password reset follows the same SMS+OTP pattern as registration.
+
+**Rate Limit:** 5 requests per minute (shared across all 3 endpoints)
+
+#### Step 1: Send Password Reset Code
+```
+POST /auth/password-reset/send-code
+```
+
+**Request Body:**
+```json
+{
+  "phone": "+77001234567"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Verification code sent"
+}
+```
+
+**Errors:**
+- `422` — Invalid phone format or phone not registered
+
+---
+
+#### Step 2: Verify Password Reset Code
+```
+POST /auth/password-reset/verify-code
+```
+
+**Request Body:**
+```json
+{
+  "phone": "+77001234567",
+  "code": "1234"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Phone verified",
+  "data": {
+    "reset_token": "550e8400-e29b-41d4-a716-446655440000"
+  }
+}
+```
+
+**Errors:**
+- `422` with `error_code: "INVALID_CODE"` — Wrong or expired code
+
+**Note:** The `reset_token` is valid for 10 minutes and must be used in Step 3.
+
+---
+
+#### Step 3: Reset Password
+```
+POST /auth/password-reset/reset
+```
+
+**Request Body:**
+```json
+{
+  "phone": "+77001234567",
+  "reset_token": "550e8400-e29b-41d4-a716-446655440000",
+  "password": "newpassword123",
+  "password_confirmation": "newpassword123"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `phone` | string | Yes | Phone number (`+7XXXXXXXXXX`) |
+| `reset_token` | uuid | Yes | Token from Step 2 |
+| `password` | string | Yes | New password (min 8 characters) |
+| `password_confirmation` | string | Yes | Must match password |
+
+**Response (200):**
+```json
+{
+  "message": "Password reset successfully"
+}
+```
+
+**Errors:**
+- `422` with `error_code: "INVALID_TOKEN"` — Token expired or invalid
+- `404` — User not found
+
+---
+
 ### Login
 ```
 POST /auth/login

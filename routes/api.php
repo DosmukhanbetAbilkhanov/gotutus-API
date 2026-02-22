@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ActivityTypeController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
+use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\Auth\PhoneVerificationController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\BlockedUserController;
@@ -55,6 +56,12 @@ Route::prefix('auth')->group(function () {
             ->middleware('throttle:10,1');
         Route::post('complete', [RegisterController::class, 'complete'])
             ->middleware('throttle:5,1');
+    });
+
+    Route::prefix('password-reset')->middleware('throttle:5,1')->group(function () {
+        Route::post('send-code', [PasswordResetController::class, 'sendCode']);
+        Route::post('verify-code', [PasswordResetController::class, 'verifyCode']);
+        Route::post('reset', [PasswordResetController::class, 'reset']);
     });
 
     Route::post('login', LoginController::class)
@@ -131,6 +138,7 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     Route::prefix('join-requests/{joinRequest}')->group(function () {
         Route::post('approve', [JoinRequestController::class, 'approve']);
         Route::post('decline', [JoinRequestController::class, 'decline']);
+        Route::post('confirm', [JoinRequestController::class, 'confirm']);
         Route::delete('/', [JoinRequestController::class, 'cancel']);
     });
 

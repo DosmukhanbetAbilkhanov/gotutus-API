@@ -131,6 +131,23 @@ class JoinRequestController extends Controller
         ]);
     }
 
+    public function confirm(JoinRequest $joinRequest): JsonResponse
+    {
+        $this->authorize('confirm', $joinRequest);
+
+        $joinRequest->update([
+            'status' => JoinRequestStatus::Confirmed,
+            'confirmed_at' => now(),
+        ]);
+
+        JoinRequestStatusChanged::dispatch($joinRequest, 'confirmed');
+
+        return response()->json([
+            'message' => __('join_request.confirmed'),
+            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user', 'place.translations'])),
+        ]);
+    }
+
     public function cancel(JoinRequest $joinRequest): JsonResponse
     {
         $this->authorize('cancel', $joinRequest);
