@@ -125,6 +125,9 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     Route::apiResource('hangout-requests', HangoutRequestController::class)
         ->except(['index', 'show']);
 
+    Route::post('hangout-requests/{hangoutRequest}/close', [HangoutRequestController::class, 'close']);
+    Route::post('hangout-requests/{hangoutRequest}/complete', [HangoutRequestController::class, 'complete']);
+
     // Nested join request creation and listing
     Route::post('hangout-requests/{hangoutRequest}/join', [JoinRequestController::class, 'store']);
     Route::get('hangout-requests/{hangoutRequest}/join-requests', [JoinRequestController::class, 'index']);

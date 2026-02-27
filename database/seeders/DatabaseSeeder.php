@@ -1308,28 +1308,48 @@ class DatabaseSeeder extends Seeder
             ->where('language_code', 'en')
             ->pluck('city_id', 'name');
 
-        $cities = [
-            $cityNames['Almaty'],
-            $cityNames['Astana'],
-            $cityNames['Shymkent'],
-        ];
-
-        $names = [
-            ['name' => 'Arman Bekmuratov', 'gender' => Gender::Male],
-            ['name' => 'Daulet Nurzhanov', 'gender' => Gender::Male],
-            ['name' => 'Aibek Suleimenov', 'gender' => Gender::Male],
-            ['name' => 'Timur Kairbekov', 'gender' => Gender::Male],
-            ['name' => 'Ruslan Omarov', 'gender' => Gender::Male],
-            ['name' => 'Asel Zhunusova', 'gender' => Gender::Female],
-            ['name' => 'Dinara Muratova', 'gender' => Gender::Female],
-            ['name' => 'Madina Tulegenova', 'gender' => Gender::Female],
-            ['name' => 'Kamila Aitbayeva', 'gender' => Gender::Female],
-            ['name' => 'Zhanna Sarsenbayeva', 'gender' => Gender::Female],
+        $namesByCities = [
+            $cityNames['Almaty'] => [
+                ['name' => 'Arman Bekmuratov', 'gender' => Gender::Male],
+                ['name' => 'Daulet Nurzhanov', 'gender' => Gender::Male],
+                ['name' => 'Aibek Suleimenov', 'gender' => Gender::Male],
+                ['name' => 'Timur Kairbekov', 'gender' => Gender::Male],
+                ['name' => 'Ruslan Omarov', 'gender' => Gender::Male],
+                ['name' => 'Asel Zhunusova', 'gender' => Gender::Female],
+                ['name' => 'Dinara Muratova', 'gender' => Gender::Female],
+                ['name' => 'Madina Tulegenova', 'gender' => Gender::Female],
+                ['name' => 'Kamila Aitbayeva', 'gender' => Gender::Female],
+                ['name' => 'Zhanna Sarsenbayeva', 'gender' => Gender::Female],
+            ],
+            $cityNames['Astana'] => [
+                ['name' => 'Yerbol Tastanov', 'gender' => Gender::Male],
+                ['name' => 'Nursultan Ibragimov', 'gender' => Gender::Male],
+                ['name' => 'Marat Zhumabekov', 'gender' => Gender::Male],
+                ['name' => 'Samat Kozhakhmetov', 'gender' => Gender::Male],
+                ['name' => 'Dias Moldabekov', 'gender' => Gender::Male],
+                ['name' => 'Aigul Nurgaliyeva', 'gender' => Gender::Female],
+                ['name' => 'Saltanat Baizhanova', 'gender' => Gender::Female],
+                ['name' => 'Gulnaz Ospanova', 'gender' => Gender::Female],
+                ['name' => 'Dana Serikova', 'gender' => Gender::Female],
+                ['name' => 'Aliya Tastanova', 'gender' => Gender::Female],
+            ],
+            $cityNames['Shymkent'] => [
+                ['name' => 'Askar Tursynbekov', 'gender' => Gender::Male],
+                ['name' => 'Bekzat Abdullaev', 'gender' => Gender::Male],
+                ['name' => 'Azamat Kurmangaliev', 'gender' => Gender::Male],
+                ['name' => 'Nurzhan Karimov', 'gender' => Gender::Male],
+                ['name' => 'Serik Dosmagambetov', 'gender' => Gender::Male],
+                ['name' => 'Zarina Bektursynova', 'gender' => Gender::Female],
+                ['name' => 'Aidana Sultanova', 'gender' => Gender::Female],
+                ['name' => 'Togzhan Yessenova', 'gender' => Gender::Female],
+                ['name' => 'Moldir Baitasova', 'gender' => Gender::Female],
+                ['name' => 'Nazerke Kaliyeva', 'gender' => Gender::Female],
+            ],
         ];
 
         $phoneCounter = 1;
 
-        foreach ($cities as $cityId) {
+        foreach ($namesByCities as $cityId => $names) {
             foreach ($names as $person) {
                 DB::table('users')->insert([
                     'name' => $person['name'],

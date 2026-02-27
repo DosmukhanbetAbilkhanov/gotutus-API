@@ -23,7 +23,8 @@ class UpdateProfileRequest extends FormRequest
             'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,'.$this->user()->id],
             'city_id' => ['sometimes', 'integer', 'exists:cities,id'],
             'age' => ['sometimes', 'integer', 'min:18', 'max:100'],
-            'gender' => ['sometimes', 'string', 'in:male,female,other'],
+            'bio' => ['nullable', 'string', 'max:500'],
+            // gender is intentionally excluded - locked after registration
         ];
     }
 }

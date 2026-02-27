@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\HangoutRequestStatus;
+use App\Enums\JoinRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\HangoutRequest\StoreHangoutRequest;
 use App\Http\Requests\Api\V1\HangoutRequest\UpdateHangoutRequest;
@@ -77,7 +79,7 @@ class HangoutRequestController extends Controller
             ...$request->validated(),
             'user_id' => $request->user()->id,
             'city_id' => $request->user()->city_id,
-            'status' => \App\Enums\HangoutRequestStatus::Open,
+            'status' => HangoutRequestStatus::Open,
         ]);
 
         $hangout->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
@@ -105,10 +107,65 @@ class HangoutRequestController extends Controller
     {
         $this->authorize('delete', $hangoutRequest);
 
-        $hangoutRequest->update(['status' => \App\Enums\HangoutRequestStatus::Cancelled]);
+        $hangoutRequest->update(['status' => HangoutRequestStatus::Cancelled]);
 
         return response()->json([
             'message' => __('hangout.cancelled'),
+        ]);
+    }
+
+    public function close(HangoutRequest $hangoutRequest): JsonResponse
+    {
+        $this->authorize('update', $hangoutRequest);
+
+        if ($hangoutRequest->status !== HangoutRequestStatus::Open) {
+            return response()->json([
+                'message' => __('hangout.invalid_status_transition'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $hangoutRequest->update(['status' => HangoutRequestStatus::Closed]);
+
+        // Auto-decline all pending join requests
+        $hangoutRequest->joinRequests()
+            ->where('status', JoinRequestStatus::Pending)
+            ->update(['status' => JoinRequestStatus::Declined->value]);
+
+        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
+            $q->whereIn('status', ['approved', 'confirmed']);
+        }]);
+
+        return response()->json([
+            'message' => __('hangout.closed'),
+            'data' => new HangoutRequestResource($hangoutRequest),
+        ]);
+    }
+
+    public function complete(HangoutRequest $hangoutRequest): JsonResponse
+    {
+        $this->authorize('update', $hangoutRequest);
+
+        if (! in_array($hangoutRequest->status, [
+            HangoutRequestStatus::Open,
+            HangoutRequestStatus::Closed,
+            HangoutRequestStatus::Matched,
+        ])) {
+            return response()->json([
+                'message' => __('hangout.invalid_status_transition'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $hangoutRequest->update(['status' => HangoutRequestStatus::Completed]);
+
+        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
+            $q->whereIn('status', ['approved', 'confirmed']);
+        }]);
+
+        return response()->json([
+            'message' => __('hangout.completed'),
+            'data' => new HangoutRequestResource($hangoutRequest),
         ]);
     }
 

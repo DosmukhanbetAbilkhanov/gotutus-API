@@ -35,12 +35,16 @@ class HangoutRequestPolicy
     }
 
     /**
-     * Only the owner can update their hangout request (if still open).
+     * Only the owner can update their hangout request (if open, closed, or matched).
      */
     public function update(User $user, HangoutRequest $hangoutRequest): bool
     {
         return $user->id === $hangoutRequest->user_id
-            && $hangoutRequest->status === HangoutRequestStatus::Open;
+            && in_array($hangoutRequest->status, [
+                HangoutRequestStatus::Open,
+                HangoutRequestStatus::Closed,
+                HangoutRequestStatus::Matched,
+            ]);
     }
 
     /**
