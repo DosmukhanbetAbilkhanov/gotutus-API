@@ -15,4 +15,11 @@ return [
 
     'join_request_updated_title' => 'Request Updated',
     'join_request_updated_body' => 'Your join request status has been updated.',
+
+    'photo_approved_title' => 'Photo Approved',
+    'photo_approved_body' => 'Your photo has been approved.',
+    'photo_rejected_title' => 'Photo Not Approved',
+    'photo_rejected_body' => 'Your photo was not approved.',
+    'photo_reviewed_title' => 'Photo Reviewed',
+    'photo_reviewed_body' => 'Your photo has been reviewed.',
 ];

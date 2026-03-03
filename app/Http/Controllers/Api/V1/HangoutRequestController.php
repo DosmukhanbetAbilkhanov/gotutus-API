@@ -27,7 +27,7 @@ class HangoutRequestController extends Controller
         $user = Auth::guard('sanctum')->user();
 
         $hangouts = HangoutRequest::query()
-            ->with(['user', 'city.translations', 'activityType.translations', 'place.translations'])
+            ->with(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations'])
             ->withCount('joinRequests')
             ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
                 $q->whereIn('status', ['approved', 'confirmed']);
@@ -53,7 +53,7 @@ class HangoutRequestController extends Controller
 
     public function show(HangoutRequest $hangoutRequest): HangoutRequestResource
     {
-        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -82,7 +82,7 @@ class HangoutRequestController extends Controller
             'status' => HangoutRequestStatus::Open,
         ]);
 
-        $hangout->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangout->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations']);
 
         return response()->json([
             'message' => __('hangout.created'),
@@ -95,7 +95,7 @@ class HangoutRequestController extends Controller
         $this->authorize('update', $hangoutRequest);
 
         $hangoutRequest->update($request->validated());
-        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations']);
 
         return response()->json([
             'message' => __('hangout.updated'),
@@ -131,7 +131,7 @@ class HangoutRequestController extends Controller
             ->where('status', JoinRequestStatus::Pending)
             ->update(['status' => JoinRequestStatus::Declined->value]);
 
-        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -158,7 +158,7 @@ class HangoutRequestController extends Controller
 
         $hangoutRequest->update(['status' => HangoutRequestStatus::Completed]);
 
-        $hangoutRequest->load(['user', 'city.translations', 'activityType.translations', 'place.translations']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'city.translations', 'activityType.translations', 'place.translations']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -173,7 +173,7 @@ class HangoutRequestController extends Controller
     {
         $hangouts = $request->user()
             ->hangoutRequests()
-            ->with(['city.translations', 'activityType.translations', 'place.translations', 'joinRequests.user'])
+            ->with(['city.translations', 'activityType.translations', 'place.translations', 'joinRequests.user.photos' => fn ($q) => $q->where('is_approved', true)])
             ->withCount('joinRequests')
             ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
                 $q->whereIn('status', ['approved', 'confirmed']);

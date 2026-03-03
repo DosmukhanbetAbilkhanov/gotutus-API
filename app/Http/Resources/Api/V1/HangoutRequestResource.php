@@ -28,7 +28,7 @@ class HangoutRequestResource extends JsonResource
             'place' => new PlaceResource($this->whenLoaded('place')),
             'date' => $this->date->toDateString(),
             'time' => $this->time?->format('H:i'),
-            'status' => $this->status->value,
+            'status' => $this->status?->value,
             'notes' => $this->notes,
             'max_participants' => $this->max_participants,
             'approved_join_requests_count' => $this->approved_join_requests_count ?? null,

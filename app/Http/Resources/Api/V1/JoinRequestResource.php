@@ -19,7 +19,7 @@ class JoinRequestResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'status' => $this->status->value,
+            'status' => $this->status?->value,
             'message' => $this->message,
             'confirmed_at' => $this->confirmed_at?->toIso8601String(),
             'user' => new UserResource($this->whenLoaded('user')),

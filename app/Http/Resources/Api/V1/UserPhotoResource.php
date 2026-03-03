@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Api\V1;
 
+use App\Enums\PhotoStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,9 @@ class UserPhotoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => $this->photo_url,
+            'url' => '/storage/' . $this->photo_url,
+            'status' => $this->status?->value,
+            'rejection_reason' => $this->status === PhotoStatus::Rejected ? $this->rejection_reason : null,
             'is_approved' => $this->is_approved,
         ];
     }

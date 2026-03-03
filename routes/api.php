@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\PlaceController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserPhotoController;
+use App\Http\Controllers\Api\V1\Admin\AdminPhotoController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -156,6 +157,7 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
     Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
     Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
     Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::delete('conversations/{conversation}/messages/{message}', [MessageController::class, 'destroy']);
     Route::post('conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
     Route::post('conversations/{conversation}/typing', [ConversationController::class, 'typing']);
 
@@ -192,4 +194,14 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
 
     Route::post('device-tokens', [DeviceTokenController::class, 'store']);
     Route::delete('device-tokens', [DeviceTokenController::class, 'destroy']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes (TODO: add admin middleware)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+    Route::put('photos/{photo}/review', [AdminPhotoController::class, 'review']);
 });

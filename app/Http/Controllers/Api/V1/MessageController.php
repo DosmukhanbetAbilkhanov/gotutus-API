@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\MessageDeletedBroadcast;
 use App\Events\NewMessageBroadcast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Message\StoreMessageRequest;
 use App\Http\Resources\Api\V1\MessageResource;
 use App\Models\Conversation;
+use App\Models\Message;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +25,10 @@ class MessageController extends Controller
     {
         $this->authorize('view', $conversation);
 
+        $userId = auth()->id();
+
         $messages = $conversation->messages()
+            ->visibleTo($userId)
             ->with('user')
             ->latest('created_at')
             ->paginate(50);
@@ -56,5 +62,40 @@ class MessageController extends Controller
             'message' => __('message.sent'),
             'data' => new MessageResource($message),
         ], Response::HTTP_CREATED);
+    }
+
+    public function destroy(Request $request, Conversation $conversation, Message $message): JsonResponse
+    {
+        $this->authorize('view', $conversation);
+
+        // Ensure message belongs to this conversation
+        if ($message->conversation_id !== $conversation->id) {
+            abort(404);
+        }
+
+        $forEveryone = $request->boolean('for_everyone', false);
+
+        if ($forEveryone) {
+            // Only message author can delete for everyone
+            if ($message->user_id !== $request->user()->id) {
+                return response()->json(
+                    ['message' => __('message.cannot_delete_others')],
+                    Response::HTTP_FORBIDDEN,
+                );
+            }
+
+            $message->update([
+                'deleted_at' => now(),
+                'deleted_for_everyone' => true,
+            ]);
+
+            // Broadcast deletion event to conversation
+            MessageDeletedBroadcast::dispatch($message, $conversation);
+        } else {
+            // Delete for me only - add to pivot
+            $message->deletedByUsers()->syncWithoutDetaching([$request->user()->id]);
+        }
+
+        return response()->json(['message' => __('message.deleted')]);
     }
 }

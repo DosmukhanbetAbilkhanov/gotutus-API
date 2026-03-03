@@ -20,10 +20,11 @@ class MessageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'message' => $this->message,
-            'image_url' => $this->image_url ? '/storage/' . $this->image_url : null,
+            'message' => $this->deleted_for_everyone ? null : $this->message,
+            'image_url' => $this->deleted_for_everyone ? null : ($this->image_url ? '/storage/' . $this->image_url : null),
             'user' => new UserResource($this->whenLoaded('user')),
             'is_mine' => Auth::id() === $this->user_id,
+            'deleted_for_everyone' => $this->deleted_for_everyone,
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
