@@ -30,12 +30,13 @@ class UserPhoto extends Model
         ];
     }
 
-    /**
-     * Derive is_approved from the status field.
-     */
-    public function getIsApprovedAttribute(): bool
+    protected static function booted(): void
     {
-        return $this->status === PhotoStatus::Approved;
+        static::saving(function (UserPhoto $photo) {
+            if ($photo->isDirty('status')) {
+                $photo->is_approved = $photo->status === PhotoStatus::Approved;
+            }
+        });
     }
 
     public function user(): BelongsTo

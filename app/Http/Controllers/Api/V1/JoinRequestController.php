@@ -28,7 +28,7 @@ class JoinRequestController extends Controller
     public function index(HangoutRequest $hangoutRequest): AnonymousResourceCollection
     {
         $joinRequests = $hangoutRequest->joinRequests()
-            ->with(['user.photos' => fn ($q) => $q->where('is_approved', true), 'place.translations'])
+            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])
             ->latest()
             ->get();
 
@@ -43,7 +43,7 @@ class JoinRequestController extends Controller
             'status' => JoinRequestStatus::Pending,
         ]);
 
-        $joinRequest->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'place.translations']);
+        $joinRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations']);
 
         JoinRequestReceived::dispatch($joinRequest);
 
@@ -103,7 +103,7 @@ class JoinRequestController extends Controller
 
         return response()->json([
             'message' => __('join_request.approved'),
-            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'place.translations'])),
+            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])),
         ]);
     }
 
@@ -144,7 +144,7 @@ class JoinRequestController extends Controller
 
         return response()->json([
             'message' => __('join_request.confirmed'),
-            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('is_approved', true), 'place.translations'])),
+            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])),
         ]);
     }
 
@@ -170,7 +170,7 @@ class JoinRequestController extends Controller
     {
         $joinRequests = $request->user()
             ->joinRequests()
-            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('is_approved', true), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'place.translations'])
+            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('status', 'approved'), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'place.translations'])
             ->latest()
             ->paginate(20);
 
