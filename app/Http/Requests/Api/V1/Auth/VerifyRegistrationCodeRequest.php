@@ -20,7 +20,7 @@ class VerifyRegistrationCodeRequest extends FormRequest
     {
         return [
             'phone' => ['required', 'string', 'regex:/^\+7[0-9]{10}$/'],
-            'code' => ['required', 'string', 'size:4'],
+            'code' => ['required', 'string', 'size:6'],
         ];
     }
 }

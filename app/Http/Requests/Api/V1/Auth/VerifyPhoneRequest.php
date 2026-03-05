@@ -19,7 +19,7 @@ class VerifyPhoneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'size:4'],
+            'code' => ['required', 'string', 'size:6'],
         ];
     }
 }

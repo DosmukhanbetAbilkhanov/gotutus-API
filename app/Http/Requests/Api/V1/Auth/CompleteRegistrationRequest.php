@@ -19,10 +19,10 @@ class CompleteRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'verification_token' => ['required', 'string', 'uuid'],
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'regex:/^\+7[0-9]{10}$/', 'unique:users,phone'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'city_id' => ['required', 'integer', 'exists:cities,id'],
             'age' => ['nullable', 'integer', 'min:18', 'max:100'],
             'gender' => ['nullable', 'string', 'in:male,female,other'],

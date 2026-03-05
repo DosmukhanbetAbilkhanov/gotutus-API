@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\MobizonSmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
@@ -22,7 +23,7 @@ class RegisterController extends Controller
     public function sendCode(SendRegistrationCodeRequest $request): JsonResponse
     {
         $phone = $request->validated('phone');
-        $code = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
         Cache::put("registration_code:{$phone}", $code, now()->addMinutes(5));
 
@@ -46,31 +47,37 @@ class RegisterController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Cache::put("registration_verified:{$phone}", true, now()->addMinutes(10));
+        $verificationToken = Str::uuid()->toString();
+        Cache::put("registration_token:{$verificationToken}", $phone, now()->addMinutes(10));
 
         return response()->json([
             'message' => __('auth.code_verified'),
+            'data' => [
+                'verification_token' => $verificationToken,
+            ],
         ]);
     }
 
     public function complete(CompleteRegistrationRequest $request): JsonResponse
     {
-        $phone = $request->validated('phone');
+        $verificationToken = $request->validated('verification_token');
+        $phone = Cache::get("registration_token:{$verificationToken}");
 
-        if (! Cache::get("registration_verified:{$phone}")) {
+        if (! $phone) {
             return response()->json([
                 'message' => __('auth.phone_not_verified'),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = User::create([
-            ...$request->validated(),
+            ...$request->safe()->except(['verification_token', 'password_confirmation']),
+            'phone' => $phone,
             'phone_verified_at' => now(),
             'status' => \App\Enums\UserStatus::Active,
         ]);
 
         Cache::forget("registration_code:{$phone}");
-        Cache::forget("registration_verified:{$phone}");
+        Cache::forget("registration_token:{$verificationToken}");
 
         $token = $user->createToken('mobile')->plainTextToken;
 
