@@ -37,6 +37,15 @@ class HangoutRequestController extends Controller
             ->when($request->query('city_id'), fn ($q, $id) => $q->inCity((int) $id))
             ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
             ->when($request->query('date'), fn ($q, $date) => $q->forDate($date))
+            ->when($request->query('gender'), function ($q, $gender) {
+                $q->whereHas('user', fn ($u) => $u->where('gender', $gender));
+            })
+            ->when($request->query('min_age'), function ($q, $minAge) {
+                $q->whereHas('user', fn ($u) => $u->where('age', '>=', (int) $minAge));
+            })
+            ->when($request->query('max_age'), function ($q, $maxAge) {
+                $q->whereHas('user', fn ($u) => $u->where('age', '<=', (int) $maxAge));
+            })
             ->when($user, function ($q) use ($user) {
                 $blockedIds = $user->blockedUsers()->pluck('blocked_user_id');
                 $blockedByIds = $user->blockedByUsers()->pluck('user_id');

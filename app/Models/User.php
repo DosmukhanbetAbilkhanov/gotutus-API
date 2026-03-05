@@ -33,6 +33,8 @@ class User extends Authenticatable
         'city_id',
         'status',
         'phone_verified_at',
+        'is_online',
+        'last_seen_at',
     ];
 
     protected $hidden = [
@@ -48,6 +50,8 @@ class User extends Authenticatable
             'age' => 'integer',
             'gender' => Gender::class,
             'status' => UserStatus::class,
+            'is_online' => 'boolean',
+            'last_seen_at' => 'datetime',
         ];
     }
 

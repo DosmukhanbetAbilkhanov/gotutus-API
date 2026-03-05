@@ -24,6 +24,11 @@ class LoginController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        $user->updateQuietly([
+            'is_online' => true,
+            'last_seen_at' => now(),
+        ]);
+
         $token = $user->createToken('mobile')->plainTextToken;
 
         return response()->json([

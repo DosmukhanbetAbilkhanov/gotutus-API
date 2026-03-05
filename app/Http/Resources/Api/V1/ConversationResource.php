@@ -36,6 +36,22 @@ class ConversationResource extends JsonResource
                 $this->relationLoaded('participants'),
                 fn () => $this->unreadCountFor($user->id),
             ),
+            'is_online' => $this->when(
+                $this->relationLoaded('hangoutRequest'),
+                function () use ($user) {
+                    $otherUser = $this->otherUserFor($user);
+
+                    return $otherUser->is_online ?? false;
+                },
+            ),
+            'last_seen_at' => $this->when(
+                $this->relationLoaded('hangoutRequest'),
+                function () use ($user) {
+                    $otherUser = $this->otherUserFor($user);
+
+                    return $otherUser->last_seen_at?->toIso8601String();
+                },
+            ),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
