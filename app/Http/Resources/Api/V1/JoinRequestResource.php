@@ -23,7 +23,7 @@ class JoinRequestResource extends JsonResource
             'message' => $this->message,
             'confirmed_at' => $this->confirmed_at?->toIso8601String(),
             'user' => new UserResource($this->whenLoaded('user')),
-            'place' => new PlaceResource($this->whenLoaded('place')),
+            'suggested_place' => new PlaceResource($this->whenLoaded('suggestedPlace')),
             'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
             'conversation_id' => $this->when(
                 $this->relationLoaded('conversation'),

@@ -28,7 +28,7 @@ class JoinRequestController extends Controller
     public function index(HangoutRequest $hangoutRequest): AnonymousResourceCollection
     {
         $joinRequests = $hangoutRequest->joinRequests()
-            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])
+            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'suggestedPlace.translations'])
             ->latest()
             ->get();
 
@@ -37,13 +37,15 @@ class JoinRequestController extends Controller
 
     public function store(StoreJoinRequestRequest $request, HangoutRequest $hangoutRequest): JsonResponse
     {
+        $validated = $request->validated();
         $joinRequest = $hangoutRequest->joinRequests()->create([
-            ...$request->validated(),
+            'message' => $validated['message'] ?? null,
+            'suggested_place_id' => $validated['place_id'] ?? null,
             'user_id' => $request->user()->id,
             'status' => JoinRequestStatus::Pending,
         ]);
 
-        $joinRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations']);
+        $joinRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'suggestedPlace.translations']);
 
         JoinRequestReceived::dispatch($joinRequest);
 
@@ -78,6 +80,12 @@ class JoinRequestController extends Controller
         }
 
         $joinRequest->update(['status' => JoinRequestStatus::Approved]);
+
+        // Copy suggested place to hangout if hangout has no place yet
+        if ($joinRequest->suggested_place_id && !$hangout->place_id) {
+            $hangout->update(['place_id' => $joinRequest->suggested_place_id]);
+        }
+
         Conversation::firstOrCreate([
             'hangout_request_id' => $hangout->id,
             'join_request_id' => $joinRequest->id,
@@ -103,7 +111,7 @@ class JoinRequestController extends Controller
 
         return response()->json([
             'message' => __('join_request.approved'),
-            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])),
+            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'suggestedPlace.translations'])),
         ]);
     }
 
@@ -144,7 +152,7 @@ class JoinRequestController extends Controller
 
         return response()->json([
             'message' => __('join_request.confirmed'),
-            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'place.translations'])),
+            'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'suggestedPlace.translations'])),
         ]);
     }
 
@@ -170,7 +178,7 @@ class JoinRequestController extends Controller
     {
         $joinRequests = $request->user()
             ->joinRequests()
-            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('status', 'approved'), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'place.translations'])
+            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('status', 'approved'), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'suggestedPlace.translations'])
             ->latest()
             ->paginate(20);
 

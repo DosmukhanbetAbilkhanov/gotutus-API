@@ -35,7 +35,7 @@ class JoinRequestStatusChanged implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        $this->joinRequest->load(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'place.translations']);
+        $this->joinRequest->load(['hangoutRequest.user', 'hangoutRequest.activityType.translations', 'suggestedPlace.translations']);
 
         return [
             'join_request' => (new JoinRequestResource($this->joinRequest))->resolve(),

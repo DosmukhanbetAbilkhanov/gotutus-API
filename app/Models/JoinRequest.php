@@ -18,7 +18,7 @@ class JoinRequest extends Model
     protected $fillable = [
         'hangout_request_id',
         'user_id',
-        'place_id',
+        'suggested_place_id',
         'status',
         'message',
         'confirmed_at',
@@ -42,9 +42,9 @@ class JoinRequest extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function place(): BelongsTo
+    public function suggestedPlace(): BelongsTo
     {
-        return $this->belongsTo(Place::class);
+        return $this->belongsTo(Place::class, 'suggested_place_id');
     }
 
     public function conversation(): HasOne

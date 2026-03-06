@@ -34,7 +34,7 @@ class JoinRequestReceived implements ShouldBroadcast
 
     public function broadcastWith(): array
     {
-        $this->joinRequest->load(['user', 'place.translations', 'hangoutRequest']);
+        $this->joinRequest->load(['user', 'suggestedPlace.translations', 'hangoutRequest']);
 
         return [
             'join_request' => (new JoinRequestResource($this->joinRequest))->resolve(),
