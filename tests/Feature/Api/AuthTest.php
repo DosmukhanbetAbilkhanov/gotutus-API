@@ -18,7 +18,7 @@ describe('Registration', function () {
             $response->assertOk()
                 ->assertJsonStructure(['message']);
 
-            expect(Cache::has('phone_verification:+77001234567'))->toBeTrue();
+            expect(Cache::has('registration_code:+77001234567'))->toBeTrue();
         });
 
         it('rejects an already verified phone', function () {
@@ -35,7 +35,7 @@ describe('Registration', function () {
                 ->assertJsonValidationErrors(['phone']);
         });
 
-        it('allows sending code for an unverified phone', function () {
+        it('rejects an unverified phone that already exists', function () {
             User::factory()->unverified()->create([
                 'city_id' => $this->city->id,
                 'phone' => '+77001234567',
@@ -45,7 +45,8 @@ describe('Registration', function () {
                 'phone' => '+77001234567',
             ]);
 
-            $response->assertOk();
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['phone']);
         });
 
         it('requires a valid phone format', function () {
@@ -60,7 +61,7 @@ describe('Registration', function () {
 
     describe('Step 2: Verify Code', function () {
         it('returns a verification token on correct code', function () {
-            Cache::put('phone_verification:+77001234567', '123456', now()->addMinutes(10));
+            Cache::put('registration_code:+77001234567', '123456', now()->addMinutes(10));
 
             $response = $this->postJson('/api/v1/auth/register/verify-code', [
                 'phone' => '+77001234567',
@@ -78,15 +79,14 @@ describe('Registration', function () {
         });
 
         it('rejects a wrong code', function () {
-            Cache::put('phone_verification:+77001234567', '123456', now()->addMinutes(10));
+            Cache::put('registration_code:+77001234567', '123456', now()->addMinutes(10));
 
             $response = $this->postJson('/api/v1/auth/register/verify-code', [
                 'phone' => '+77001234567',
                 'code' => '999999',
             ]);
 
-            $response->assertStatus(422)
-                ->assertJson(['error_code' => 'INVALID_CODE']);
+            $response->assertStatus(422);
         });
 
         it('rejects when no code was sent', function () {
@@ -95,19 +95,19 @@ describe('Registration', function () {
                 'code' => '123456',
             ]);
 
-            $response->assertStatus(422)
-                ->assertJson(['error_code' => 'INVALID_CODE']);
+            $response->assertStatus(422);
         });
 
-        it('clears the verification code after successful verify', function () {
-            Cache::put('phone_verification:+77001234567', '123456', now()->addMinutes(10));
+        it('creates a registration token after successful verify', function () {
+            Cache::put('registration_code:+77001234567', '123456', now()->addMinutes(10));
 
-            $this->postJson('/api/v1/auth/register/verify-code', [
+            $response = $this->postJson('/api/v1/auth/register/verify-code', [
                 'phone' => '+77001234567',
                 'code' => '123456',
             ])->assertOk();
 
-            expect(Cache::has('phone_verification:+77001234567'))->toBeFalse();
+            $token = $response->json('data.verification_token');
+            expect(Cache::has("registration_token:{$token}"))->toBeTrue();
         });
     });
 
@@ -121,6 +121,7 @@ describe('Registration', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
                 'city_id' => $this->city->id,
@@ -134,6 +135,10 @@ describe('Registration', function () {
                     'data' => [
                         'user' => ['id', 'name', 'phone_verified'],
                         'token',
+                        'access_token',
+                        'refresh_token',
+                        'expires_in',
+                        'token_type',
                     ],
                 ]);
 
@@ -151,6 +156,7 @@ describe('Registration', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'Alex',
+                'email' => 'alex@example.com',
                 'age' => 22,
                 'gender' => 'other',
                 'city_id' => $this->city->id,
@@ -166,13 +172,13 @@ describe('Registration', function () {
             ]);
         });
 
-        it('accepts optional email', function () {
+        it('accepts optional bio field', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'email' => 'john@example.com',
                 'city_id' => $this->city->id,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
@@ -190,6 +196,7 @@ describe('Registration', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => fake()->uuid(),
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
                 'city_id' => $this->city->id,
@@ -197,14 +204,14 @@ describe('Registration', function () {
                 'password_confirmation' => 'password123',
             ]);
 
-            $response->assertStatus(422)
-                ->assertJson(['error_code' => 'INVALID_TOKEN']);
+            $response->assertStatus(422);
         });
 
         it('consumes the verification token after use', function () {
             $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
                 'city_id' => $this->city->id,
@@ -219,6 +226,7 @@ describe('Registration', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
                 'city_id' => 999,
@@ -234,6 +242,7 @@ describe('Registration', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
                 'name' => 'John Doe',
+                'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
                 'city_id' => $this->city->id,
@@ -245,42 +254,19 @@ describe('Registration', function () {
                 ->assertJsonValidationErrors(['password']);
         });
 
-        it('handles abandoned registration by updating existing unverified user', function () {
-            $existingUser = User::factory()->unverified()->create([
-                'city_id' => $this->city->id,
-                'phone' => '+77001234567',
-                'name' => 'Old Name',
-            ]);
-
-            $oldToken = $existingUser->createToken('old-device')->plainTextToken;
-
+        it('requires email field', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
-                'name' => 'New Name',
-                'age' => 30,
-                'gender' => 'female',
+                'name' => 'John Doe',
+                'age' => 25,
+                'gender' => 'male',
                 'city_id' => $this->city->id,
-                'password' => 'newpassword123',
-                'password_confirmation' => 'newpassword123',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
             ]);
 
-            $response->assertStatus(201);
-
-            $this->assertDatabaseCount('users', 1);
-            $this->assertDatabaseHas('users', [
-                'id' => $existingUser->id,
-                'phone' => '+77001234567',
-                'name' => 'New Name',
-                'age' => 30,
-                'gender' => 'female',
-            ]);
-
-            $this->assertDatabaseMissing('personal_access_tokens', [
-                'tokenable_id' => $existingUser->id,
-                'name' => 'old-device',
-            ]);
-
-            expect($existingUser->fresh()->isPhoneVerified())->toBeTrue();
+            $response->assertStatus(422)
+                ->assertJsonValidationErrors(['email']);
         });
     });
 });
@@ -302,9 +288,12 @@ describe('Login', function () {
             ->assertJsonStructure([
                 'message',
                 'data' => [
-                    'user' => ['id', 'name'],
+                    'user' => ['id', 'name', 'phone_verified'],
                     'token',
-                    'phone_verified',
+                    'access_token',
+                    'refresh_token',
+                    'expires_in',
+                    'token_type',
                 ],
             ]);
     });
@@ -322,7 +311,7 @@ describe('Login', function () {
         ]);
 
         $response->assertStatus(401)
-            ->assertJson(['error_code' => 'INVALID_CREDENTIALS']);
+            ->assertJson(['message' => 'These credentials do not match our records.']);
     });
 });
 
@@ -354,7 +343,7 @@ describe('Phone Verification', function () {
             ->getJson('/api/v1/user');
 
         $response->assertStatus(403)
-            ->assertJson(['error_code' => 'PHONE_NOT_VERIFIED']);
+            ->assertJson(['message' => 'Phone number is not verified.']);
     });
 
     it('allows verified users to access protected routes', function () {

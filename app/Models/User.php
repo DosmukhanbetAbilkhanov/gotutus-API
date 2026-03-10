@@ -115,6 +115,11 @@ class User extends Authenticatable
         return $this->hasMany(Report::class, 'reported_user_id');
     }
 
+    public function refreshTokens(): HasMany
+    {
+        return $this->hasMany(RefreshToken::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', UserStatus::Active);

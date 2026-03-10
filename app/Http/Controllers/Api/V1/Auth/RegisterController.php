@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Auth\VerifyRegistrationCodeRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use App\Services\MobizonSmsService;
+use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -18,7 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
-    public function __construct(private MobizonSmsService $smsService) {}
+    public function __construct(
+        private MobizonSmsService $smsService,
+        private TokenService $tokenService,
+    ) {}
 
     public function sendCode(SendRegistrationCodeRequest $request): JsonResponse
     {
@@ -79,13 +83,14 @@ class RegisterController extends Controller
         Cache::forget("registration_code:{$phone}");
         Cache::forget("registration_token:{$verificationToken}");
 
-        $token = $user->createToken('mobile')->plainTextToken;
+        $tokenData = $this->tokenService->createTokenPair($user);
 
         return response()->json([
             'message' => __('auth.registered'),
             'data' => [
                 'user' => new UserResource($user->load('city.translations')),
-                'token' => $token,
+                'token' => $tokenData['access_token'], // backward compatibility
+                ...$tokenData,
             ],
         ], Response::HTTP_CREATED);
     }

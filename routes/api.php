@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\Auth\PhoneVerificationController;
+use App\Http\Controllers\Api\V1\Auth\RefreshTokenController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\BlockedUserController;
 use App\Http\Controllers\Api\V1\CityController;
@@ -67,6 +68,9 @@ Route::prefix('auth')->group(function () {
 
     Route::post('login', LoginController::class)
         ->middleware('throttle:5,1');
+
+    Route::post('refresh', RefreshTokenController::class)
+        ->middleware('throttle:10,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', LogoutController::class);

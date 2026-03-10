@@ -11,7 +11,17 @@ return [
 
     'guard' => ['web'],
 
-    'expiration' => null,
+    /*
+    |--------------------------------------------------------------------------
+    | Expiration Minutes
+    |--------------------------------------------------------------------------
+    |
+    | Access tokens expire after 15 minutes. Clients should use refresh tokens
+    | to obtain new access tokens before or after expiry.
+    |
+    */
+
+    'expiration' => 15,
 
     'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
 

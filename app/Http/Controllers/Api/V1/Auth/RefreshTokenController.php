@@ -5,40 +5,38 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Auth\LoginRequest;
+use App\Http\Requests\Api\V1\Auth\RefreshTokenRequest;
 use App\Http\Resources\Api\V1\UserResource;
-use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
-class LoginController extends Controller
+class RefreshTokenController extends Controller
 {
     public function __construct(private TokenService $tokenService) {}
 
-    public function __invoke(LoginRequest $request): JsonResponse
+    public function __invoke(RefreshTokenRequest $request): JsonResponse
     {
-        $user = User::where('phone', $request->validated('phone'))->first();
+        $plainRefreshToken = $request->validated('refresh_token');
 
-        if (! $user || ! Hash::check($request->validated('password'), $user->password)) {
+        $user = $this->tokenService->validateRefreshToken($plainRefreshToken);
+
+        if (! $user) {
             return response()->json([
-                'message' => __('auth.failed'),
+                'message' => __('auth.refresh_token_invalid'),
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $user->updateQuietly([
-            'is_online' => true,
-            'last_seen_at' => now(),
-        ]);
+        // Revoke the old refresh token (token rotation)
+        $this->tokenService->revokeRefreshToken($plainRefreshToken);
 
+        // Generate new token pair
         $tokenData = $this->tokenService->createTokenPair($user);
 
         return response()->json([
-            'message' => __('auth.login_success'),
+            'message' => __('auth.token_refreshed'),
             'data' => [
                 'user' => new UserResource($user->load('city.translations')),
-                'token' => $tokenData['access_token'], // backward compatibility
                 ...$tokenData,
             ],
         ]);

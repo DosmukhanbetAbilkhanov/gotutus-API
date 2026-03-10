@@ -10,3 +10,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('hangouts:close-expired')->dailyAt('00:05');
 Schedule::command('users:mark-offline')->everyMinute();
+Schedule::command('sanctum:prune-expired --hours=24')->daily();
+Schedule::command('tokens:prune-expired-refresh')->daily();
