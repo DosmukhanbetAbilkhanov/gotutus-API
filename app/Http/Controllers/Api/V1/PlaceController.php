@@ -15,7 +15,7 @@ class PlaceController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $places = Place::query()
-            ->with(['translations', 'activeDiscount'])
+            ->with(['translations', 'activeDiscount', 'activityTypes.translations'])
             ->inCity($request->user()->city_id)
             ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
             ->get()

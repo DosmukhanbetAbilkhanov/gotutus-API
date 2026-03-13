@@ -27,6 +27,7 @@ class PlaceResource extends JsonResource
                     'percent' => $this->activeDiscount->discount_percent,
                 ];
             }),
+            'activity_types' => ActivityTypeResource::collection($this->whenLoaded('activityTypes')),
         ];
     }
 }
