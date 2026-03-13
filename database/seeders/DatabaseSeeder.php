@@ -1565,19 +1565,42 @@ class DatabaseSeeder extends Seeder
             null,
         ];
 
+        // Build a lookup of places by city_id and activity_type_id
+        $placesWithActivities = DB::table('places')
+            ->join('activity_type_place', 'places.id', '=', 'activity_type_place.place_id')
+            ->get(['places.id as place_id', 'places.city_id', 'activity_type_place.activity_type_id']);
+
+        $placesByCityAndActivity = [];
+        foreach ($placesWithActivities as $row) {
+            $key = $row->city_id . '_' . $row->activity_type_id;
+            $placesByCityAndActivity[$key][] = $row->place_id;
+        }
+
         $users = DB::table('users')
             ->whereIn('city_id', $cities)
             ->get(['id', 'city_id']);
 
+        $counter = 0;
         foreach ($users as $user) {
             $selectedActivities = collect($activityTypeIds)->shuffle()->take(rand(1, 3));
 
             foreach ($selectedActivities as $activityTypeId) {
+                // Assign a place to ~50% of hangout requests (matching city + activity type)
+                $placeId = null;
+                if ($counter % 2 === 0) {
+                    $key = $user->city_id . '_' . $activityTypeId;
+                    if (! empty($placesByCityAndActivity[$key])) {
+                        $candidates = $placesByCityAndActivity[$key];
+                        $placeId = $candidates[array_rand($candidates)];
+                    }
+                }
+                $counter++;
+
                 DB::table('hangout_requests')->insert([
                     'user_id' => $user->id,
                     'city_id' => $user->city_id,
                     'activity_type_id' => $activityTypeId,
-                    'place_id' => null,
+                    'place_id' => $placeId,
                     'date' => $now->copy()->addDays(rand(0, 10))->format('Y-m-d'),
                     'time' => sprintf('%02d:00', rand(10, 22)),
                     'status' => HangoutRequestStatus::Open->value,
