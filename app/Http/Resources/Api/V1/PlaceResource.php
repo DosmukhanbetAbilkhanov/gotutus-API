@@ -22,6 +22,11 @@ class PlaceResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'city' => new CityResource($this->whenLoaded('city')),
+            'discount' => $this->when($this->relationLoaded('activeDiscount') && $this->activeDiscount, function () {
+                return [
+                    'percent' => $this->activeDiscount->discount_percent,
+                ];
+            }),
         ];
     }
 }

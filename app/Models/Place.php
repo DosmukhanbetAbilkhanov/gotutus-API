@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Place extends Model
 {
@@ -44,6 +45,24 @@ class Place extends Model
     public function joinRequests(): HasMany
     {
         return $this->hasMany(JoinRequest::class);
+    }
+
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(PlaceDiscount::class);
+    }
+
+    public function activeDiscount(): HasOne
+    {
+        return $this->hasOne(PlaceDiscount::class)
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+            })
+            ->latest();
     }
 
     public function scopeInCity(Builder $query, int $cityId): Builder

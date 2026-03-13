@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->seedCities();
         $this->seedActivityTypes();
         $this->seedPlaces();
+        $this->seedPlaceDiscounts();
         $this->seedUsers();
         $this->seedHangoutRequests();
     }
@@ -140,14 +141,22 @@ class DatabaseSeeder extends Seeder
 
         $beerId = $activitySlugs['beer'];
         $coffeeId = $activitySlugs['coffee'];
+        $sushiId = $activitySlugs['sushi'];
+        $fastFoodId = $activitySlugs['fast_food'];
         $bathhouseId = $activitySlugs['bathhouse'];
         $walkId = $activitySlugs['walk'];
+        $concertId = $activitySlugs['concert'];
         $bowlingId = $activitySlugs['bowling'];
         $billiardsId = $activitySlugs['billiards'];
         $hookahId = $activitySlugs['hookah'];
         $karaokeId = $activitySlugs['karaoke'];
         $restaurantId = $activitySlugs['restaurant'];
-        $sportId = $activitySlugs['sport'];
+        $kvestId = $activitySlugs['kvest'];
+        $paintballId = $activitySlugs['paintball'];
+        $pcClubId = $activitySlugs['pc_club'];
+        $quizId = $activitySlugs['quiz'];
+        $tennisId = $activitySlugs['tennis'];
+        $footballId = $activitySlugs['football'];
         $cinemaId = $activitySlugs['cinema'];
         $boardGamesId = $activitySlugs['board-games'];
 
@@ -242,7 +251,7 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Медеу', 'address' => 'урочище Медеу'],
             'kz' => ['name' => 'Медеу', 'address' => 'Медеу шатқалы'],
             'en' => ['name' => 'Medeu', 'address' => 'Medeu Gorge'],
-        ], [$walkId, $sportId]);
+        ], [$walkId]);
 
         $this->createPlace($almatyId, $now, [
             'ru' => ['name' => 'Mega Bowling', 'address' => 'пр. Розыбакиева, 263'],
@@ -329,16 +338,94 @@ class DatabaseSeeder extends Seeder
         ], [$boardGamesId]);
 
         $this->createPlace($almatyId, $now, [
-            'ru' => ['name' => 'Фитнес-клуб Grand Sport', 'address' => 'ул. Сатпаева, 29А'],
-            'kz' => ['name' => 'Grand Sport фитнес клубы', 'address' => 'Сәтбаев көш., 29А'],
-            'en' => ['name' => 'Grand Sport Fitness', 'address' => '29A Satpayev St.'],
-        ], [$sportId]);
-
-        $this->createPlace($almatyId, $now, [
             'ru' => ['name' => 'Теннисный центр Достык', 'address' => 'пр. Достык, 104'],
             'kz' => ['name' => 'Достық теннис орталығы', 'address' => 'Достық даң., 104'],
             'en' => ['name' => 'Dostyk Tennis Center', 'address' => '104 Dostyk Ave.'],
-        ], [$sportId]);
+        ], [$tennisId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Almaty Tennis Club', 'address' => 'ул. Сатпаева, 29А'],
+            'kz' => ['name' => 'Almaty Tennis Club', 'address' => 'Сәтбаев көш., 29А'],
+            'en' => ['name' => 'Almaty Tennis Club', 'address' => '29A Satpayev St.'],
+        ], [$tennisId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Центральный стадион Алматы', 'address' => 'ул. Сатпаева, 29/3'],
+            'kz' => ['name' => 'Алматы орталық стадионы', 'address' => 'Сәтбаев көш., 29/3'],
+            'en' => ['name' => 'Almaty Central Stadium', 'address' => '29/3 Satpayev St.'],
+        ], [$footballId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Футбольное поле Goal', 'address' => 'ул. Жандосова, 60'],
+            'kz' => ['name' => 'Goal футбол алаңы', 'address' => 'Жандосов көш., 60'],
+            'en' => ['name' => 'Goal Football Field', 'address' => '60 Zhandosov St.'],
+        ], [$footballId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Sushi Master', 'address' => 'пр. Достык, 44'],
+            'kz' => ['name' => 'Sushi Master', 'address' => 'Достық даң., 44'],
+            'en' => ['name' => 'Sushi Master', 'address' => '44 Dostyk Ave.'],
+        ], [$sushiId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Сакура Суши', 'address' => 'ул. Панфилова, 80'],
+            'kz' => ['name' => 'Сакура Суши', 'address' => 'Панфилов көш., 80'],
+            'en' => ['name' => 'Sakura Sushi', 'address' => '80 Panfilov St.'],
+        ], [$sushiId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'KFC', 'address' => 'пр. Абая, 44/1'],
+            'kz' => ['name' => 'KFC', 'address' => 'Абай даң., 44/1'],
+            'en' => ['name' => 'KFC', 'address' => '44/1 Abay Ave.'],
+        ], [$fastFoodId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Burger King', 'address' => 'пр. Достык, 50'],
+            'kz' => ['name' => 'Burger King', 'address' => 'Достық даң., 50'],
+            'en' => ['name' => 'Burger King', 'address' => '50 Dostyk Ave.'],
+        ], [$fastFoodId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Дворец Республики', 'address' => 'пр. Достык, 56'],
+            'kz' => ['name' => 'Республика сарайы', 'address' => 'Достық даң., 56'],
+            'en' => ['name' => 'Republic Palace', 'address' => '56 Dostyk Ave.'],
+        ], [$concertId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Алматы Арена', 'address' => 'пр. Аль-Фараби, 50'],
+            'kz' => ['name' => 'Алматы Арена', 'address' => 'Әл-Фараби даң., 50'],
+            'en' => ['name' => 'Almaty Arena', 'address' => '50 Al-Farabi Ave.'],
+        ], [$concertId, $footballId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Квест-рум Escape', 'address' => 'ул. Курмангазы, 100'],
+            'kz' => ['name' => 'Escape квест бөлмесі', 'address' => 'Құрманғазы көш., 100'],
+            'en' => ['name' => 'Escape Quest Room', 'address' => '100 Kurmangazy St.'],
+        ], [$kvestId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Пейнтбол Арена Алматы', 'address' => 'ул. Рыскулова, 200'],
+            'kz' => ['name' => 'Алматы пейнтбол аренасы', 'address' => 'Рысқұлов көш., 200'],
+            'en' => ['name' => 'Paintball Arena Almaty', 'address' => '200 Ryskulov St.'],
+        ], [$paintballId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'CyberArena', 'address' => 'ул. Жандосова, 42'],
+            'kz' => ['name' => 'CyberArena', 'address' => 'Жандосов көш., 42'],
+            'en' => ['name' => 'CyberArena', 'address' => '42 Zhandosov St.'],
+        ], [$pcClubId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'GameZone PC Club', 'address' => 'ул. Толе Би, 85'],
+            'kz' => ['name' => 'GameZone PC Club', 'address' => 'Төле Би көш., 85'],
+            'en' => ['name' => 'GameZone PC Club', 'address' => '85 Tole Bi St.'],
+        ], [$pcClubId]);
+
+        $this->createPlace($almatyId, $now, [
+            'ru' => ['name' => 'Brain Quest Almaty', 'address' => 'ул. Шевченко, 45'],
+            'kz' => ['name' => 'Brain Quest Almaty', 'address' => 'Шевченко көш., 45'],
+            'en' => ['name' => 'Brain Quest Almaty', 'address' => '45 Shevchenko St.'],
+        ], [$quizId]);
 
         // =====================================================================
         // ASTANA PLACES
@@ -467,13 +554,61 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Астана Арена', 'address' => 'пр. Туран, 57'],
             'kz' => ['name' => 'Астана Арена', 'address' => 'Тұран даң., 57'],
             'en' => ['name' => 'Astana Arena', 'address' => '57 Turan Ave.'],
-        ], [$sportId]);
+        ], [$footballId, $concertId]);
 
         $this->createPlace($astanaId, $now, [
-            'ru' => ['name' => 'Фитнес World Class', 'address' => 'ул. Сыганак, 18'],
-            'kz' => ['name' => 'World Class фитнес', 'address' => 'Сығанақ көш., 18'],
-            'en' => ['name' => 'World Class Fitness', 'address' => '18 Syganak St.'],
-        ], [$sportId]);
+            'ru' => ['name' => 'Теннисный центр Астана', 'address' => 'ул. Сыганак, 18'],
+            'kz' => ['name' => 'Астана теннис орталығы', 'address' => 'Сығанақ көш., 18'],
+            'en' => ['name' => 'Astana Tennis Center', 'address' => '18 Syganak St.'],
+        ], [$tennisId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Футбольный манеж Астана', 'address' => 'ул. Мангилик Ел, 54'],
+            'kz' => ['name' => 'Астана футбол манежі', 'address' => 'Мәңгілік Ел көш., 54'],
+            'en' => ['name' => 'Astana Football Arena', 'address' => '54 Mangilik El St.'],
+        ], [$footballId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Sushi Bar Tanuki', 'address' => 'ул. Достык, 9'],
+            'kz' => ['name' => 'Sushi Bar Tanuki', 'address' => 'Достық көш., 9'],
+            'en' => ['name' => 'Sushi Bar Tanuki', 'address' => '9 Dostyk St.'],
+        ], [$sushiId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'KFC Хан Шатыр', 'address' => 'пр. Туран, 37'],
+            'kz' => ['name' => 'KFC Хан Шатыр', 'address' => 'Тұран даң., 37'],
+            'en' => ['name' => 'KFC Khan Shatyr', 'address' => '37 Turan Ave.'],
+        ], [$fastFoodId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Барыс Арена', 'address' => 'пр. Туран, 55'],
+            'kz' => ['name' => 'Барыс Арена', 'address' => 'Тұран даң., 55'],
+            'en' => ['name' => 'Barys Arena', 'address' => '55 Turan Ave.'],
+        ], [$concertId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Квест-рум Lost', 'address' => 'ул. Сарайшык, 40'],
+            'kz' => ['name' => 'Lost квест бөлмесі', 'address' => 'Сарайшық көш., 40'],
+            'en' => ['name' => 'Lost Quest Room', 'address' => '40 Saraishyk St.'],
+        ], [$kvestId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Пейнтбол Астана', 'address' => 'ул. Кабанбай Батыра, 80'],
+            'kz' => ['name' => 'Астана пейнтболы', 'address' => 'Қабанбай Батыр көш., 80'],
+            'en' => ['name' => 'Paintball Astana', 'address' => '80 Kabanbay Batyr St.'],
+        ], [$paintballId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'CyberX PC Club', 'address' => 'ул. Кенесары, 80'],
+            'kz' => ['name' => 'CyberX PC Club', 'address' => 'Кенесары көш., 80'],
+            'en' => ['name' => 'CyberX PC Club', 'address' => '80 Kenesary St.'],
+        ], [$pcClubId]);
+
+        $this->createPlace($astanaId, $now, [
+            'ru' => ['name' => 'Quiz Night Astana', 'address' => 'ул. Достык, 20'],
+            'kz' => ['name' => 'Quiz Night Astana', 'address' => 'Достық көш., 20'],
+            'en' => ['name' => 'Quiz Night Astana', 'address' => '20 Dostyk St.'],
+        ], [$quizId]);
 
         $this->createPlace($astanaId, $now, [
             'ru' => ['name' => 'Kinopark 7 Keruencity', 'address' => 'пр. Кабанбай Батыра, 21'],
@@ -578,7 +713,7 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Спорткомплекс Актобе', 'address' => 'ул. Есет Батыра, 56'],
             'kz' => ['name' => 'Ақтөбе спорт кешені', 'address' => 'Есет Батыр көш., 56'],
             'en' => ['name' => 'Aktobe Sports Complex', 'address' => '56 Eset Batyr St.'],
-        ], [$sportId]);
+        ], [$footballId, $tennisId]);
 
         $this->createPlace($aktobeId, $now, [
             'ru' => ['name' => 'Кинотеатр Актобе', 'address' => 'пр. Абилкайыр хана, 72'],
@@ -671,7 +806,7 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Стадион Шымкент', 'address' => 'ул. Жангельдина, 22'],
             'kz' => ['name' => 'Шымкент стадионы', 'address' => 'Жангелдин көш., 22'],
             'en' => ['name' => 'Shymkent Stadium', 'address' => '22 Zhangeldin St.'],
-        ], [$sportId]);
+        ], [$footballId]);
 
         // =====================================================================
         // KARAGANDA PLACES
@@ -740,7 +875,7 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Шахтёр Арена', 'address' => 'ул. Ленина, 58'],
             'kz' => ['name' => 'Шахтёр Арена', 'address' => 'Ленин көш., 58'],
             'en' => ['name' => 'Shakhtar Arena', 'address' => '58 Lenin St.'],
-        ], [$sportId]);
+        ], [$footballId]);
 
         $this->createPlace($karagandaId, $now, [
             'ru' => ['name' => 'Cloud Lounge', 'address' => 'ул. Гоголя, 48'],
@@ -842,7 +977,7 @@ class DatabaseSeeder extends Seeder
             'ru' => ['name' => 'Спорткомплекс Мунайши', 'address' => 'ул. Баймуханова, 78'],
             'kz' => ['name' => 'Мұнайшы спорт кешені', 'address' => 'Баймұханов көш., 78'],
             'en' => ['name' => 'Munaishy Sports Complex', 'address' => '78 Baimukhanov St.'],
-        ], [$sportId]);
+        ], [$footballId, $tennisId]);
 
         // =====================================================================
         // PAVLODAR PLACES
@@ -1305,6 +1440,34 @@ class DatabaseSeeder extends Seeder
             ];
         }
         DB::table('activity_type_place')->insert($pivotRows);
+    }
+
+    private function seedPlaceDiscounts(): void
+    {
+        $now = now();
+
+        // Get a few place IDs to assign discounts to (first 5 places)
+        $placeIds = DB::table('places')->orderBy('id')->limit(5)->pluck('id');
+
+        $discounts = [
+            ['place_id' => $placeIds[0], 'discount_percent' => 10, 'is_active' => true, 'starts_at' => null, 'ends_at' => null],
+            ['place_id' => $placeIds[1], 'discount_percent' => 15, 'is_active' => true, 'starts_at' => null, 'ends_at' => null],
+            ['place_id' => $placeIds[2], 'discount_percent' => 20, 'is_active' => true, 'starts_at' => null, 'ends_at' => null],
+            ['place_id' => $placeIds[3], 'discount_percent' => 10, 'is_active' => true, 'starts_at' => $now->copy()->subDays(7), 'ends_at' => $now->copy()->addDays(30)],
+            ['place_id' => $placeIds[4], 'discount_percent' => 25, 'is_active' => true, 'starts_at' => null, 'ends_at' => $now->copy()->addDays(60)],
+        ];
+
+        foreach ($discounts as $discount) {
+            DB::table('place_discounts')->insert([
+                'place_id' => $discount['place_id'],
+                'discount_percent' => $discount['discount_percent'],
+                'is_active' => $discount['is_active'],
+                'starts_at' => $discount['starts_at'],
+                'ends_at' => $discount['ends_at'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
     }
 
     private function seedUsers(): void
