@@ -9,18 +9,25 @@ use App\Http\Resources\Api\V1\PlaceResource;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 
 class PlaceController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $places = Place::query()
-            ->with(['translations', 'activeDiscount', 'activityTypes.translations'])
-            ->inCity($request->user()->city_id)
-            ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
-            ->get()
-            ->sortByDesc(fn ($place) => $place->activeDiscount !== null)
-            ->values();
+        $cityId = $request->user()->city_id;
+        $activityTypeId = $request->query('activity_type_id');
+        $cacheKey = "places:city:{$cityId}:at:{$activityTypeId}";
+
+        $places = Cache::remember($cacheKey, 1800, function () use ($cityId, $activityTypeId) {
+            return Place::query()
+                ->with(['translations', 'activeDiscount', 'activityTypes.translations'])
+                ->inCity($cityId)
+                ->when($activityTypeId, fn ($q, $id) => $q->forActivityType((int) $id))
+                ->get()
+                ->sortByDesc(fn ($place) => $place->activeDiscount !== null)
+                ->values();
+        });
 
         return PlaceResource::collection($places);
     }

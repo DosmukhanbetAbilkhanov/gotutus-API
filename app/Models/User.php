@@ -10,11 +10,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens;
@@ -35,6 +37,7 @@ class User extends Authenticatable
         'phone_verified_at',
         'is_online',
         'last_seen_at',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -52,6 +55,7 @@ class User extends Authenticatable
             'status' => UserStatus::class,
             'is_online' => 'boolean',
             'last_seen_at' => 'datetime',
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -135,6 +139,11 @@ class User extends Authenticatable
         return $query->whereDoesntHave('blockedByUsers', function (Builder $q) use ($userId) {
             $q->where('user_id', $userId);
         });
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_admin === true;
     }
 
     public function isPhoneVerified(): bool

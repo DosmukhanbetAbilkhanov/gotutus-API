@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ReportStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,12 +21,18 @@ class Report extends Model
         'reported_user_id',
         'hangout_request_id',
         'reason',
+        'status',
+        'admin_notes',
+        'reviewed_by',
+        'reviewed_at',
     ];
 
     protected function casts(): array
     {
         return [
             'created_at' => 'datetime',
+            'reviewed_at' => 'datetime',
+            'status' => ReportStatus::class,
         ];
     }
 
@@ -41,5 +49,15 @@ class Report extends Model
     public function hangoutRequest(): BelongsTo
     {
         return $this->belongsTo(HangoutRequest::class);
+    }
+
+    public function reviewedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('status', ReportStatus::Pending);
     }
 }
