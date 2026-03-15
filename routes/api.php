@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
     Broadcast::routes();
 });
 
@@ -72,7 +72,7 @@ Route::prefix('auth')->group(function () {
     Route::post('refresh', RefreshTokenController::class)
         ->middleware('throttle:10,1');
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
         Route::post('logout', LogoutController::class);
 
         Route::prefix('phone')->group(function () {
@@ -89,7 +89,7 @@ Route::prefix('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
+Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60,1'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -202,10 +202,10 @@ Route::middleware(['auth:sanctum', 'phone.verified'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Admin Routes (TODO: add admin middleware)
+| Admin Routes
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::put('photos/{photo}/review', [AdminPhotoController::class, 'review']);
 });

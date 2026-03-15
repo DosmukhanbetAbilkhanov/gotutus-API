@@ -343,7 +343,7 @@ describe('Phone Verification', function () {
             ->getJson('/api/v1/user');
 
         $response->assertStatus(403)
-            ->assertJson(['message' => 'Phone number is not verified.']);
+            ->assertJson(['message' => __('auth.phone_not_verified')]);
     });
 
     it('allows verified users to access protected routes', function () {

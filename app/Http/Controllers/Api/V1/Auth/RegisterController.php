@@ -14,6 +14,8 @@ use App\Services\MobizonSmsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +33,16 @@ class RegisterController extends Controller
 
         Cache::put("registration_code:{$phone}", $code, now()->addMinutes(5));
 
-        $this->smsService->send($phone, "Your verification code: {$code}");
+        try {
+            $this->smsService->send($phone, "Your verification code: {$code}");
+        } catch (\Throwable $e) {
+            Log::error('SMS send failed during registration', ['phone' => $phone, 'error' => $e->getMessage()]);
+            Cache::forget("registration_code:{$phone}");
+
+            return response()->json([
+                'message' => __('auth.sms_send_failed'),
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
 
         return response()->json([
             'message' => __('auth.code_sent'),
@@ -73,17 +84,21 @@ class RegisterController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = User::create([
-            ...$request->safe()->except(['verification_token', 'password_confirmation']),
-            'phone' => $phone,
-            'phone_verified_at' => now(),
-            'status' => \App\Enums\UserStatus::Active,
-        ]);
+        [$user, $tokenData] = DB::transaction(function () use ($request, $phone, $verificationToken) {
+            $user = User::create([
+                ...$request->safe()->except(['verification_token', 'password_confirmation']),
+                'phone' => $phone,
+                'phone_verified_at' => now(),
+                'status' => \App\Enums\UserStatus::Active,
+            ]);
+
+            $tokenData = $this->tokenService->createTokenPair($user);
+
+            return [$user, $tokenData];
+        });
 
         Cache::forget("registration_code:{$phone}");
         Cache::forget("registration_token:{$verificationToken}");
-
-        $tokenData = $this->tokenService->createTokenPair($user);
 
         return response()->json([
             'message' => __('auth.registered'),

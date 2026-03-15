@@ -8,13 +8,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsurePhoneIsVerified
+class EnsureUserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->isPhoneVerified()) {
+        if (! $request->user()?->is_admin) {
             return response()->json([
-                'message' => __('auth.phone_not_verified'),
+                'message' => 'Forbidden.',
             ], Response::HTTP_FORBIDDEN);
         }
 

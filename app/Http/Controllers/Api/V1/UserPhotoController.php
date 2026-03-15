@@ -11,6 +11,7 @@ use App\Models\UserPhoto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserPhotoController extends Controller
@@ -42,6 +43,7 @@ class UserPhotoController extends Controller
             abort(Response::HTTP_FORBIDDEN);
         }
 
+        Storage::disk('public')->delete($photo->photo_url);
         $photo->delete();
 
         return response()->json([

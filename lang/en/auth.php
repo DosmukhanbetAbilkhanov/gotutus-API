@@ -14,9 +14,13 @@ return [
     'invalid_code' => 'Invalid verification code.',
     'invalid_token' => 'Invalid or expired token.',
     'phone_not_verified' => 'Phone number not verified.',
+    'sms_send_failed' => 'Failed to send SMS. Please try again later.',
     'user_not_found' => 'User not found.',
     'password_reset_success' => 'Password has been reset successfully.',
 
     'token_refreshed' => 'Token refreshed successfully.',
     'refresh_token_invalid' => 'Invalid or expired refresh token.',
+
+    'account_suspended' => 'Your account has been suspended. Please contact support for more information.',
+    'account_banned' => 'Your account has been banned. Please contact support for more information.',
 ];

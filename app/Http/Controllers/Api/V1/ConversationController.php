@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class ConversationController extends Controller
 {
@@ -47,7 +48,6 @@ class ConversationController extends Controller
             'hangoutRequest.user.photos',
             'hangoutRequest.activityType.translations',
             'joinRequest.user.photos',
-            'messages.user',
             'participants',
         ]);
 
@@ -76,15 +76,18 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        $conversations = Conversation::query()
-            ->where(function ($q) use ($user) {
-                $q->whereHas('hangoutRequest', fn ($hq) => $hq->where('user_id', $user->id))
-                    ->orWhereHas('joinRequest', fn ($jq) => $jq->where('user_id', $user->id));
+        $total = DB::table('messages')
+            ->join('conversations', 'conversations.id', '=', 'messages.conversation_id')
+            ->join('conversation_user', function ($join) use ($user) {
+                $join->on('conversation_user.conversation_id', '=', 'conversations.id')
+                    ->where('conversation_user.user_id', '=', $user->id);
             })
-            ->with('participants')
-            ->get();
-
-        $total = $conversations->sum(fn (Conversation $c) => $c->unreadCountFor($user->id));
+            ->where('messages.user_id', '!=', $user->id)
+            ->where(function ($q) {
+                $q->whereNull('conversation_user.last_read_at')
+                    ->orWhereColumn('messages.created_at', '>', 'conversation_user.last_read_at');
+            })
+            ->count();
 
         return response()->json(['unread_count' => $total]);
     }

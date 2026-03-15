@@ -13,6 +13,7 @@ use App\Services\MobizonSmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,7 +28,16 @@ class PasswordResetController extends Controller
 
         Cache::put("password_reset_code:{$phone}", $code, now()->addMinutes(5));
 
-        $this->smsService->send($phone, "Your password reset code: {$code}");
+        try {
+            $this->smsService->send($phone, "Your password reset code: {$code}");
+        } catch (\Throwable $e) {
+            Log::error('SMS send failed during password reset', ['phone' => $phone, 'error' => $e->getMessage()]);
+            Cache::forget("password_reset_code:{$phone}");
+
+            return response()->json([
+                'message' => __('auth.sms_send_failed'),
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
 
         return response()->json([
             'message' => __('auth.code_sent'),

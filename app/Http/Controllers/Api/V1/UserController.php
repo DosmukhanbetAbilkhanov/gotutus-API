@@ -37,7 +37,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => __('user.profile_updated'),
-            'data' => new UserResource($user->fresh()->load('city.translations')),
+            'data' => new UserResource($user->fresh()->load(['city.translations', 'photos'])),
         ]);
     }
 }

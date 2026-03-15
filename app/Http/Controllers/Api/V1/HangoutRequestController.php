@@ -10,12 +10,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\HangoutRequest\StoreHangoutRequest;
 use App\Http\Requests\Api\V1\HangoutRequest\UpdateHangoutRequest;
 use App\Http\Resources\Api\V1\HangoutRequestResource;
+use App\Models\Conversation;
 use App\Models\HangoutRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class HangoutRequestController extends Controller
@@ -52,7 +54,15 @@ class HangoutRequestController extends Controller
 
                 $q->where('user_id', '!=', $user->id)
                     ->whereNotIn('user_id', $blockedIds)
-                    ->whereNotIn('user_id', $blockedByIds);
+                    ->whereNotIn('user_id', $blockedByIds)
+                    ->addSelect(['my_conversation_id' => Conversation::query()
+                        ->select('conversations.id')
+                        ->join('join_requests', 'join_requests.id', '=', 'conversations.join_request_id')
+                        ->whereColumn('join_requests.hangout_request_id', 'hangout_requests.id')
+                        ->where('join_requests.user_id', $user->id)
+                        ->whereIn('join_requests.status', ['approved', 'confirmed'])
+                        ->limit(1),
+                    ]);
             })
             ->latest()
             ->paginate(20);
@@ -77,6 +87,10 @@ class HangoutRequestController extends Controller
                 $hangoutRequest->joinRequests->first()
             );
             $hangoutRequest->unsetRelation('joinRequests');
+
+            // Set conversation_id via the already-loaded join request
+            $myJr = $hangoutRequest->myJoinRequest;
+            $hangoutRequest->my_conversation_id = $myJr?->conversation?->id;
         }
 
         return new HangoutRequestResource($hangoutRequest);
@@ -133,12 +147,14 @@ class HangoutRequestController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $hangoutRequest->update(['status' => HangoutRequestStatus::Closed]);
+        DB::transaction(function () use ($hangoutRequest) {
+            $hangoutRequest->update(['status' => HangoutRequestStatus::Closed]);
 
-        // Auto-decline all pending join requests
-        $hangoutRequest->joinRequests()
-            ->where('status', JoinRequestStatus::Pending)
-            ->update(['status' => JoinRequestStatus::Declined->value]);
+            // Auto-decline all pending join requests
+            $hangoutRequest->joinRequests()
+                ->where('status', JoinRequestStatus::Pending)
+                ->update(['status' => JoinRequestStatus::Declined->value]);
+        });
 
         $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
@@ -180,13 +196,24 @@ class HangoutRequestController extends Controller
 
     public function myRequests(Request $request): AnonymousResourceCollection
     {
-        $hangouts = $request->user()
+        $user = $request->user();
+
+        $hangouts = $user
             ->hangoutRequests()
+            ->select('hangout_requests.*')
             ->with(['city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'joinRequests.user.photos' => fn ($q) => $q->where('status', 'approved')])
             ->withCount('joinRequests')
             ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
                 $q->whereIn('status', ['approved', 'confirmed']);
             }])
+            ->addSelect(['my_conversation_id' => Conversation::query()
+                ->select('conversations.id')
+                ->join('join_requests', 'join_requests.id', '=', 'conversations.join_request_id')
+                ->whereColumn('join_requests.hangout_request_id', 'hangout_requests.id')
+                ->where('join_requests.user_id', $user->id)
+                ->whereIn('join_requests.status', ['approved', 'confirmed'])
+                ->limit(1),
+            ])
             ->latest()
             ->paginate(20);
 

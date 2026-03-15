@@ -60,6 +60,7 @@ class ReportReviewPage extends Page
     {
         $report = Report::with('reportedUser')->findOrFail($reportId);
         $report->reportedUser->update(['status' => UserStatus::Suspended]);
+        $report->reportedUser->tokens()->delete();
         $report->update([
             'status' => ReportStatus::ActionTaken,
             'reviewed_by' => Auth::id(),

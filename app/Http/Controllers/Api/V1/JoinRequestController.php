@@ -19,6 +19,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class JoinRequestController extends Controller
@@ -37,6 +38,9 @@ class JoinRequestController extends Controller
 
     public function store(StoreJoinRequestRequest $request, HangoutRequest $hangoutRequest): JsonResponse
     {
+        $hangoutRequest->load('user');
+        $this->authorize('join', $hangoutRequest);
+
         $validated = $request->validated();
         $joinRequest = $hangoutRequest->joinRequests()->create([
             'message' => $validated['message'] ?? null,
@@ -71,25 +75,42 @@ class JoinRequestController extends Controller
     {
         $this->authorize('approve', $joinRequest);
 
-        $hangout = $joinRequest->hangoutRequest;
+        $joinRequest->load(['hangoutRequest.user', 'user']);
 
-        if ($hangout->isFull()) {
+        $result = DB::transaction(function () use ($joinRequest) {
+            $hangout = HangoutRequest::lockForUpdate()->find($joinRequest->hangout_request_id);
+
+            if ($hangout->isFull()) {
+                return null;
+            }
+
+            $joinRequest->update(['status' => JoinRequestStatus::Approved]);
+
+            // Copy suggested place to hangout if hangout has no place yet
+            if ($joinRequest->suggested_place_id && !$hangout->place_id) {
+                $hangout->update(['place_id' => $joinRequest->suggested_place_id]);
+            }
+
+            Conversation::firstOrCreate([
+                'hangout_request_id' => $hangout->id,
+                'join_request_id' => $joinRequest->id,
+            ]);
+
+            // Auto-close if hangout is now full
+            if ($hangout->isFull()) {
+                $hangout->update(['status' => HangoutRequestStatus::Closed]);
+            }
+
+            return $hangout;
+        });
+
+        if ($result === null) {
             return response()->json([
                 'message' => __('hangout.full'),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $joinRequest->update(['status' => JoinRequestStatus::Approved]);
-
-        // Copy suggested place to hangout if hangout has no place yet
-        if ($joinRequest->suggested_place_id && !$hangout->place_id) {
-            $hangout->update(['place_id' => $joinRequest->suggested_place_id]);
-        }
-
-        Conversation::firstOrCreate([
-            'hangout_request_id' => $hangout->id,
-            'join_request_id' => $joinRequest->id,
-        ]);
+        $hangout = $result;
 
         JoinRequestStatusChanged::dispatch($joinRequest, 'approved');
 
@@ -104,11 +125,6 @@ class JoinRequestController extends Controller
             ],
         );
 
-        // Auto-close if hangout is now full
-        if ($hangout->fresh()->isFull()) {
-            $hangout->update(['status' => HangoutRequestStatus::Closed]);
-        }
-
         return response()->json([
             'message' => __('join_request.approved'),
             'data' => new JoinRequestResource($joinRequest->fresh()->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'suggestedPlace.translations'])),
@@ -118,6 +134,8 @@ class JoinRequestController extends Controller
     public function decline(JoinRequest $joinRequest): JsonResponse
     {
         $this->authorize('decline', $joinRequest);
+
+        $joinRequest->load(['hangoutRequest.user', 'user']);
 
         $joinRequest->update(['status' => JoinRequestStatus::Declined]);
 
@@ -160,14 +178,17 @@ class JoinRequestController extends Controller
     {
         $this->authorize('cancel', $joinRequest);
 
+        $joinRequest->load('hangoutRequest');
         $wasClosed = $joinRequest->hangoutRequest->status === HangoutRequestStatus::Closed;
 
-        $joinRequest->update(['status' => JoinRequestStatus::Cancelled]);
+        DB::transaction(function () use ($joinRequest, $wasClosed) {
+            $joinRequest->update(['status' => JoinRequestStatus::Cancelled]);
 
-        // Re-open hangout if it was closed due to being full and now has room
-        if ($wasClosed && ! $joinRequest->hangoutRequest->fresh()->isFull()) {
-            $joinRequest->hangoutRequest->update(['status' => HangoutRequestStatus::Open]);
-        }
+            // Re-open hangout if it was closed due to being full and now has room
+            if ($wasClosed && ! $joinRequest->hangoutRequest->fresh()->isFull()) {
+                $joinRequest->hangoutRequest->update(['status' => HangoutRequestStatus::Open]);
+            }
+        });
 
         return response()->json([
             'message' => __('join_request.cancelled'),

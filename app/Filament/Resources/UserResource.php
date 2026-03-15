@@ -160,7 +160,8 @@ class UserResource extends Resource
                     ->visible(fn (User $record) => $record->status !== UserStatus::Suspended)
                     ->action(function (User $record) {
                         $record->update(['status' => UserStatus::Suspended]);
-                        Notification::make()->title('User suspended')->success()->send();
+                        $record->tokens()->delete();
+                        Notification::make()->title('User suspended and tokens revoked')->success()->send();
                     }),
                 \Filament\Actions\Action::make('ban')
                     ->icon('heroicon-o-no-symbol')
@@ -203,7 +204,10 @@ class UserResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each(fn (User $record) => $record->update(['status' => UserStatus::Suspended]));
+                            $records->each(function (User $record) {
+                                $record->update(['status' => UserStatus::Suspended]);
+                                $record->tokens()->delete();
+                            });
                             Notification::make()->title('Selected users suspended')->success()->send();
                         })
                         ->deselectRecordsAfterCompletion(),

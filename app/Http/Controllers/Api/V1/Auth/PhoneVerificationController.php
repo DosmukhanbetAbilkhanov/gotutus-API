@@ -10,6 +10,7 @@ use App\Services\MobizonSmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class PhoneVerificationController extends Controller
@@ -23,7 +24,16 @@ class PhoneVerificationController extends Controller
 
         Cache::put("phone_verification:{$phone}", $code, now()->addMinutes(5));
 
-        $this->smsService->send($phone, "Your verification code: {$code}");
+        try {
+            $this->smsService->send($phone, "Your verification code: {$code}");
+        } catch (\Throwable $e) {
+            Log::error('SMS send failed during phone verification', ['phone' => $phone, 'error' => $e->getMessage()]);
+            Cache::forget("phone_verification:{$phone}");
+
+            return response()->json([
+                'message' => __('auth.sms_send_failed'),
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
 
         return response()->json([
             'message' => __('auth.code_sent'),
