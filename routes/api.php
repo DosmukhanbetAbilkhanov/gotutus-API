@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ActivityTypeController;
+use App\Http\Controllers\Api\V1\AppDesignSettingController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
@@ -41,6 +42,7 @@ Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
 
 Route::get('cities', [CityController::class, 'index']);
 Route::get('activity-types', [ActivityTypeController::class, 'index']);
+Route::get('app-design', [AppDesignSettingController::class, 'show']);
 Route::get('hangout-requests', [HangoutRequestController::class, 'index']);
 Route::get('hangout-requests/{hangoutRequest}', [HangoutRequestController::class, 'show']);
 
