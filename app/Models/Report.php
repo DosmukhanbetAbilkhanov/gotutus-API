@@ -14,7 +14,7 @@ class Report extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'reporter_id',

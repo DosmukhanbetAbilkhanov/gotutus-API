@@ -15,11 +15,32 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->seedCities();
+        $this->seedUserTypes();
         $this->seedActivityTypes();
         $this->seedPlaces();
         $this->seedPlaceDiscounts();
         $this->seedUsers();
         $this->seedHangoutRequests();
+    }
+
+    private function seedUserTypes(): void
+    {
+        $now = now();
+
+        $types = [
+            ['slug' => 'client', 'name' => 'Client'],
+            ['slug' => 'admin', 'name' => 'Admin'],
+            ['slug' => 'city_manager', 'name' => 'City Manager'],
+        ];
+
+        foreach ($types as $type) {
+            DB::table('user_types')->insertOrIgnore([
+                'slug' => $type['slug'],
+                'name' => $type['name'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
     }
 
     private function seedCities(): void
@@ -1479,6 +1500,43 @@ class DatabaseSeeder extends Seeder
             ->where('language_code', 'en')
             ->pluck('city_id', 'name');
 
+        $userTypes = DB::table('user_types')->pluck('id', 'slug');
+        $clientTypeId = $userTypes['client'];
+        $adminTypeId = $userTypes['admin'];
+        $cityManagerTypeId = $userTypes['city_manager'];
+
+        // Seed admin user
+        DB::table('users')->insert([
+            'name' => 'Admin',
+            'email' => 'admin@companion.test',
+            'phone' => '+77000000000',
+            'age' => 30,
+            'gender' => Gender::Male->value,
+            'password' => $password,
+            'city_id' => $cityNames['Almaty'],
+            'status' => 'active',
+            'user_type_id' => $adminTypeId,
+            'phone_verified_at' => $now,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        // Seed city manager user (for Almaty)
+        DB::table('users')->insert([
+            'name' => 'Almaty Manager',
+            'email' => 'manager.almaty@companion.test',
+            'phone' => '+77000099999',
+            'age' => 28,
+            'gender' => Gender::Male->value,
+            'password' => $password,
+            'city_id' => $cityNames['Almaty'],
+            'status' => 'active',
+            'user_type_id' => $cityManagerTypeId,
+            'phone_verified_at' => $now,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
         $namesByCities = [
             $cityNames['Almaty'] => [
                 ['name' => 'Arman Bekmuratov', 'gender' => Gender::Male],
@@ -1531,6 +1589,7 @@ class DatabaseSeeder extends Seeder
                     'password' => $password,
                     'city_id' => $cityId,
                     'status' => 'active',
+                    'user_type_id' => $clientTypeId,
                     'phone_verified_at' => $now,
                     'created_at' => $now,
                     'updated_at' => $now,

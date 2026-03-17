@@ -18,7 +18,7 @@ class BlockedUserController extends Controller
     {
         $blockedUsers = $request->user()
             ->blockedUsers()
-            ->with('blockedUser')
+            ->with(['blockedUser.photos', 'blockedUser.city.translations'])
             ->latest('created_at')
             ->get();
 

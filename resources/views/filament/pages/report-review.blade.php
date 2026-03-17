@@ -25,7 +25,7 @@
                                 Report #{{ $report->id }}
                             </h3>
                             <p style="font-size: 0.875rem; color: #6b7280;">
-                                {{ $report->created_at->diffForHumans() }}
+                                {{ $report->created_at?->diffForHumans() ?? 'Unknown date' }}
                             </p>
                         </div>
                         <span style="display: inline-flex; align-items: center; border-radius: 9999px; background: #fef3c7; padding: 0.125rem 0.625rem; font-size: 0.75rem; font-weight: 500; color: #92400e;">

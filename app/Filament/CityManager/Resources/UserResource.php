@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\CityManager\Resources;
 
 use App\Enums\Gender;
 use App\Enums\UserStatus;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\City;
+use App\Filament\CityManager\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Models\UserType;
 use Filament\Forms;
@@ -24,11 +22,9 @@ class UserResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Users & Safety';
+    protected static string | \UnitEnum | null $navigationGroup = 'Users';
 
     protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationLabel = 'Client Users';
 
     public static function form(Schema $form): Schema
     {
@@ -52,11 +48,14 @@ class UserResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
-                \Filament\Schemas\Components\Section::make('Admin Controls')
+                \Filament\Schemas\Components\Section::make('Management')
                     ->schema([
                         Forms\Components\Select::make('status')
                             ->options(collect(UserStatus::cases())->mapWithKeys(fn ($s) => [$s->value => ucfirst($s->value)]))
                             ->required(),
+                        Forms\Components\Placeholder::make('user_type')
+                            ->label('User Type')
+                            ->content(fn (User $record): string => $record->userType?->name ?? 'Client'),
                     ]),
             ]);
     }
@@ -84,9 +83,6 @@ class UserResource extends Resource
                         'female' => 'pink',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('city_name')
-                    ->label('City')
-                    ->getStateUsing(fn (User $record) => $record->city?->translations->firstWhere('language_code', 'en')?->name),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->sortable()
@@ -98,18 +94,6 @@ class UserResource extends Resource
                     }),
                 Tables\Columns\IconColumn::make('is_online')
                     ->boolean()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('photos_count')
-                    ->counts('photos')
-                    ->label('Photos')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('hangout_requests_count')
-                    ->counts('hangoutRequests')
-                    ->label('Hangouts')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('reports_received_count')
-                    ->counts('reportsReceived')
-                    ->label('Reports')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -126,30 +110,8 @@ class UserResource extends Resource
                     ->options(collect(UserStatus::cases())->mapWithKeys(fn ($s) => [$s->value => ucfirst($s->value)])),
                 Tables\Filters\SelectFilter::make('gender')
                     ->options(collect(Gender::cases())->mapWithKeys(fn ($g) => [$g->value => ucfirst($g->value)])),
-                Tables\Filters\SelectFilter::make('city_id')
-                    ->label('City')
-                    ->options(function () {
-                        return City::with('translations')->get()->mapWithKeys(function ($city) {
-                            $name = $city->translations->firstWhere('language_code', 'en')?->name ?? "City #{$city->id}";
-                            return [$city->id => $name];
-                        });
-                    }),
                 Tables\Filters\TernaryFilter::make('is_online')
                     ->label('Online'),
-                Tables\Filters\Filter::make('has_reports')
-                    ->label('Has Reports')
-                    ->query(fn (Builder $query) => $query->has('reportsReceived'))
-                    ->toggle(),
-                Tables\Filters\Filter::make('created_at')
-                    ->form([
-                        Forms\Components\DatePicker::make('from'),
-                        Forms\Components\DatePicker::make('until'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when($data['from'], fn (Builder $q, $date) => $q->whereDate('created_at', '>=', $date))
-                            ->when($data['until'], fn (Builder $q, $date) => $q->whereDate('created_at', '<=', $date));
-                    }),
             ])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
@@ -226,17 +188,6 @@ class UserResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            RelationManagers\PhotosRelationManager::class,
-            RelationManagers\HangoutRequestsRelationManager::class,
-            RelationManagers\ReportsReceivedRelationManager::class,
-            RelationManagers\ReportsSentRelationManager::class,
-            RelationManagers\BlockedUsersRelationManager::class,
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
@@ -248,9 +199,11 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $clientTypeId = UserType::where('slug', UserType::SLUG_CLIENT)->value('id');
+
         return parent::getEloquentQuery()
-            ->whereHas('userType', fn (Builder $q) => $q->where('slug', UserType::SLUG_CLIENT))
-            ->with(['city.translations']);
+            ->where('city_id', auth()->user()->city_id)
+            ->where('user_type_id', $clientTypeId);
     }
 
     public static function canCreate(): bool

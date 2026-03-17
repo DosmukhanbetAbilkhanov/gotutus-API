@@ -34,10 +34,10 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'city_id',
         'status',
+        'user_type_id',
         'phone_verified_at',
         'is_online',
         'last_seen_at',
-        'is_admin',
     ];
 
     protected $hidden = [
@@ -55,7 +55,6 @@ class User extends Authenticatable implements FilamentUser
             'status' => UserStatus::class,
             'is_online' => 'boolean',
             'last_seen_at' => 'datetime',
-            'is_admin' => 'boolean',
         ];
     }
 
@@ -72,6 +71,11 @@ class User extends Authenticatable implements FilamentUser
     public function routeNotificationForFcm(): array
     {
         return $this->deviceTokens()->pluck('token')->toArray();
+    }
+
+    public function userType(): BelongsTo
+    {
+        return $this->belongsTo(UserType::class);
     }
 
     public function city(): BelongsTo
@@ -141,9 +145,28 @@ class User extends Authenticatable implements FilamentUser
         });
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->userType?->slug === UserType::SLUG_ADMIN;
+    }
+
+    public function isCityManager(): bool
+    {
+        return $this->userType?->slug === UserType::SLUG_CITY_MANAGER;
+    }
+
+    public function isClient(): bool
+    {
+        return $this->userType?->slug === UserType::SLUG_CLIENT;
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin === true;
+        return match ($panel->getId()) {
+            'admin' => $this->isAdmin(),
+            'city-manager' => $this->isCityManager(),
+            default => false,
+        };
     }
 
     public function isPhoneVerified(): bool
