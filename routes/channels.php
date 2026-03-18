@@ -7,6 +7,10 @@ Broadcast::channel('user.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+Broadcast::channel('city.{cityId}', function ($user, $cityId) {
+    return true; // Any authenticated user can listen (hangouts are public)
+});
+
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
     $conversation = Conversation::with(['hangoutRequest', 'joinRequest'])->find($conversationId);
 

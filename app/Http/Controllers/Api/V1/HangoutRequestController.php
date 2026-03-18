@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\HangoutRequestStatus;
 use App\Enums\JoinRequestStatus;
+use App\Events\NewHangoutBroadcast;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\HangoutRequest\StoreHangoutRequest;
 use App\Http\Requests\Api\V1\HangoutRequest\UpdateHangoutRequest;
@@ -106,6 +107,8 @@ class HangoutRequestController extends Controller
         ]);
 
         $hangout->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount']);
+
+        NewHangoutBroadcast::dispatch($hangout);
 
         return response()->json([
             'message' => __('hangout.created'),

@@ -1,6 +1,8 @@
 <x-filament-panels::page>
     <form wire:submit="save">
-        {{ $this->form }}
+        <div>
+            {{ $this->form }}
+        </div>
 
         <div class="mt-6">
             <x-filament::button type="submit" size="lg">
@@ -10,7 +12,7 @@
     </form>
 
     {{-- Color Preview --}}
-    @if($this->data)
+    {{-- @if($this->data)
         <div class="mt-8">
             <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Color Preview</h3>
             <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
@@ -42,5 +44,5 @@
                 @endforeach
             </div>
         </div>
-    @endif
+    @endif --}}
 </x-filament-panels::page>

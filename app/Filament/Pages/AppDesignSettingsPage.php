@@ -65,28 +65,29 @@ class AppDesignSettingsPage extends Page implements HasForms
     protected function colorsTab(): Tab
     {
         $colorFields = [
-            'primary' => 'Primary',
-            'primaryLight' => 'Primary Light',
-            'secondary' => 'Secondary',
-            'backgroundLight' => 'Background Light',
-            'backgroundDark' => 'Background Dark',
-            'textPrimary' => 'Text Primary',
-            'textSecondary' => 'Text Secondary',
-            'textTertiary' => 'Text Tertiary',
-            'inputBackground' => 'Input Background',
-            'border' => 'Border',
-            'divider' => 'Divider',
-            'success' => 'Success',
-            'error' => 'Error',
-            'warning' => 'Warning',
-            'messageMine' => 'Message Mine',
-            'messageTheirs' => 'Message Theirs',
+            'primary' => ['Primary', 'Buttons, selected nav items, active chips, links, focus borders, primary action icons'],
+            'primaryLight' => ['Primary Light', 'Subtle background tints, icon container backgrounds in empty states'],
+            'secondary' => ['Secondary', 'Online status indicator dot, positive badges, onboarding feature highlights'],
+            'backgroundLight' => ['Background Light', 'Alternative section backgrounds, empty list state containers'],
+            'backgroundDark' => ['Background Dark', 'Snackbar backgrounds, dark overlay elements'],
+            'textPrimary' => ['Text Primary', 'All headings (h1-h3), main body text, dialog titles, profile names'],
+            'textSecondary' => ['Text Secondary', 'Dates, timestamps, subtitles, unselected nav items, secondary icons, empty state descriptions'],
+            'textTertiary' => ['Text Tertiary', 'Hangout card times/locations, supplementary metadata'],
+            'inputBackground' => ['Input Background', 'Text field fill color, avatar placeholder background'],
+            'border' => ['Border', 'Input field borders (normal state), unselected chip borders, subtle dividers'],
+            'divider' => ['Divider', 'List dividers between items, section separators'],
+            'success' => ['Success', 'Completed status badges, discount badges, success notifications'],
+            'error' => ['Error', 'Validation errors, cancelled status badges, error input borders'],
+            'warning' => ['Warning', 'Warning banners (unverified phone, connectivity), caution indicators'],
+            'messageMine' => ['Message Mine', 'Chat bubble color for the current user\'s messages'],
+            'messageTheirs' => ['Message Theirs', 'Chat bubble color for the other user\'s messages'],
         ];
 
         $fields = [];
-        foreach ($colorFields as $key => $label) {
+        foreach ($colorFields as $key => [$label, $hint]) {
             $fields[] = ColorPicker::make("colors_{$key}")
                 ->label($label)
+                ->helperText($hint)
                 ->required();
         }
 
@@ -104,11 +105,26 @@ class AppDesignSettingsPage extends Page implements HasForms
     {
         $textStyles = ['h1', 'h2', 'h3', 'bodyLarge', 'bodyMedium', 'bodySmall', 'labelLarge', 'labelMedium', 'labelSmall', 'button', 'caption'];
 
+        $styleDescriptions = [
+            'h1' => 'Page titles: onboarding headings, login/register titles, feature tour screens',
+            'h2' => 'Section titles: profile user name, empty state titles, city selection title',
+            'h3' => 'Subsection titles: dialog titles, filter sheet headers, hangout detail sections',
+            'bodyLarge' => 'Main body text: onboarding descriptions, profile bio, form instructions',
+            'bodyMedium' => 'Secondary body text: snackbar messages, dialog content, form labels',
+            'bodySmall' => 'Small content: hangout card metadata (date/time/place), chat timestamps, conversation subtitles',
+            'labelLarge' => 'Strong labels: filter section headers, calendar header, form section labels',
+            'labelMedium' => 'Standard labels: hangout author name, conversation title, profile edit labels, chip labels',
+            'labelSmall' => 'Small labels: hangout join button text, secondary action labels, badge text',
+            'button' => 'Button text: all primary action buttons (ElevatedButton, OutlinedButton)',
+            'caption' => 'Smallest text: calendar dates, status badges, step indicators, timestamps, bottom nav labels',
+        ];
+
         $sections = [
             Section::make('Font Family')
                 ->schema([
                     TextInput::make('typography_fontFamily')
                         ->label('Font Family')
+                        ->helperText('Global font used for all text throughout the app')
                         ->required(),
                 ])
                 ->columns(1),
@@ -116,6 +132,7 @@ class AppDesignSettingsPage extends Page implements HasForms
 
         foreach ($textStyles as $style) {
             $label = ucfirst(preg_replace('/([A-Z])/', ' $1', $style));
+            $description = $styleDescriptions[$style] ?? '';
 
             $fields = [
                 TextInput::make("typography_{$style}_fontSize")
@@ -142,6 +159,7 @@ class AppDesignSettingsPage extends Page implements HasForms
             }
 
             $sections[] = Section::make($label)
+                ->description($description)
                 ->schema($fields)
                 ->columns(count($fields))
                 ->compact();
@@ -155,23 +173,24 @@ class AppDesignSettingsPage extends Page implements HasForms
     protected function spacingTab(): Tab
     {
         $spacingFields = [
-            'inputHeight' => 'Input Height',
-            'buttonHeight' => 'Button Height',
-            'bottomNavHeight' => 'Bottom Nav Height',
-            'fabSize' => 'FAB Size',
-            'avatarSmall' => 'Avatar Small',
-            'avatarMedium' => 'Avatar Medium',
-            'avatarLarge' => 'Avatar Large',
-            'inputPaddingH' => 'Input Padding H',
-            'inputPaddingV' => 'Input Padding V',
-            'chipPaddingH' => 'Chip Padding H',
-            'chipPaddingV' => 'Chip Padding V',
+            'inputHeight' => ['Input Height', 'Height of all text fields (login, register, profile edit, hangout forms)'],
+            'buttonHeight' => ['Button Height', 'Height of all action buttons (submit, save, join, etc.)'],
+            'bottomNavHeight' => ['Bottom Nav Height', 'Height of the bottom navigation bar on main screens'],
+            'fabSize' => ['FAB Size', 'Floating action button size (e.g. hangout detail actions)'],
+            'avatarSmall' => ['Avatar Small', 'Compact avatars: hangout card author photo, small profile pics in lists'],
+            'avatarMedium' => ['Avatar Medium', 'Standard avatars: conversation list, default user representations'],
+            'avatarLarge' => ['Avatar Large', 'Prominent avatars: profile headers, user detail screens'],
+            'inputPaddingH' => ['Input Padding H', 'Horizontal padding inside all text fields'],
+            'inputPaddingV' => ['Input Padding V', 'Vertical padding inside all text fields'],
+            'chipPaddingH' => ['Chip Padding H', 'Horizontal padding inside activity/filter chips'],
+            'chipPaddingV' => ['Chip Padding V', 'Vertical padding inside activity/filter chips'],
         ];
 
         $fields = [];
-        foreach ($spacingFields as $key => $label) {
+        foreach ($spacingFields as $key => [$label, $hint]) {
             $fields[] = TextInput::make("spacing_{$key}")
                 ->label($label)
+                ->helperText($hint)
                 ->numeric()
                 ->required();
         }
@@ -189,16 +208,17 @@ class AppDesignSettingsPage extends Page implements HasForms
     protected function borderRadiusTab(): Tab
     {
         $radiusFields = [
-            'default' => 'Default',
-            'large' => 'Large',
-            'xl' => 'XL',
-            'full' => 'Full (Circle)',
+            'default' => ['Default', 'Cards, input fields, dialogs, modals, general containers'],
+            'large' => ['Large', 'Emphasized containers, prominent cards'],
+            'xl' => ['XL', 'Extra-rounded elements, large modals'],
+            'full' => ['Full (Circle)', 'Buttons, chips, status badges, pill-shaped elements, circular avatars'],
         ];
 
         $fields = [];
-        foreach ($radiusFields as $key => $label) {
+        foreach ($radiusFields as $key => [$label, $hint]) {
             $fields[] = TextInput::make("border_radius_{$key}")
                 ->label($label)
+                ->helperText($hint)
                 ->numeric()
                 ->required();
         }
