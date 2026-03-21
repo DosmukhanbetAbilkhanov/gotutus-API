@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->seedActivityTypes();
         $this->seedPlaces();
         $this->seedPlaceDiscounts();
+        $this->seedPlaceWorkingHours();
         $this->seedUsers();
         $this->seedHangoutRequests();
     }
@@ -1488,6 +1489,41 @@ class DatabaseSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
+        }
+    }
+
+    private function seedPlaceWorkingHours(): void
+    {
+        $now = now();
+        $placeIds = DB::table('places')->orderBy('id')->pluck('id');
+
+        $schedules = [
+            // Standard restaurant hours
+            ['open' => '10:00', 'close' => '22:00'],
+            // Early morning cafe
+            ['open' => '08:00', 'close' => '20:00'],
+            // Late night bar
+            ['open' => '12:00', 'close' => '23:00'],
+            // Standard business hours
+            ['open' => '09:00', 'close' => '21:00'],
+        ];
+
+        foreach ($placeIds as $index => $placeId) {
+            $schedule = $schedules[$index % count($schedules)];
+
+            foreach (range(0, 6) as $day) {
+                // Sunday (6) closed for some places
+                $isClosed = $day === 6 && $index % 3 === 0;
+
+                DB::table('place_working_hours')->insert([
+                    'place_id' => $placeId,
+                    'day_of_week' => $day,
+                    'open_time' => $isClosed ? null : $schedule['open'],
+                    'close_time' => $isClosed ? null : $schedule['close'],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            }
         }
     }
 

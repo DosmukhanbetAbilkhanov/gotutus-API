@@ -21,7 +21,7 @@ class PlaceController extends Controller
 
         $places = Cache::remember($cacheKey, 1800, function () use ($cityId, $activityTypeId) {
             return Place::query()
-                ->with(['translations', 'activeDiscount', 'activityTypes.translations'])
+                ->with(['translations', 'activeDiscount', 'activityTypes.translations', 'workingHours'])
                 ->inCity($cityId)
                 ->when($activityTypeId, fn ($q, $id) => $q->forActivityType((int) $id))
                 ->get()

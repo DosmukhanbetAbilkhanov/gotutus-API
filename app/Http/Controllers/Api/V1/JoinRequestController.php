@@ -199,7 +199,7 @@ class JoinRequestController extends Controller
     {
         $joinRequests = $request->user()
             ->joinRequests()
-            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('status', 'approved'), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'conversation', 'suggestedPlace.translations'])
+            ->with(['hangoutRequest.user.photos' => fn ($q) => $q->where('status', 'approved'), 'hangoutRequest.activityType.translations', 'hangoutRequest.place.translations', 'hangoutRequest.place.workingHours', 'conversation', 'suggestedPlace.translations'])
             ->latest()
             ->paginate(20);
 

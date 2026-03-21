@@ -28,6 +28,16 @@ class PlaceFactory extends Factory
                     'address' => fake()->streetAddress(),
                 ]);
             }
+
+            // Create working hours (Monday=0 .. Sunday=6)
+            foreach (range(0, 6) as $day) {
+                $isClosed = $day === 6 && fake()->boolean(30); // 30% chance Sunday is closed
+                $place->workingHours()->create([
+                    'day_of_week' => $day,
+                    'open_time' => $isClosed ? null : fake()->randomElement(['08:00', '09:00', '10:00']),
+                    'close_time' => $isClosed ? null : fake()->randomElement(['20:00', '21:00', '22:00', '23:00']),
+                ]);
+            }
         });
     }
 }

@@ -28,6 +28,15 @@ class PlaceResource extends JsonResource
                 ];
             }),
             'activity_types' => ActivityTypeResource::collection($this->whenLoaded('activityTypes')),
+            'working_hours' => $this->when($this->relationLoaded('workingHours'), function () {
+                return $this->workingHours->map(function ($wh) {
+                    return [
+                        'day_of_week' => $wh->day_of_week,
+                        'open_time' => $wh->open_time,
+                        'close_time' => $wh->close_time,
+                    ];
+                });
+            }),
         ];
     }
 }

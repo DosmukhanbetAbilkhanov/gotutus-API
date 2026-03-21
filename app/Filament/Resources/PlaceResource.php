@@ -67,6 +67,41 @@ class PlaceResource extends Resource
                             ->addable(false)
                             ->deletable(false),
                     ]),
+                \Filament\Schemas\Components\Section::make('Working Hours')
+                    ->schema([
+                        Forms\Components\Repeater::make('workingHours')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\Select::make('day_of_week')
+                                    ->options([
+                                        0 => 'Monday',
+                                        1 => 'Tuesday',
+                                        2 => 'Wednesday',
+                                        3 => 'Thursday',
+                                        4 => 'Friday',
+                                        5 => 'Saturday',
+                                        6 => 'Sunday',
+                                    ])
+                                    ->required()
+                                    ->distinct(),
+                                Forms\Components\TextInput::make('open_time')
+                                    ->label('Open Time (HH:MM)')
+                                    ->placeholder('09:00')
+                                    ->maxLength(5)
+                                    ->helperText('Leave empty if closed'),
+                                Forms\Components\TextInput::make('close_time')
+                                    ->label('Close Time (HH:MM)')
+                                    ->placeholder('22:00')
+                                    ->maxLength(5)
+                                    ->helperText('Leave empty if closed'),
+                            ])
+                            ->defaultItems(7)
+                            ->minItems(7)
+                            ->maxItems(7)
+                            ->reorderable(false)
+                            ->addable(false)
+                            ->deletable(false),
+                    ]),
             ]);
     }
 

@@ -47,6 +47,11 @@ class Place extends Model
         return $this->hasMany(JoinRequest::class);
     }
 
+    public function workingHours(): HasMany
+    {
+        return $this->hasMany(PlaceWorkingHour::class)->orderBy('day_of_week');
+    }
+
     public function discounts(): HasMany
     {
         return $this->hasMany(PlaceDiscount::class);
