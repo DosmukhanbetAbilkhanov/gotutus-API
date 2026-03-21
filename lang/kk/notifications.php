@@ -15,4 +15,7 @@ return [
 
     'join_request_updated_title' => 'Сұраныс жаңартылды',
     'join_request_updated_body' => 'Сұранысыңыздың күйі жаңартылды.',
+
+    'discount_created_title' => 'Жаңа жеңілдік!',
+    'discount_created_body' => ':place :percent% жеңілдік ұсынады!',
 ];

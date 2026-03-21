@@ -15,4 +15,7 @@ return [
 
     'join_request_updated_title' => 'Запрос обновлён',
     'join_request_updated_body' => 'Статус вашего запроса был обновлён.',
+
+    'discount_created_title' => 'Новая скидка!',
+    'discount_created_body' => ':place предлагает скидку :percent%!',
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BillSplit;
 use App\Enums\HangoutRequestStatus;
 use App\Filament\Resources\HangoutRequestResource\Pages;
 use App\Filament\Resources\HangoutRequestResource\RelationManagers;
@@ -44,6 +45,10 @@ class HangoutRequestResource extends Resource
                         Forms\Components\TextInput::make('time')
                             ->disabled(),
                         Forms\Components\TextInput::make('max_participants')
+                            ->disabled(),
+                        Forms\Components\Select::make('bill_split')
+                            ->label('Bill Split')
+                            ->options(collect(BillSplit::cases())->mapWithKeys(fn ($s) => [$s->value => ucfirst(str_replace('_', ' ', $s->value))]))
                             ->disabled(),
                         Forms\Components\Textarea::make('notes')
                             ->disabled()
@@ -95,6 +100,17 @@ class HangoutRequestResource extends Resource
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('max_participants'),
+                Tables\Columns\TextColumn::make('bill_split')
+                    ->label('Bill Split')
+                    ->getStateUsing(fn (HangoutRequest $record) => $record->bill_split?->value)
+                    ->badge()
+                    ->color(fn ($state): string => match ($state) {
+                        'split_even' => 'info',
+                        'pay_own' => 'gray',
+                        'organizer_pays' => 'success',
+                        default => 'gray',
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('join_requests_count')
                     ->counts('joinRequests')
                     ->label('Joins')

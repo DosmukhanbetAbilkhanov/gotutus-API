@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlaceDiscountResource\Pages;
+use App\Models\City;
 use App\Models\Place;
 use App\Models\PlaceDiscount;
 use Filament\Forms;
@@ -27,10 +28,27 @@ class PlaceDiscountResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('city_id')
+                    ->label('City')
+                    ->options(function () {
+                        return City::with('translations')->get()->mapWithKeys(function ($city) {
+                            $name = $city->translations->firstWhere('language_code', 'en')?->name ?? "City #{$city->id}";
+                            return [$city->id => $name];
+                        });
+                    })
+                    ->searchable()
+                    ->reactive()
+                    ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set) => $set('place_id', null))
+                    ->dehydrated(false),
                 Forms\Components\Select::make('place_id')
                     ->label('Place')
-                    ->options(function () {
-                        return Place::with('translations')->get()->mapWithKeys(function ($place) {
+                    ->options(function (\Filament\Schemas\Components\Utilities\Get $get) {
+                        $cityId = $get('city_id');
+                        $query = Place::with('translations');
+                        if ($cityId) {
+                            $query->where('city_id', $cityId);
+                        }
+                        return $query->get()->mapWithKeys(function ($place) {
                             $name = $place->translations->firstWhere('language_code', 'en')?->name ?? "Place #{$place->id}";
                             return [$place->id => $name];
                         });

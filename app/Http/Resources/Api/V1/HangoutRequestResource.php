@@ -30,6 +30,7 @@ class HangoutRequestResource extends JsonResource
             'status' => $this->status?->value,
             'notes' => $this->notes,
             'max_participants' => $this->max_participants,
+            'bill_split' => $this->bill_split?->value,
             'approved_join_requests_count' => $this->approved_join_requests_count ?? null,
             'join_requests_count' => $this->whenCounted('joinRequests'),
             'is_owner' => $this->when(

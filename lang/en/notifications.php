@@ -22,4 +22,7 @@ return [
     'photo_rejected_body' => 'Your photo was not approved.',
     'photo_reviewed_title' => 'Photo Reviewed',
     'photo_reviewed_body' => 'Your photo has been reviewed.',
+
+    'discount_created_title' => 'New Discount Available!',
+    'discount_created_body' => ':place is offering :percent% off!',
 ];

@@ -25,6 +25,7 @@ class StoreHangoutRequest extends FormRequest
             'time' => ['nullable', 'date_format:H:i'],
             'notes' => ['nullable', 'string', 'max:500'],
             'max_participants' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'bill_split' => ['nullable', 'string', 'in:split_even,pay_own,organizer_pays'],
         ];
     }
 }

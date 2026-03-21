@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\BillSplit;
 use App\Enums\HangoutRequestStatus;
 use App\Enums\JoinRequestStatus;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +28,7 @@ class HangoutRequest extends Model
         'status',
         'notes',
         'max_participants',
+        'bill_split',
     ];
 
     protected function casts(): array
@@ -35,6 +37,7 @@ class HangoutRequest extends Model
             'date' => 'date',
             'time' => 'datetime:H:i',
             'status' => HangoutRequestStatus::class,
+            'bill_split' => BillSplit::class,
         ];
     }
 
