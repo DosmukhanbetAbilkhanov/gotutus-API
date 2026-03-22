@@ -28,6 +28,13 @@ class CityResource extends Resource
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active')
                     ->default(true),
+                Forms\Components\TextInput::make('ad_frequency')
+                    ->label('Ad Frequency')
+                    ->numeric()
+                    ->default(5)
+                    ->helperText('Show an advertisement after every N hangouts in the feed')
+                    ->minValue(1)
+                    ->maxValue(100),
                 \Filament\Schemas\Components\Section::make('Translations')
                     ->schema([
                         Forms\Components\Repeater::make('translations')

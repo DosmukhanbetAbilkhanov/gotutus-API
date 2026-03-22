@@ -20,6 +20,7 @@ class CityResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'ad_frequency' => $this->ad_frequency,
         ];
     }
 }

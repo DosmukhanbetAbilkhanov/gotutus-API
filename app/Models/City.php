@@ -17,6 +17,7 @@ class City extends Model
 
     protected $fillable = [
         'is_active',
+        'ad_frequency',
     ];
 
     protected function casts(): array
@@ -44,6 +45,11 @@ class City extends Model
     public function hangoutRequests(): HasMany
     {
         return $this->hasMany(HangoutRequest::class);
+    }
+
+    public function placeAdvertisements(): HasMany
+    {
+        return $this->hasMany(PlaceAdvertisement::class);
     }
 
     public function scopeActive(Builder $query): Builder
