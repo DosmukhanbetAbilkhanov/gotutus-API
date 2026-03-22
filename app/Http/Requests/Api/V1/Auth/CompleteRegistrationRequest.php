@@ -26,6 +26,8 @@ class CompleteRegistrationRequest extends FormRequest
             'city_id' => ['required', 'integer', 'exists:cities,id'],
             'age' => ['nullable', 'integer', 'min:18', 'max:100'],
             'gender' => ['nullable', 'string', 'in:male,female,other'],
+            'public_offer_accepted' => ['required', 'accepted'],
+            'public_offer_version' => ['required', 'string', 'max:20'],
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\Auth\CompleteRegistrationRequest;
 use App\Http\Requests\Api\V1\Auth\SendRegistrationCodeRequest;
 use App\Http\Requests\Api\V1\Auth\VerifyRegistrationCodeRequest;
 use App\Http\Resources\Api\V1\UserResource;
+use App\Models\LegalPage;
 use App\Models\User;
 use App\Services\MobizonSmsService;
 use App\Services\TokenService;
@@ -84,12 +85,21 @@ class RegisterController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        // Validate that the submitted offer version matches the currently active one
+        $activePage = LegalPage::getActive(LegalPage::SLUG_PUBLIC_OFFER);
+        if ($activePage && $activePage->version !== $request->validated('public_offer_version')) {
+            return response()->json([
+                'message' => __('legal.offer_version_mismatch'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         [$user, $tokenData] = DB::transaction(function () use ($request, $phone, $verificationToken) {
             $user = User::create([
-                ...$request->safe()->except(['verification_token', 'password_confirmation']),
+                ...$request->safe()->except(['verification_token', 'password_confirmation', 'public_offer_accepted']),
                 'phone' => $phone,
                 'phone_verified_at' => now(),
                 'status' => \App\Enums\UserStatus::Active,
+                'public_offer_accepted_at' => now(),
             ]);
 
             $tokenData = $this->tokenService->createTokenPair($user);

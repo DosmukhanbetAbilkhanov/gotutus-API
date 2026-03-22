@@ -38,6 +38,8 @@ class User extends Authenticatable implements FilamentUser
         'phone_verified_at',
         'is_online',
         'last_seen_at',
+        'public_offer_accepted_at',
+        'public_offer_version',
     ];
 
     protected $hidden = [
@@ -55,6 +57,7 @@ class User extends Authenticatable implements FilamentUser
             'status' => UserStatus::class,
             'is_online' => 'boolean',
             'last_seen_at' => 'datetime',
+            'public_offer_accepted_at' => 'datetime',
         ];
     }
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\CityController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DeviceTokenController;
 use App\Http\Controllers\Api\V1\HangoutRequestController;
+use App\Http\Controllers\Api\V1\LegalPageController;
 use App\Http\Controllers\Api\V1\JoinRequestController;
 use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -45,6 +46,7 @@ Route::get('activity-types', [ActivityTypeController::class, 'index']);
 Route::get('app-design', [AppDesignSettingController::class, 'show']);
 Route::get('hangout-requests', [HangoutRequestController::class, 'index']);
 Route::get('hangout-requests/{hangoutRequest}', [HangoutRequestController::class, 'show']);
+Route::get('legal-pages/{slug}', [LegalPageController::class, 'show']);
 
 /*
 |--------------------------------------------------------------------------
