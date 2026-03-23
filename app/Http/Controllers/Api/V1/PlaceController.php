@@ -31,4 +31,18 @@ class PlaceController extends Controller
 
         return PlaceResource::collection($places);
     }
+
+    public function show(Place $place): PlaceResource
+    {
+        $place->load([
+            'translations',
+            'city.translations',
+            'activeDiscount',
+            'activityTypes.translations',
+            'workingHours',
+            'photos',
+        ]);
+
+        return new PlaceResource($place);
+    }
 }

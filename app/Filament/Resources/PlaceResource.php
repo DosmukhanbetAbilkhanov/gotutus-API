@@ -41,6 +41,36 @@ class PlaceResource extends Resource
                     ->relationship('activityTypes', 'slug')
                     ->label('Activity Types')
                     ->columns(2),
+                \Filament\Schemas\Components\Section::make('Logo & Contacts')
+                    ->schema([
+                        Forms\Components\FileUpload::make('logo_path')
+                            ->label('Logo')
+                            ->image()
+                            ->disk('public')
+                            ->directory('places/logos')
+                            ->maxSize(2048)
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('1:1')
+                            ->imageResizeTargetWidth('400')
+                            ->imageResizeTargetHeight('400'),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Phone')
+                            ->tel()
+                            ->maxLength(20),
+                        Forms\Components\TextInput::make('website')
+                            ->label('Website')
+                            ->url()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('instagram')
+                            ->label('Instagram')
+                            ->maxLength(255)
+                            ->placeholder('@username or full URL'),
+                        Forms\Components\TextInput::make('two_gis_url')
+                            ->label('2GIS URL')
+                            ->url()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
                 \Filament\Schemas\Components\Section::make('Translations')
                     ->schema([
                         Forms\Components\Repeater::make('translations')
@@ -59,6 +89,10 @@ class PlaceResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('address')
                                     ->maxLength(255),
+                                Forms\Components\Textarea::make('description')
+                                    ->label('Description')
+                                    ->rows(3)
+                                    ->maxLength(1000),
                             ])
                             ->defaultItems(3)
                             ->minItems(3)
@@ -66,6 +100,30 @@ class PlaceResource extends Resource
                             ->reorderable(false)
                             ->addable(false)
                             ->deletable(false),
+                    ]),
+                \Filament\Schemas\Components\Section::make('Photos')
+                    ->schema([
+                        Forms\Components\Repeater::make('photos')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\FileUpload::make('path')
+                                    ->label('Photo')
+                                    ->image()
+                                    ->disk('public')
+                                    ->directory('places/photos')
+                                    ->required()
+                                    ->maxSize(5120),
+                                Forms\Components\TextInput::make('sort_order')
+                                    ->label('Sort Order')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->minValue(0),
+                            ])
+                            ->defaultItems(0)
+                            ->reorderable(true)
+                            ->addable(true)
+                            ->deletable(true)
+                            ->maxItems(20),
                     ]),
                 \Filament\Schemas\Components\Section::make('Working Hours')
                     ->schema([
@@ -111,6 +169,11 @@ class PlaceResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('logo_path')
+                    ->label('Logo')
+                    ->disk('public')
+                    ->circular()
+                    ->defaultImageUrl(fn () => null),
                 Tables\Columns\TextColumn::make('name_en')
                     ->label('Name (EN)')
                     ->getStateUsing(fn (Place $record) => $record->translations->firstWhere('language_code', 'en')?->name)
@@ -135,6 +198,10 @@ class PlaceResource extends Resource
                 Tables\Columns\TextColumn::make('activity_types_list')
                     ->label('Activity Types')
                     ->getStateUsing(fn (Place $record) => $record->activityTypes->pluck('slug')->join(', ')),
+                Tables\Columns\TextColumn::make('photos_count')
+                    ->counts('photos')
+                    ->label('Photos')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('discount')
                     ->label('Active Discount')
                     ->getStateUsing(fn (Place $record) => $record->activeDiscount?->discount_percent ? "{$record->activeDiscount->discount_percent}%" : 'None'),

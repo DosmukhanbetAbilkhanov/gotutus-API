@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
     */
 
     Route::get('places', [PlaceController::class, 'index']);
+    Route::get('places/{place}', [PlaceController::class, 'show']);
 
     /*
     |--------------------------------------------------------------------------

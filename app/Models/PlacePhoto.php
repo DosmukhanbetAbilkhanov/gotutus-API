@@ -6,21 +6,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
-class PlaceTranslation extends Model
+class PlacePhoto extends Model
 {
-    public $timestamps = false;
-
     protected $fillable = [
         'place_id',
-        'language_code',
-        'name',
-        'address',
-        'description',
+        'path',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'sort_order' => 'integer',
     ];
 
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return Storage::disk('public')->url($this->path);
     }
 }

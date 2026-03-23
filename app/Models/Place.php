@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 
 class Place extends Model
 {
@@ -20,6 +21,11 @@ class Place extends Model
 
     protected $fillable = [
         'city_id',
+        'logo_path',
+        'phone',
+        'website',
+        'instagram',
+        'two_gis_url',
     ];
 
     public function city(): BelongsTo
@@ -82,8 +88,27 @@ class Place extends Model
         });
     }
 
+    public function photos(): HasMany
+    {
+        return $this->hasMany(PlacePhoto::class)->orderBy('sort_order');
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (!$this->logo_path) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->logo_path);
+    }
+
     public function getAddressAttribute(): ?string
     {
         return $this->getTranslatedAttribute('address');
+    }
+
+    public function getDescriptionAttribute(): ?string
+    {
+        return $this->getTranslatedAttribute('description');
     }
 }

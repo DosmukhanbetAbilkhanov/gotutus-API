@@ -21,6 +21,12 @@ class PlaceResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'address' => $this->address,
+            'description' => $this->description,
+            'logo_url' => $this->logo_url,
+            'phone' => $this->phone,
+            'website' => $this->website,
+            'instagram' => $this->instagram,
+            'two_gis_url' => $this->two_gis_url,
             'city' => new CityResource($this->whenLoaded('city')),
             'discount' => $this->when($this->relationLoaded('activeDiscount') && $this->activeDiscount, function () {
                 return [
@@ -34,6 +40,15 @@ class PlaceResource extends JsonResource
                         'day_of_week' => $wh->day_of_week,
                         'open_time' => $wh->open_time,
                         'close_time' => $wh->close_time,
+                    ];
+                });
+            }),
+            'photos' => $this->when($this->relationLoaded('photos'), function () {
+                return $this->photos->map(function ($photo) {
+                    return [
+                        'id' => $photo->id,
+                        'url' => $photo->url,
+                        'sort_order' => $photo->sort_order,
                     ];
                 });
             }),
