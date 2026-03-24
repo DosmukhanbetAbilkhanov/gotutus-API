@@ -27,7 +27,7 @@ class PlaceResource extends JsonResource
             'website' => $this->website,
             'instagram' => $this->instagram,
             'two_gis_url' => $this->two_gis_url,
-            'city' => new CityResource($this->whenLoaded('city')),
+            'city' => $this->whenLoaded('city', fn () => new CityResource($this->city)),
             'discount' => $this->when($this->relationLoaded('activeDiscount') && $this->activeDiscount, function () {
                 return [
                     'percent' => $this->activeDiscount->discount_percent,

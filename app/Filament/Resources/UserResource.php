@@ -107,6 +107,29 @@ class UserResource extends Resource
                     ->counts('hangoutRequests')
                     ->label('Hangouts')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('trust_score')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state): string => match (true) {
+                        $state === null => 'gray',
+                        (float) $state >= 4.0 => 'success',
+                        (float) $state >= 3.0 => 'warning',
+                        default => 'danger',
+                    })
+                    ->formatStateUsing(fn ($state) => $state !== null ? number_format((float) $state, 2) : 'N/A')
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('average_rating')
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state !== null ? number_format((float) $state, 2) . ' / 5' : 'N/A')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('ratings_count')
+                    ->sortable()
+                    ->label('Ratings')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('attendance_rate')
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state !== null ? number_format((float) $state, 1) . '%' : 'N/A')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('reports_received_count')
                     ->counts('reportsReceived')
                     ->label('Reports')

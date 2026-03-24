@@ -42,6 +42,26 @@ class HangoutRequestResource extends JsonResource
                 $user !== null,
                 fn () => $this->my_conversation_id,
             ),
+            'has_submitted_attendance' => $this->when(
+                $user !== null && $user->id === $this->user_id && $this->status?->value === 'completed',
+                fn () => $this->attendanceReports()->where('reporter_user_id', $user->id)->exists(),
+            ),
+            'my_ratings' => $this->when(
+                $user !== null && $this->status?->value === 'completed',
+                fn () => $this->ratings()->where('rater_user_id', $user->id)->pluck('rated_user_id'),
+            ),
+            'my_place_rating' => $this->when(
+                $user !== null && $user->id === $this->user_id && $this->status?->value === 'completed' && $this->place_id !== null,
+                fn () => $this->placeRating()?->where('user_id', $user->id)->first()?->rating,
+            ),
+            'my_place_complaints' => $this->when(
+                $user !== null && $user->id === $this->user_id && $this->status?->value === 'completed' && $this->place_id !== null,
+                fn () => $this->placeComplaints()->where('user_id', $user->id)->pluck('type'),
+            ),
+            'participants' => $this->when(
+                $this->status?->value === 'completed',
+                fn () => $this->getCompletedParticipants(),
+            ),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

@@ -30,6 +30,10 @@ class UserResource extends JsonResource
             'city' => new CityResource($this->whenLoaded('city')),
             'photos' => UserPhotoResource::collection($this->whenLoaded('photos')),
             'phone_verified' => $this->isPhoneVerified(),
+            'trust_score' => $this->trust_score,
+            'ratings_count' => $this->ratings_count ?? 0,
+            'average_rating' => $this->average_rating,
+            'attendance_rate' => $this->attendance_rate,
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

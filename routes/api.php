@@ -19,6 +19,10 @@ use App\Http\Controllers\Api\V1\MessageController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PlaceAdvertisementController;
 use App\Http\Controllers\Api\V1\PlaceController;
+use App\Http\Controllers\Api\V1\AttendanceReportController;
+use App\Http\Controllers\Api\V1\HangoutRatingController;
+use App\Http\Controllers\Api\V1\PlaceComplaintController;
+use App\Http\Controllers\Api\V1\PlaceRatingController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserPhotoController;
@@ -139,6 +143,16 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
 
     Route::post('hangout-requests/{hangoutRequest}/close', [HangoutRequestController::class, 'close']);
     Route::post('hangout-requests/{hangoutRequest}/complete', [HangoutRequestController::class, 'complete']);
+
+    // Attendance & Ratings
+    Route::get('hangout-requests/{hangoutRequest}/attendance', [AttendanceReportController::class, 'index']);
+    Route::post('hangout-requests/{hangoutRequest}/attendance', [AttendanceReportController::class, 'store']);
+    Route::get('hangout-requests/{hangoutRequest}/ratings', [HangoutRatingController::class, 'index']);
+    Route::post('hangout-requests/{hangoutRequest}/ratings', [HangoutRatingController::class, 'store']);
+    Route::get('hangout-requests/{hangoutRequest}/place-rating', [PlaceRatingController::class, 'show']);
+    Route::post('hangout-requests/{hangoutRequest}/place-rating', [PlaceRatingController::class, 'store']);
+    Route::get('hangout-requests/{hangoutRequest}/place-complaints', [PlaceComplaintController::class, 'index']);
+    Route::post('hangout-requests/{hangoutRequest}/place-complaints', [PlaceComplaintController::class, 'store']);
 
     // Nested join request creation and listing
     Route::post('hangout-requests/{hangoutRequest}/join', [JoinRequestController::class, 'store']);

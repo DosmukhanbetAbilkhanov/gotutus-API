@@ -111,4 +111,14 @@ class Place extends Model
     {
         return $this->getTranslatedAttribute('description');
     }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(PlaceRating::class);
+    }
+
+    public function complaints(): HasMany
+    {
+        return $this->hasMany(PlaceComplaint::class);
+    }
 }

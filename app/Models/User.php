@@ -40,6 +40,10 @@ class User extends Authenticatable implements FilamentUser
         'last_seen_at',
         'public_offer_accepted_at',
         'public_offer_version',
+        'trust_score',
+        'ratings_count',
+        'average_rating',
+        'attendance_rate',
     ];
 
     protected $hidden = [
@@ -58,6 +62,10 @@ class User extends Authenticatable implements FilamentUser
             'is_online' => 'boolean',
             'last_seen_at' => 'datetime',
             'public_offer_accepted_at' => 'datetime',
+            'trust_score' => 'decimal:2',
+            'ratings_count' => 'integer',
+            'average_rating' => 'decimal:2',
+            'attendance_rate' => 'decimal:2',
         ];
     }
 
@@ -170,6 +178,36 @@ class User extends Authenticatable implements FilamentUser
             'city-manager' => $this->isCityManager(),
             default => false,
         };
+    }
+
+    public function ratingsReceived(): HasMany
+    {
+        return $this->hasMany(HangoutRating::class, 'rated_user_id');
+    }
+
+    public function ratingsGiven(): HasMany
+    {
+        return $this->hasMany(HangoutRating::class, 'rater_user_id');
+    }
+
+    public function attendanceReportsReceived(): HasMany
+    {
+        return $this->hasMany(AttendanceReport::class, 'reported_user_id');
+    }
+
+    public function attendanceReportsGiven(): HasMany
+    {
+        return $this->hasMany(AttendanceReport::class, 'reporter_user_id');
+    }
+
+    public function placeRatings(): HasMany
+    {
+        return $this->hasMany(PlaceRating::class);
+    }
+
+    public function placeComplaints(): HasMany
+    {
+        return $this->hasMany(PlaceComplaint::class);
     }
 
     public function isPhoneVerified(): bool

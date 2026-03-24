@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
+    /** @var array<int, array<string, string>> City names by city ID and language code */
+    private array $cityNamesById = [];
+
     public function run(): void
     {
         $this->seedCities();
@@ -139,6 +142,12 @@ class DatabaseSeeder extends Seeder
         $cityNames = DB::table('city_translations')
             ->where('language_code', 'en')
             ->pluck('city_id', 'name');
+
+        // Build city name lookup by city ID for all languages
+        $allCityTranslations = DB::table('city_translations')->get();
+        foreach ($allCityTranslations as $translation) {
+            $this->cityNamesById[$translation->city_id][$translation->language_code] = $translation->name;
+        }
 
         $almatyId = $cityNames['Almaty'];
         $astanaId = $cityNames['Astana'];
@@ -1445,10 +1454,14 @@ class DatabaseSeeder extends Seeder
 
         $translationRows = [];
         foreach ($translations as $languageCode => $data) {
+            // Append city name to place name for easy identification
+            $cityName = $this->cityNamesById[$cityId][$languageCode] ?? '';
+            $placeName = $cityName ? "{$data['name']} {$cityName}" : $data['name'];
+
             $translationRows[] = [
                 'place_id' => $placeId,
                 'language_code' => $languageCode,
-                'name' => $data['name'],
+                'name' => $placeName,
                 'address' => $data['address'],
             ];
         }

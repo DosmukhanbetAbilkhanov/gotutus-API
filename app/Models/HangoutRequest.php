@@ -29,6 +29,7 @@ class HangoutRequest extends Model
         'notes',
         'max_participants',
         'bill_split',
+        'feedback_requested_at',
     ];
 
     protected function casts(): array
@@ -38,6 +39,7 @@ class HangoutRequest extends Model
             'time' => 'datetime:H:i',
             'status' => HangoutRequestStatus::class,
             'bill_split' => BillSplit::class,
+            'feedback_requested_at' => 'datetime',
         ];
     }
 
@@ -74,6 +76,40 @@ class HangoutRequest extends Model
     public function confirmedJoinRequest(): HasOne
     {
         return $this->hasOne(JoinRequest::class)->confirmed();
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(HangoutRating::class);
+    }
+
+    public function attendanceReports(): HasMany
+    {
+        return $this->hasMany(AttendanceReport::class);
+    }
+
+    public function placeRating(): HasOne
+    {
+        return $this->hasOne(PlaceRating::class);
+    }
+
+    public function placeComplaints(): HasMany
+    {
+        return $this->hasMany(PlaceComplaint::class);
+    }
+
+    public function getCompletedParticipants(): array
+    {
+        $participants = collect([$this->user]);
+        $joiners = $this->joinRequests()
+            ->whereIn('status', ['approved', 'confirmed'])
+            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved')])
+            ->get()
+            ->pluck('user');
+
+        return \App\Http\Resources\Api\V1\UserResource::collection(
+            $participants->merge($joiners)->unique('id')
+        )->resolve();
     }
 
     public function scopeOpen(Builder $query): Builder
