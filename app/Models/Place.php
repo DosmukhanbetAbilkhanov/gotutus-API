@@ -21,6 +21,8 @@ class Place extends Model
 
     protected $fillable = [
         'city_id',
+        'latitude',
+        'longitude',
         'logo_path',
         'phone',
         'website',

@@ -198,6 +198,42 @@ class PlaceResource extends Resource
                         true: fn ($query) => $query->whereHas('activeDiscount'),
                         false: fn ($query) => $query->whereDoesntHave('activeDiscount'),
                     ),
+                Tables\Filters\TernaryFilter::make('has_activity_types')
+                    ->label('Has Activity Types')
+                    ->queries(
+                        true: fn ($query) => $query->whereHas('activityTypes'),
+                        false: fn ($query) => $query->whereDoesntHave('activityTypes'),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_description')
+                    ->label('Has Description')
+                    ->queries(
+                        true: fn ($query) => $query->whereHas('translations', fn ($q) => $q->whereNotNull('description')->where('description', '!=', '')),
+                        false: fn ($query) => $query->whereDoesntHave('translations', fn ($q) => $q->whereNotNull('description')->where('description', '!=', '')),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_photo')
+                    ->label('Has Photo')
+                    ->queries(
+                        true: fn ($query) => $query->whereHas('photos'),
+                        false: fn ($query) => $query->whereDoesntHave('photos'),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_phone')
+                    ->label('Has Phone')
+                    ->queries(
+                        true: fn ($query) => $query->whereNotNull('phone')->where('phone', '!=', ''),
+                        false: fn ($query) => $query->where(fn ($q) => $q->whereNull('phone')->orWhere('phone', '')),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_working_hours')
+                    ->label('Has Working Hours')
+                    ->queries(
+                        true: fn ($query) => $query->whereHas('workingHours'),
+                        false: fn ($query) => $query->whereDoesntHave('workingHours'),
+                    ),
+                Tables\Filters\TernaryFilter::make('has_instagram')
+                    ->label('Has Instagram')
+                    ->queries(
+                        true: fn ($query) => $query->whereNotNull('instagram')->where('instagram', '!=', ''),
+                        false: fn ($query) => $query->where(fn ($q) => $q->whereNull('instagram')->orWhere('instagram', '')),
+                    ),
             ])
             ->actions([
                 \Filament\Actions\EditAction::make(),
