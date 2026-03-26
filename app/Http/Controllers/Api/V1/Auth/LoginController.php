@@ -47,12 +47,16 @@ class LoginController extends Controller
             'last_seen_at' => now(),
         ]);
 
+        // Revoke all existing sessions so only the latest device stays active
+        $user->tokens()->delete();
+        $this->tokenService->revokeAllRefreshTokens($user);
+
         $tokenData = $this->tokenService->createTokenPair($user);
 
         return response()->json([
             'message' => __('auth.login_success'),
             'data' => [
-                'user' => new UserResource($user->load('city.translations')),
+                'user' => new UserResource($user->load(['city.translations', 'photos'])),
                 'token' => $tokenData['access_token'], // backward compatibility
                 ...$tokenData,
             ],

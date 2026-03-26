@@ -113,7 +113,7 @@ class RegisterController extends Controller
         return response()->json([
             'message' => __('auth.registered'),
             'data' => [
-                'user' => new UserResource($user->load('city.translations')),
+                'user' => new UserResource($user->load(['city.translations', 'photos'])),
                 'token' => $tokenData['access_token'], // backward compatibility
                 ...$tokenData,
             ],

@@ -57,7 +57,7 @@ class RefreshTokenController extends Controller
         return response()->json([
             'message' => __('auth.token_refreshed'),
             'data' => [
-                'user' => new UserResource($user->load('city.translations')),
+                'user' => new UserResource($user->load(['city.translations', 'photos'])),
                 ...$tokenData,
             ],
         ]);
