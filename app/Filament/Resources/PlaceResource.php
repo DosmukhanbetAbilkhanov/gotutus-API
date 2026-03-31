@@ -281,6 +281,7 @@ class PlaceResource extends Resource
     {
         return [
             RelationManagers\DiscountsRelationManager::class,
+            RelationManagers\PromotionsRelationManager::class,
             RelationManagers\ActivityTypesRelationManager::class,
         ];
     }

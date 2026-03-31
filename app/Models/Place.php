@@ -123,4 +123,16 @@ class Place extends Model
     {
         return $this->hasMany(PlaceComplaint::class);
     }
+
+    public function promotions(): HasMany
+    {
+        return $this->hasMany(PlacePromotion::class);
+    }
+
+    public function activePromotions(): HasMany
+    {
+        return $this->hasMany(PlacePromotion::class)
+            ->where('is_active', true)
+            ->orderBy('day_of_week');
+    }
 }

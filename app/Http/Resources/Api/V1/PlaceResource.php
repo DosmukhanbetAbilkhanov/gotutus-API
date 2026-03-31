@@ -33,6 +33,16 @@ class PlaceResource extends JsonResource
                     'percent' => $this->activeDiscount->discount_percent,
                 ];
             }),
+            'promotions' => $this->when($this->relationLoaded('activePromotions'), function () {
+                return $this->activePromotions->map(function ($p) {
+                    return [
+                        'id' => $p->id,
+                        'day_of_week' => $p->day_of_week,
+                        'title' => $p->title,
+                        'discount_percent' => $p->discount_percent,
+                    ];
+                });
+            }),
             'activity_types' => ActivityTypeResource::collection($this->whenLoaded('activityTypes')),
             'working_hours' => $this->when($this->relationLoaded('workingHours'), function () {
                 return $this->workingHours->map(function ($wh) {
