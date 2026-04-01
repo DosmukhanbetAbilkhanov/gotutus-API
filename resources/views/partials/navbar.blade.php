@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="{{ route('landing') }}" class="flex items-center gap-2.5 group">
-                <img src="{{ asset('storage/brand/logo.png') }}" alt="Tanys" class="w-9 h-9 rounded-xl">
+                <img src="{{ asset('images/brand/logo.png') }}" alt="Tanys" class="w-9 h-9 rounded-xl">
                 <span class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">Tanys</span>
             </a>
 
