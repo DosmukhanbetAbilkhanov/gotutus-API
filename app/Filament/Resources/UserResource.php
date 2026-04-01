@@ -15,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Database\Seeders\ProductionSeeder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -159,6 +160,10 @@ class UserResource extends Resource
                     }),
                 Tables\Filters\TernaryFilter::make('is_online')
                     ->label('Online'),
+                Tables\Filters\Filter::make('test_users')
+                    ->label('Test Users Only')
+                    ->query(fn (Builder $query) => $query->where('email', 'like', '%'.ProductionSeeder::TEST_EMAIL_DOMAIN))
+                    ->toggle(),
                 Tables\Filters\Filter::make('has_reports')
                     ->label('Has Reports')
                     ->query(fn (Builder $query) => $query->has('reportsReceived'))
@@ -207,6 +212,34 @@ class UserResource extends Resource
                         Notification::make()->title('User activated')->success()->send();
                     }),
             ])
+            ->headerActions([
+                \Filament\Actions\Action::make('delete_all_test_users')
+                    ->label('Delete All Test Users')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Delete All Test Users')
+                    ->modalDescription('This will permanently delete ALL users with @companion.test email addresses and their related data (tokens, interests, photos, join requests, hangout requests, messages, reports, etc.). This action cannot be undone.')
+                    ->action(function () {
+                        $testUsers = User::where('email', 'like', '%'.ProductionSeeder::TEST_EMAIL_DOMAIN)->get();
+
+                        if ($testUsers->isEmpty()) {
+                            Notification::make()->title('No test users found')->warning()->send();
+                            return;
+                        }
+
+                        $count = $testUsers->count();
+                        foreach ($testUsers as $user) {
+                            $user->tokens()->delete();
+                            $user->delete();
+                        }
+
+                        Notification::make()
+                            ->title("{$count} test users deleted")
+                            ->success()
+                            ->send();
+                    }),
+            ])
             ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([
                     \Filament\Actions\BulkAction::make('ban_selected')
@@ -243,6 +276,21 @@ class UserResource extends Resource
                         ->action(function (Collection $records) {
                             $records->each(fn (User $record) => $record->update(['status' => UserStatus::Active]));
                             Notification::make()->title('Selected users activated')->success()->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                    \Filament\Actions\BulkAction::make('delete_selected')
+                        ->label('Delete Selected')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalDescription('Permanently delete selected users and all their related data. This cannot be undone.')
+                        ->action(function (Collection $records) {
+                            $count = $records->count();
+                            $records->each(function (User $record) {
+                                $record->tokens()->delete();
+                                $record->delete();
+                            });
+                            Notification::make()->title("{$count} users deleted")->success()->send();
                         })
                         ->deselectRecordsAfterCompletion(),
                 ]),
