@@ -70,7 +70,8 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->description(fn (User $record) => str_ends_with($record->email ?? '', ProductionSeeder::TEST_EMAIL_DOMAIN) ? 'TEST USER' : null),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
