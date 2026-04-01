@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function show(Request $request): UserResource
     {
-        $user = $request->user()->load(['city.translations', 'photos']);
+        $user = $request->user()->load(['city.translations', 'photos', 'interests.translations']);
 
         return new UserResource($user);
     }
@@ -25,6 +25,7 @@ class UserController extends Controller
         $user->load([
             'city.translations',
             'photos' => fn ($q) => $q->approved(),
+            'interests.translations',
         ]);
 
         return new UserResource($user);
@@ -37,7 +38,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => __('user.profile_updated'),
-            'data' => new UserResource($user->fresh()->load(['city.translations', 'photos'])),
+            'data' => new UserResource($user->fresh()->load(['city.translations', 'photos', 'interests.translations'])),
         ]);
     }
 }

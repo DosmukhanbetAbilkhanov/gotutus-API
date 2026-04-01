@@ -108,25 +108,25 @@
     </section>
 
     {{-- Screenshots Section --}}
-    <section class="py-20 bg-gray-50">
+    <section class="py-20 bg-gray-50 overflow-hidden">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-900">See It in Action</h2>
             <p class="mt-3 text-center text-gray-500">A glimpse of the Tanys experience</p>
-            <div class="mt-12 flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
-                @foreach([
-                    ['src' => 'feed.png', 'alt' => 'Feed'],
-                    ['src' => 'detail.png', 'alt' => 'Hangout Detail'],
-                    ['src' => 'chat.png', 'alt' => 'Chat'],
-                    ['src' => 'profile.png', 'alt' => 'Profile'],
-                    ['src' => 'create.png', 'alt' => 'Create Hangout'],
-                ] as $screenshot)
-                    <div class="flex-none snap-center">
-                        <img src="{{ asset('images/screenshots/' . $screenshot['src']) }}"
-                             alt="{{ $screenshot['alt'] }}"
-                             class="w-56 h-auto rounded-[2rem] shadow-lg border border-gray-200">
-                    </div>
-                @endforeach
-            </div>
+        </div>
+        <div class="mt-12 flex gap-4 sm:gap-6 overflow-x-auto pb-6 px-4 sm:px-6 lg:px-0 snap-x snap-mandatory scrollbar-hide lg:justify-center">
+            @foreach([
+                ['src' => 'feed.png', 'alt' => 'Feed'],
+                ['src' => 'detail.png', 'alt' => 'Hangout Detail'],
+                ['src' => 'chat.png', 'alt' => 'Chat'],
+                ['src' => 'profile.png', 'alt' => 'Profile'],
+                ['src' => 'create.png', 'alt' => 'Create Hangout'],
+            ] as $screenshot)
+                <div class="flex-none snap-center">
+                    <img src="{{ asset('images/screenshots/' . $screenshot['src']) }}"
+                         alt="{{ $screenshot['alt'] }}"
+                         class="w-44 sm:w-56 h-auto rounded-[2rem] shadow-lg border border-gray-200">
+                </div>
+            @endforeach
         </div>
     </section>
 

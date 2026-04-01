@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->seedPlaceWorkingHours();
         $this->seedUsers();
         $this->seedHangoutRequests();
+        $this->call(InterestSeeder::class);
     }
 
     private function seedUserTypes(): void

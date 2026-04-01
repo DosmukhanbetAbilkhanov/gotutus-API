@@ -23,8 +23,10 @@ use App\Http\Controllers\Api\V1\AttendanceReportController;
 use App\Http\Controllers\Api\V1\HangoutRatingController;
 use App\Http\Controllers\Api\V1\PlaceComplaintController;
 use App\Http\Controllers\Api\V1\PlaceRatingController;
+use App\Http\Controllers\Api\V1\InterestController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\UserInterestController;
 use App\Http\Controllers\Api\V1\UserPhotoController;
 use App\Http\Controllers\Api\V1\Admin\AdminPhotoController;
 use Illuminate\Support\Facades\Broadcast;
@@ -53,6 +55,7 @@ Route::get('hangout-requests', [HangoutRequestController::class, 'index']);
 Route::get('hangout-requests/{hangoutRequest}', [HangoutRequestController::class, 'show']);
 Route::get('legal-pages/{slug}', [LegalPageController::class, 'show']);
 Route::get('place-advertisements', [PlaceAdvertisementController::class, 'index']);
+Route::get('interests', [InterestController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +124,10 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
         // User's own hangouts and join requests
         Route::get('hangout-requests', [HangoutRequestController::class, 'myRequests']);
         Route::get('join-requests', [JoinRequestController::class, 'myJoinRequests']);
+
+        // User interests
+        Route::get('interests', [UserInterestController::class, 'index']);
+        Route::put('interests', [UserInterestController::class, 'update']);
     });
 
     /*

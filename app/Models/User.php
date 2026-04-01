@@ -9,6 +9,7 @@ use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -208,6 +209,12 @@ class User extends Authenticatable implements FilamentUser
     public function placeComplaints(): HasMany
     {
         return $this->hasMany(PlaceComplaint::class);
+    }
+
+    public function interests(): BelongsToMany
+    {
+        return $this->belongsToMany(Interest::class, 'user_interests')
+                    ->withTimestamps();
     }
 
     public function isPhoneVerified(): bool

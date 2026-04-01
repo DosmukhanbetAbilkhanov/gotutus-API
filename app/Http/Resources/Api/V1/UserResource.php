@@ -29,6 +29,7 @@ class UserResource extends JsonResource
             'email' => $this->when($isOwner, $this->email),
             'city' => new CityResource($this->whenLoaded('city')),
             'photos' => UserPhotoResource::collection($this->whenLoaded('photos')),
+            'interests' => InterestResource::collection($this->whenLoaded('interests')),
             'phone_verified' => $this->isPhoneVerified(),
             'trust_score' => $this->trust_score,
             'ratings_count' => $this->ratings_count ?? 0,
