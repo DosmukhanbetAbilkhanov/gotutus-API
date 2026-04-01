@@ -14,6 +14,7 @@ class LegalPage extends Model
     use HasTranslations;
 
     public const SLUG_PUBLIC_OFFER = 'public-offer';
+    public const SLUG_PRIVACY_POLICY = 'privacy-policy';
 
     protected $fillable = [
         'slug',
