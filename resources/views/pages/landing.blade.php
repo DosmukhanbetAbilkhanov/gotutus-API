@@ -113,11 +113,17 @@
             <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-900">See It in Action</h2>
             <p class="mt-3 text-center text-gray-500">A glimpse of the Tanys experience</p>
             <div class="mt-12 flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
-                @foreach(['Feed', 'Hangout Detail', 'Chat', 'Profile', 'Create Hangout'] as $label)
+                @foreach([
+                    ['src' => 'feed.png', 'alt' => 'Feed'],
+                    ['src' => 'detail.png', 'alt' => 'Hangout Detail'],
+                    ['src' => 'chat.png', 'alt' => 'Chat'],
+                    ['src' => 'profile.png', 'alt' => 'Profile'],
+                    ['src' => 'create.png', 'alt' => 'Create Hangout'],
+                ] as $screenshot)
                     <div class="flex-none snap-center">
-                        <div class="w-56 h-[480px] bg-white border-2 border-dashed border-gray-200 rounded-[2rem] flex items-center justify-center shadow-sm">
-                            <span class="text-sm text-gray-400 font-medium">{{ $label }}</span>
-                        </div>
+                        <img src="{{ asset('images/screenshots/' . $screenshot['src']) }}"
+                             alt="{{ $screenshot['alt'] }}"
+                             class="w-56 h-auto rounded-[2rem] shadow-lg border border-gray-200">
                     </div>
                 @endforeach
             </div>
