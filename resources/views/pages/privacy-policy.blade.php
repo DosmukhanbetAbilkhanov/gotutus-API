@@ -7,34 +7,22 @@
 
 @section('content')
 
-    {{-- Navigation --}}
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <a href="{{ route('landing') }}" class="flex items-center gap-2 group">
-                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">Tanys</span>
+    @section('navbar-right')
+        {{-- Language Switcher --}}
+        <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+            @foreach($supportedLanguages as $code)
+                <a href="{{ route('privacy-policy', ['lang' => $code]) }}"
+                   class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200
+                          {{ $currentLang === $code
+                              ? 'bg-white text-primary shadow-sm'
+                              : 'text-gray-500 hover:text-gray-700' }}">
+                    {{ strtoupper($code) }}
                 </a>
-
-                {{-- Language Switcher --}}
-                <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                    @foreach($supportedLanguages as $code)
-                        <a href="{{ route('privacy-policy', ['lang' => $code]) }}"
-                           class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200
-                                  {{ $currentLang === $code
-                                      ? 'bg-white text-primary shadow-sm'
-                                      : 'text-gray-500 hover:text-gray-700' }}">
-                            {{ strtoupper($code) }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
+            @endforeach
         </div>
-    </nav>
+    @endsection
+
+    @include('partials.navbar')
 
     {{-- Content --}}
     <main class="pt-28 pb-20">
@@ -92,23 +80,6 @@
         </div>
     </main>
 
-    {{-- Footer --}}
-    <footer class="py-8 bg-gray-50 border-t border-gray-100">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-                <a href="{{ route('landing') }}" class="hover:text-primary transition-colors duration-200">
-                    &larr;
-                    @if($currentLang === 'ru')
-                        На главную
-                    @elseif($currentLang === 'kk')
-                        Басты бетке
-                    @else
-                        Back to home
-                    @endif
-                </a>
-                <span>&copy; {{ date('Y') }} Tanys</span>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
 @endsection

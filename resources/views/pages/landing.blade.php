@@ -5,24 +5,7 @@
 
 @section('content')
 
-    {{-- Navigation --}}
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-xl font-bold text-gray-900">Tanys</span>
-                </div>
-                <a href="#download" class="hidden sm:inline-flex items-center px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transition-colors duration-200">
-                    Download
-                </a>
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar')
 
     {{-- Hero Section --}}
     <section class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
@@ -192,28 +175,7 @@
         </div>
     </section>
 
-    {{-- Footer --}}
-    <footer class="py-10 bg-gray-900 text-gray-400">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-sm font-semibold text-gray-300">Tanys</span>
-                </div>
-                <div class="flex items-center gap-6 text-sm">
-                    <a href="{{ route('privacy-policy') }}" class="hover:text-white transition-colors duration-200">Privacy Policy</a>
-                    <a href="mailto:administrator@tanys.app" class="hover:text-white transition-colors duration-200">administrator@tanys.app</a>
-                </div>
-            </div>
-            <div class="mt-6 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
-                &copy; {{ date('Y') }} Tanys. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
 @push('styles')
 <style>
