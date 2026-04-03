@@ -7,21 +7,6 @@
 
 @section('content')
 
-    @section('navbar-right')
-        {{-- Language Switcher --}}
-        <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-            @foreach($supportedLanguages as $code)
-                <a href="{{ route('privacy-policy', ['lang' => $code]) }}"
-                   class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200
-                          {{ $currentLang === $code
-                              ? 'bg-white text-primary shadow-sm'
-                              : 'text-gray-500 hover:text-gray-700' }}">
-                    {{ strtoupper($code) }}
-                </a>
-            @endforeach
-        </div>
-    @endsection
-
     @include('partials.navbar')
 
     {{-- Content --}}
@@ -36,7 +21,7 @@
                             <span>
                                 @if($currentLang === 'ru')
                                     Последнее обновление: {{ $lastUpdated->format('d.m.Y') }}
-                                @elseif($currentLang === 'kk')
+                                @elseif($currentLang === 'kz')
                                     Соңғы жаңарту: {{ $lastUpdated->format('d.m.Y') }}
                                 @else
                                     Last updated: {{ $lastUpdated->format('F j, Y') }}
@@ -69,7 +54,7 @@
                     <p class="text-gray-400 text-lg">
                         @if($currentLang === 'ru')
                             Политика конфиденциальности пока недоступна.
-                        @elseif($currentLang === 'kk')
+                        @elseif($currentLang === 'kz')
                             Құпиялылық саясаты әзірше қолжетімсіз.
                         @else
                             Privacy policy is not available yet.

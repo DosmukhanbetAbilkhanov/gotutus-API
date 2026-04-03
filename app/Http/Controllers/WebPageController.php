@@ -10,20 +10,22 @@ use Illuminate\View\View;
 
 class WebPageController extends Controller
 {
-    public function landing(): View
+    private const SUPPORTED_LANGUAGES = ['en', 'ru', 'kz'];
+
+    public function landing(Request $request): View
     {
-        return view('pages.landing');
+        $lang = $this->resolveLanguage($request);
+
+        return view('pages.landing', [
+            'lang' => $lang,
+            'currentLang' => $lang,
+            'supportedLanguages' => self::SUPPORTED_LANGUAGES,
+        ]);
     }
 
     public function privacyPolicy(Request $request): View
     {
-        $supportedLanguages = ['en', 'ru', 'kk'];
-
-        // Determine language: query param > browser preference > default
-        $lang = $request->query('lang');
-        if (! in_array($lang, $supportedLanguages, true)) {
-            $lang = $request->getPreferredLanguage($supportedLanguages) ?? 'en';
-        }
+        $lang = $this->resolveLanguage($request);
 
         $page = LegalPage::getActive(LegalPage::SLUG_PRIVACY_POLICY);
 
@@ -33,7 +35,8 @@ class WebPageController extends Controller
         $version = '';
 
         if ($page) {
-            $translation = $page->translations->firstWhere('language_code', $lang)
+            $dbLang = $lang === 'kz' ? 'kk' : $lang;
+            $translation = $page->translations->firstWhere('language_code', $dbLang)
                 ?? $page->translations->firstWhere('language_code', 'en');
 
             $title = $translation?->title ?? '';
@@ -43,12 +46,24 @@ class WebPageController extends Controller
         }
 
         return view('pages.privacy-policy', [
+            'lang' => $lang,
             'title' => $title,
             'content' => $content,
             'lastUpdated' => $lastUpdated,
             'version' => $version,
             'currentLang' => $lang,
-            'supportedLanguages' => $supportedLanguages,
+            'supportedLanguages' => self::SUPPORTED_LANGUAGES,
         ]);
+    }
+
+    private function resolveLanguage(Request $request): string
+    {
+        $lang = $request->query('lang');
+
+        if (in_array($lang, self::SUPPORTED_LANGUAGES, true)) {
+            return $lang;
+        }
+
+        return $request->getPreferredLanguage(self::SUPPORTED_LANGUAGES) ?? 'en';
     }
 }
