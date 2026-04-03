@@ -3,6 +3,9 @@
 namespace App\Filament\Resources\ActivityTypeResource\RelationManagers;
 
 use App\Models\Place;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -29,11 +32,30 @@ class PlacesRelationManager extends RelationManager
             ])
             ->defaultSort('id', 'desc')
             ->actions([
-                \Filament\Actions\DetachAction::make(),
+                DetachAction::make(),
             ])
             ->headerActions([
-                \Filament\Actions\AttachAction::make()
-                    ->preloadRecordSelect(),
+                AttachAction::make()
+                    ->recordSelect(
+                        fn (Select $select) => $select
+                            ->getSearchResultsUsing(function (string $search) {
+                                return Place::whereHas('translations', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                    ->with('translations')
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn (Place $place) => [
+                                        $place->id => $place->translations->firstWhere('language_code', 'en')?->name ?? "Place #{$place->id}",
+                                    ]);
+                            })
+                            ->getOptionLabelUsing(function ($value) {
+                                $place = Place::with('translations')->find($value);
+
+                                return $place?->translations->firstWhere('language_code', 'en')?->name ?? "Place #{$value}";
+                            })
+                    )
+                    ->preloadRecordSelect(false),
             ]);
     }
 }
