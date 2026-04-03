@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\CityManagerResource\Pages;
 
+use App\Filament\Concerns\RedirectsToListOnCreate;
 use App\Filament\Resources\CityManagerResource;
 use App\Models\UserType;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCityManager extends CreateRecord
 {
+    use RedirectsToListOnCreate;
+
     protected static string $resource = CityManagerResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
