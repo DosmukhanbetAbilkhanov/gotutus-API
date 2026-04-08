@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Message\StoreMessageRequest;
 use App\Http\Resources\Api\V1\MessageResource;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Services\NotificationService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
 class MessageController extends Controller
 {
     use AuthorizesRequests;
+
+    public function __construct(private NotificationService $notificationService)
+    {
+    }
 
     public function index(Conversation $conversation): AnonymousResourceCollection
     {
@@ -57,6 +62,23 @@ class MessageController extends Controller
         $conversation->markAsReadFor($request->user()->id);
 
         NewMessageBroadcast::dispatch($message);
+
+        // Send FCM push to the other participant
+        $sender = $request->user();
+        $recipient = $conversation->otherUserFor($sender);
+
+        if ($recipient) {
+            $this->notificationService->send(
+                user: $recipient,
+                type: 'new_message',
+                title: $sender->name,
+                body: \Illuminate\Support\Str::limit($message->message ?? __('message.image_sent'), 100),
+                data: [
+                    'conversation_id' => $conversation->id,
+                    'message_id' => $message->id,
+                ],
+            );
+        }
 
         return response()->json([
             'message' => __('message.sent'),
