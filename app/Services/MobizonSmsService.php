@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Mail\SmsBalanceLowMail;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MobizonSmsService
 {
@@ -50,6 +52,8 @@ class MobizonSmsService
                 'response' => $data,
             ]);
 
+            $this->notifyAdminIfBalanceLow($phone, $data['message'] ?? 'Unknown error');
+
             return false;
         } catch (\Exception $e) {
             Log::error('SMS sending exception', [
@@ -77,6 +81,29 @@ class MobizonSmsService
     public function generateCode(int $length = 6): string
     {
         return str_pad((string) random_int(0, (int) str_repeat('9', $length)), $length, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Notify admin via email when SMS fails (e.g. insufficient balance).
+     */
+    private function notifyAdminIfBalanceLow(string $phone, string $errorMessage): void
+    {
+        $adminEmail = config('services.mobizon.admin_email');
+
+        if (empty($adminEmail)) {
+            Log::warning('ADMIN_EMAIL not configured — cannot send SMS failure alert');
+
+            return;
+        }
+
+        try {
+            Mail::to($adminEmail)->send(new SmsBalanceLowMail($phone, $errorMessage));
+            Log::info('SMS failure alert sent to admin', ['email' => $adminEmail]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send SMS failure alert email', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

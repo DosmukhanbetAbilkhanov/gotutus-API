@@ -26,6 +26,7 @@ return [
     'mobizon' => [
         'api_key' => env('MOBIZON_API_KEY'),
         'sender_name' => env('MOBIZON_SENDER_NAME'),
+        'admin_email' => env('MOBIZON_ADMIN_EMAIL'),
     ],
 
     'fcm' => [
