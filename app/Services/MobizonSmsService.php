@@ -97,7 +97,7 @@ class MobizonSmsService
         }
 
         try {
-            Mail::to($adminEmail)->send(new SmsBalanceLowMail($phone, $errorMessage));
+            Mail::to($adminEmail)->queue(new SmsBalanceLowMail($phone, $errorMessage));
             Log::info('SMS failure alert sent to admin', ['email' => $adminEmail]);
         } catch (\Exception $e) {
             Log::error('Failed to send SMS failure alert email', [
