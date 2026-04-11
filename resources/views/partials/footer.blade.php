@@ -20,13 +20,12 @@
             </div>
         </div>
         <div class="mt-6 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
-            &copy; {{ date('Y') }} Tanys.
             @if(isset($currentLang) && $currentLang === 'ru')
-                Все права защищены.
+                &copy; {{ date('Y') }} Tanys. ТОО AMIR TRADE (Amir Trade LLP). Все права защищены.
             @elseif(isset($currentLang) && $currentLang === 'kz')
-                Барлық құқықтар қорғалған.
+                &copy; {{ date('Y') }} Tanys. AMIR TRADE ЖШС (Amir Trade LLP). Барлық құқықтар қорғалған.
             @else
-                All rights reserved.
+                &copy; {{ date('Y') }} Tanys. TOO AMIR TRADE (Amir Trade LLP). All rights reserved.
             @endif
         </div>
     </div>
