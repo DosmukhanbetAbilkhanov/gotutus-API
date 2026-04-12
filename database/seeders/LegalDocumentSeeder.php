@@ -199,7 +199,6 @@ class LegalDocumentSeeder extends Seeder
 <p>If you have any questions or concerns about this Privacy Policy or our data practices, please contact us:</p>
 <ul>
 <li><strong>Company</strong>: TOO AMIR TRADE (Amir Trade LLP)</li>
-<li><strong>Address</strong>: Kazakhstan, 030000, Aktobe region, Aktobe city, Almaty district, J.m. Kargaly, ul. Kolganat Tokbaev, d. 5, kv. 2</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
@@ -313,7 +312,6 @@ HTML;
 <p>Если у вас есть вопросы или замечания по поводу настоящей Политики конфиденциальности или наших практик обработки данных, пожалуйста, свяжитесь с нами:</p>
 <ul>
 <li><strong>Компания</strong>: ТОО AMIR TRADE (Amir Trade LLP)</li>
-<li><strong>Адрес</strong>: Казахстан, 030000, Актюбинская область, г. Актобе, Алматинский район, ж.м. Каргалы, ул. Колганат Токбаев, д. 5, кв. 2</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
@@ -427,7 +425,6 @@ HTML;
 <p>Осы Құпиялылық саясаты немесе деректерді өңдеу тәжірибелеріміз бойынша сұрақтарыңыз немесе мазасызданушылықтарыңыз болса, бізбен байланысыңыз:</p>
 <ul>
 <li><strong>Компания</strong>: AMIR TRADE ЖШС (Amir Trade LLP)</li>
-<li><strong>Мекенжай</strong>: Қазақстан, 030000, Ақтөбе облысы, Ақтөбе қаласы, Алматы ауданы, Қарғалы тұрғын алабы, Қолғанат Тоқбаев көшесі, 5-үй, 2-пәтер</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
@@ -598,7 +595,6 @@ HTML;
 <p>For questions regarding this Agreement, please contact:</p>
 <ul>
 <li><strong>Company</strong>: TOO AMIR TRADE (Amir Trade LLP)</li>
-<li><strong>Address</strong>: Kazakhstan, 030000, Aktobe region, Aktobe city, Almaty district, J.m. Kargaly, ul. Kolganat Tokbaev, d. 5, kv. 2</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
@@ -765,7 +761,6 @@ HTML;
 <p>По вопросам, связанным с настоящим Соглашением, обращайтесь:</p>
 <ul>
 <li><strong>Компания</strong>: ТОО AMIR TRADE (Amir Trade LLP)</li>
-<li><strong>Адрес</strong>: Казахстан, 030000, Актюбинская область, г. Актобе, Алматинский район, ж.м. Каргалы, ул. Колганат Токбаев, д. 5, кв. 2</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
@@ -932,7 +927,6 @@ HTML;
 <p>Осы Келісімге қатысты сұрақтар бойынша хабарласыңыз:</p>
 <ul>
 <li><strong>Компания</strong>: AMIR TRADE ЖШС (Amir Trade LLP)</li>
-<li><strong>Мекенжай</strong>: Қазақстан, 030000, Ақтөбе облысы, Ақтөбе қаласы, Алматы ауданы, Қарғалы тұрғын алабы, Қолғанат Тоқбаев көшесі, 5-үй, 2-пәтер</li>
 <li><strong>Email</strong>: <a href="mailto:administrator@tanys.app">administrator@tanys.app</a></li>
 </ul>
 HTML;
