@@ -23,6 +23,7 @@ class HangoutRequest extends Model
         'city_id',
         'activity_type_id',
         'place_id',
+        'place_advertisement_id',
         'date',
         'time',
         'status',
@@ -61,6 +62,11 @@ class HangoutRequest extends Model
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class);
+    }
+
+    public function placeAdvertisement(): BelongsTo
+    {
+        return $this->belongsTo(PlaceAdvertisement::class);
     }
 
     public function joinRequests(): HasMany
@@ -110,6 +116,16 @@ class HangoutRequest extends Model
         return \App\Http\Resources\Api\V1\UserResource::collection(
             $participants->merge($joiners)->unique('id')
         )->resolve();
+    }
+
+    public function scopeFromAd(Builder $query): Builder
+    {
+        return $query->whereNotNull('place_advertisement_id');
+    }
+
+    public function scopeOrganic(Builder $query): Builder
+    {
+        return $query->whereNull('place_advertisement_id');
     }
 
     public function scopeOpen(Builder $query): Builder

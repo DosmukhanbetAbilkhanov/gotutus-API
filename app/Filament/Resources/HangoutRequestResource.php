@@ -53,6 +53,12 @@ class HangoutRequestResource extends Resource
                         Forms\Components\Textarea::make('notes')
                             ->disabled()
                             ->columnSpanFull(),
+                        Forms\Components\TextInput::make('ad_title')
+                            ->label('From Advertisement')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->formatStateUsing(fn ($record) => $record?->placeAdvertisement?->title ?? 'Organic')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
                 \Filament\Schemas\Components\Section::make('Admin Controls')
@@ -111,6 +117,15 @@ class HangoutRequestResource extends Resource
                         default => 'gray',
                     })
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\IconColumn::make('from_ad')
+                    ->label('From Ad')
+                    ->getStateUsing(fn (HangoutRequest $record) => $record->place_advertisement_id !== null)
+                    ->boolean()
+                    ->trueIcon('heroicon-o-megaphone')
+                    ->falseIcon('heroicon-o-minus')
+                    ->trueColor('warning')
+                    ->falseColor('gray')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('join_requests_count')
                     ->counts('joinRequests')
                     ->label('Joins')
@@ -155,6 +170,12 @@ class HangoutRequestResource extends Resource
                             ->when($data['from'], fn (Builder $q, $date) => $q->whereDate('date', '>=', $date))
                             ->when($data['until'], fn (Builder $q, $date) => $q->whereDate('date', '<=', $date));
                     }),
+                Tables\Filters\TernaryFilter::make('from_ad')
+                    ->label('From Advertisement')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('place_advertisement_id'),
+                        false: fn (Builder $query) => $query->whereNull('place_advertisement_id'),
+                    ),
                 Tables\Filters\TernaryFilter::make('has_join_requests')
                     ->label('Has Join Requests')
                     ->queries(
@@ -210,7 +231,7 @@ class HangoutRequestResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['user', 'activityType.translations', 'place.translations', 'city.translations']);
+        return parent::getEloquentQuery()->with(['user', 'activityType.translations', 'place.translations', 'city.translations', 'placeAdvertisement']);
     }
 
     public static function canCreate(): bool

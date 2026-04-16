@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class PlaceAdvertisement extends Model
@@ -51,6 +52,11 @@ class PlaceAdvertisement extends Model
     public function activityType(): BelongsTo
     {
         return $this->belongsTo(ActivityType::class);
+    }
+
+    public function hangoutRequests(): HasMany
+    {
+        return $this->hasMany(HangoutRequest::class);
     }
 
     public function scopeActive(Builder $query): Builder
