@@ -155,8 +155,8 @@ class PlacesSeeder extends Seeder
             $workingHours[] = [
                 'place_id' => $placeId,
                 'day_of_week' => $day, // 0 = Monday, 6 = Sunday
-                'open_time' => trim($open) . ':00',
-                'close_time' => trim($close) . ':00',
+                'open_time' => trim($open), // Format: HH:MM (without seconds)
+                'close_time' => trim($close), // Format: HH:MM (without seconds)
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
