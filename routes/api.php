@@ -237,3 +237,41 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::put('photos/{photo}/review', [AdminPhotoController::class, 'review']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Development Routes (Only for non-production)
+|--------------------------------------------------------------------------
+*/
+
+if (!app()->environment('production')) {
+    Route::prefix('dev')->group(function () {
+        // Seed database with test data
+        Route::get('seed', function () {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', [
+                '--class' => 'Database\\Seeders\\ServerSeeder',
+            ]);
+
+            $output = \Illuminate\Support\Facades\Artisan::output();
+
+            return response()->json([
+                'message' => 'Database seeded successfully!',
+                'output' => $output,
+            ]);
+        });
+
+        // Get database status
+        Route::get('db-status', function () {
+            $stats = [
+                'users' => \DB::table('users')->count(),
+                'cities' => \DB::table('cities')->count(),
+                'places' => \DB::table('places')->count(),
+                'activity_types' => \DB::table('activity_types')->count(),
+                'interests' => \DB::table('interests')->count(),
+                'hangout_requests' => \DB::table('hangout_requests')->count(),
+            ];
+
+            return response()->json($stats);
+        });
+    });
+}
