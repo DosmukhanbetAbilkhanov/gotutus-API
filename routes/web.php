@@ -10,6 +10,7 @@ Route::get('/', [WebPageController::class, 'landing'])->name('landing');
 Route::get('/privacy-policy', [WebPageController::class, 'privacyPolicy'])->name('privacy-policy');
 
 Route::get('/create-admin', function () {
+      
 
 
         // $now = now();
@@ -87,8 +88,6 @@ Route::get('/create-admin', function () {
         //         'updated_at' => $now,
         //     ]);
         // }
-
-
 
         // DB::table('users')->insert([
         //     'name' => 'Dos',
