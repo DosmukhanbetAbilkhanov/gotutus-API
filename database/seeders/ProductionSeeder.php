@@ -338,7 +338,8 @@ class ProductionSeeder extends Seeder
             'phone' => '+77010000001',
         ];
 
-        if (! DB::table('users')->where('email', $aktobeManager['email'])->exists()) {
+        if (! DB::table('users')->where('email', $aktobeManager['email'])->exists() &&
+            ! DB::table('users')->where('phone', $aktobeManager['phone'])->exists()) {
             DB::table('users')->insert([
                 'name' => $aktobeManager['name'],
                 'email' => $aktobeManager['email'],
@@ -379,8 +380,11 @@ class ProductionSeeder extends Seeder
 
         foreach ($aktobeUsers as $person) {
             $email = 'aktobe.user'.str_pad((string) $phoneCounter, 3, '0', STR_PAD_LEFT).'@companion.test';
+            $phone = '+77010'.str_pad((string) $phoneCounter, 6, '0', STR_PAD_LEFT);
 
-            if (DB::table('users')->where('email', $email)->exists()) {
+            // Skip if email or phone already exists
+            if (DB::table('users')->where('email', $email)->exists() ||
+                DB::table('users')->where('phone', $phone)->exists()) {
                 $phoneCounter++;
 
                 continue;
@@ -389,7 +393,7 @@ class ProductionSeeder extends Seeder
             $userId = DB::table('users')->insertGetId([
                 'name' => $person['name'],
                 'email' => $email,
-                'phone' => '+77010'.str_pad((string) $phoneCounter, 6, '0', STR_PAD_LEFT),
+                'phone' => $phone,
                 'age' => $person['age'],
                 'gender' => $person['gender']->value,
                 'bio' => $person['bio'],
