@@ -22,6 +22,7 @@ class HangoutRequest extends Model
         'user_id',
         'city_id',
         'activity_type_id',
+        'goal_id',
         'place_id',
         'place_advertisement_id',
         'date',
@@ -57,6 +58,11 @@ class HangoutRequest extends Model
     public function activityType(): BelongsTo
     {
         return $this->belongsTo(ActivityType::class);
+    }
+
+    public function goal(): BelongsTo
+    {
+        return $this->belongsTo(Goal::class);
     }
 
     public function place(): BelongsTo

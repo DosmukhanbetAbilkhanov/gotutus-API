@@ -30,7 +30,7 @@ class HangoutRequestController extends Controller
         $user = Auth::guard('sanctum')->user();
 
         $hangouts = HangoutRequest::query()
-            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours'])
+            ->with(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours'])
             ->withCount('joinRequests')
             ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
                 $q->whereIn('status', ['approved', 'confirmed']);
@@ -39,6 +39,7 @@ class HangoutRequestController extends Controller
             ->upcoming()
             ->when($request->query('city_id'), fn ($q, $id) => $q->inCity((int) $id))
             ->when($request->query('activity_type_id'), fn ($q, $id) => $q->forActivityType((int) $id))
+            ->when($request->query('goal_id'), fn ($q, $id) => $q->where('goal_id', (int) $id))
             ->when($request->query('date'), fn ($q, $date) => $q->forDate($date))
             ->when($request->query('gender'), function ($q, $gender) {
                 $q->whereHas('user', fn ($u) => $u->where('gender', $gender));
@@ -73,7 +74,7 @@ class HangoutRequestController extends Controller
 
     public function show(HangoutRequest $hangoutRequest): HangoutRequestResource
     {
-        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -106,7 +107,7 @@ class HangoutRequestController extends Controller
             'status' => HangoutRequestStatus::Open,
         ]);
 
-        $hangout->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
+        $hangout->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
 
         NewHangoutBroadcast::dispatch($hangout);
 
@@ -121,7 +122,7 @@ class HangoutRequestController extends Controller
         $this->authorize('update', $hangoutRequest);
 
         $hangoutRequest->update($request->validated());
-        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
 
         return response()->json([
             'message' => __('hangout.updated'),
@@ -159,7 +160,7 @@ class HangoutRequestController extends Controller
                 ->update(['status' => JoinRequestStatus::Declined->value]);
         });
 
-        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -186,7 +187,7 @@ class HangoutRequestController extends Controller
 
         $hangoutRequest->update(['status' => HangoutRequestStatus::Completed]);
 
-        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
+        $hangoutRequest->load(['user.photos' => fn ($q) => $q->where('status', 'approved'), 'city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours']);
         $hangoutRequest->loadCount(['joinRequests as approved_join_requests_count' => function ($q) {
             $q->whereIn('status', ['approved', 'confirmed']);
         }]);
@@ -204,7 +205,7 @@ class HangoutRequestController extends Controller
         $hangouts = $user
             ->hangoutRequests()
             ->select('hangout_requests.*')
-            ->with(['city.translations', 'activityType.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours', 'joinRequests.user.photos' => fn ($q) => $q->where('status', 'approved')])
+            ->with(['city.translations', 'activityType.translations', 'goal.translations', 'place.translations', 'place.activeDiscount', 'place.activePromotions', 'place.workingHours', 'joinRequests.user.photos' => fn ($q) => $q->where('status', 'approved')])
             ->withCount('joinRequests')
             ->withCount(['joinRequests as approved_join_requests_count' => function ($q) {
                 $q->whereIn('status', ['approved', 'confirmed']);

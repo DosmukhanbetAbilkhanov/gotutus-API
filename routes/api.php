@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\V1\AttendanceReportController;
 use App\Http\Controllers\Api\V1\HangoutRatingController;
 use App\Http\Controllers\Api\V1\PlaceComplaintController;
 use App\Http\Controllers\Api\V1\PlaceRatingController;
+use App\Http\Controllers\Api\V1\GoalController;
 use App\Http\Controllers\Api\V1\InterestController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -56,6 +57,7 @@ Route::get('hangout-requests/{hangoutRequest}', [HangoutRequestController::class
 Route::get('legal-pages/{slug}', [LegalPageController::class, 'show']);
 Route::get('place-advertisements', [PlaceAdvertisementController::class, 'index']);
 Route::get('interests', [InterestController::class, 'index']);
+Route::get('goals', [GoalController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------

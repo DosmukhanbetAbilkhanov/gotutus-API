@@ -11,15 +11,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ActivityType extends Model
+class Goal extends Model
 {
     use HasFactory;
     use HasTranslations;
 
     protected $fillable = [
         'slug',
-        'bg_photo',
         'icon',
+        'sort_order',
         'is_active',
     ];
 
@@ -27,22 +27,18 @@ class ActivityType extends Model
     {
         return [
             'is_active' => 'boolean',
+            'sort_order' => 'integer',
         ];
     }
 
     public function translations(): HasMany
     {
-        return $this->hasMany(ActivityTypeTranslation::class);
+        return $this->hasMany(GoalTranslation::class);
     }
 
-    public function goals(): BelongsToMany
+    public function activityTypes(): BelongsToMany
     {
-        return $this->belongsToMany(Goal::class, 'activity_type_goal');
-    }
-
-    public function places(): BelongsToMany
-    {
-        return $this->belongsToMany(Place::class);
+        return $this->belongsToMany(ActivityType::class, 'activity_type_goal');
     }
 
     public function hangoutRequests(): HasMany

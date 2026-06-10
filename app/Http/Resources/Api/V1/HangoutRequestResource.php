@@ -24,6 +24,8 @@ class HangoutRequestResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'city' => new CityResource($this->whenLoaded('city')),
             'activity_type' => new ActivityTypeResource($this->whenLoaded('activityType')),
+            'goal' => new GoalResource($this->whenLoaded('goal')),
+            'goal_id' => $this->goal_id,
             'place' => new PlaceResource($this->whenLoaded('place')),
             'date' => $this->date->toDateString(),
             'time' => $this->time?->format('H:i'),

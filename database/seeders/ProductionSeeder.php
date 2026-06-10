@@ -32,6 +32,7 @@ class ProductionSeeder extends Seeder
         $this->seedUserTypes();
         $this->seedCities();
         $this->seedActivityTypes();
+        $this->seedGoals();
         $this->seedInterests();
         $this->seedAktobeUsers();
 
@@ -206,6 +207,15 @@ class ProductionSeeder extends Seeder
         }
 
         $this->command->info("  Activity types: {$created} created, {$updated} translations added.");
+    }
+
+    // =========================================================================
+    // GOALS
+    // =========================================================================
+
+    private function seedGoals(): void
+    {
+        $this->call(GoalSeeder::class);
     }
 
     // =========================================================================
