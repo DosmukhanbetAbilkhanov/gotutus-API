@@ -27,7 +27,14 @@ class BlockedUserController extends Controller
 
     public function store(StoreBlockedUserRequest $request): JsonResponse
     {
-        $request->user()->blockedUsers()->create($request->validated());
+        $user = $request->user();
+        $blockedUserId = $request->validated()['blocked_user_id'];
+
+        $user->blockedUsers()->create($request->validated());
+
+        // Invalidate cached blocked user lists for both users
+        cache()->forget("user.{$user->id}.blocked_ids");
+        cache()->forget("user.{$blockedUserId}.blocked_by_ids");
 
         return response()->json([
             'message' => __('user.blocked'),
@@ -36,11 +43,18 @@ class BlockedUserController extends Controller
 
     public function destroy(Request $request, BlockedUser $blockedUser): JsonResponse
     {
-        if ($blockedUser->user_id !== $request->user()->id) {
+        $user = $request->user();
+
+        if ($blockedUser->user_id !== $user->id) {
             abort(403);
         }
 
+        $blockedUserId = $blockedUser->blocked_user_id;
         $blockedUser->delete();
+
+        // Invalidate cached blocked user lists for both users
+        cache()->forget("user.{$user->id}.blocked_ids");
+        cache()->forget("user.{$blockedUserId}.blocked_by_ids");
 
         return response()->json([
             'message' => __('user.unblocked'),

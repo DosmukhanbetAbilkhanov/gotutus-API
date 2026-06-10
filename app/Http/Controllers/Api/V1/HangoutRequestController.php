@@ -51,8 +51,18 @@ class HangoutRequestController extends Controller
                 $q->whereHas('user', fn ($u) => $u->where('age', '<=', (int) $maxAge));
             })
             ->when($user, function ($q) use ($user) {
-                $blockedIds = $user->blockedUsers()->pluck('blocked_user_id');
-                $blockedByIds = $user->blockedByUsers()->pluck('user_id');
+                // Cache blocked user IDs for 5 minutes to reduce DB queries
+                $blockedIds = cache()->remember(
+                    "user.{$user->id}.blocked_ids",
+                    now()->addMinutes(5),
+                    fn () => $user->blockedUsers()->pluck('blocked_user_id')->toArray()
+                );
+
+                $blockedByIds = cache()->remember(
+                    "user.{$user->id}.blocked_by_ids",
+                    now()->addMinutes(5),
+                    fn () => $user->blockedByUsers()->pluck('user_id')->toArray()
+                );
 
                 $q->where('user_id', '!=', $user->id)
                     ->whereNotIn('user_id', $blockedIds)
