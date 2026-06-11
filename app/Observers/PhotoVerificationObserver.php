@@ -9,7 +9,7 @@ use App\Mail\VerificationSubmittedMail;
 use App\Models\PhotoVerification;
 use App\Models\User;
 use App\Models\UserType;
-use App\Notifications\PhotoVerificationReviewedNotification;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -75,6 +75,31 @@ class PhotoVerificationObserver
             ])->saveQuietly();
         }
 
-        $verification->user->notify(new PhotoVerificationReviewedNotification($verification));
+        // Use the app's NotificationService (custom notifications table + FCM +
+        // WebSocket). The native ['database'] channel is NOT compatible with the
+        // custom table — it writes the class name into type(50) and omits title/body.
+        $title = match ($verification->status) {
+            PhotoStatus::Approved => __('notifications.verification_approved_title'),
+            PhotoStatus::Rejected => __('notifications.verification_rejected_title'),
+            default => __('notifications.verification_reviewed_title'),
+        };
+
+        $body = match ($verification->status) {
+            PhotoStatus::Approved => __('notifications.verification_approved_body'),
+            PhotoStatus::Rejected => __('notifications.verification_rejected_body'),
+            default => __('notifications.verification_reviewed_body'),
+        };
+
+        app(NotificationService::class)->send(
+            $verification->user,
+            'verification_reviewed',
+            $title,
+            $body,
+            [
+                'verification_id' => $verification->id,
+                'status' => $verification->status->value,
+                'rejection_reason' => $verification->rejection_reason,
+            ],
+        );
     }
 }
