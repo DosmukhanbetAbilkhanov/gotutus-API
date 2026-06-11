@@ -129,7 +129,7 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
         Route::get('verification', [PhotoVerificationController::class, 'show']);
         Route::get('verification/pose', [PhotoVerificationController::class, 'pose']);
         Route::post('verification', [PhotoVerificationController::class, 'store'])
-            ->middleware('throttle:3,60');
+            ->middleware('throttle:10,60');
 
         // User's own hangouts and join requests
         Route::get('hangout-requests', [HangoutRequestController::class, 'myRequests']);
