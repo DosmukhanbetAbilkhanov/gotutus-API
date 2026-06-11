@@ -16,6 +16,13 @@ return [
     'join_request_updated_title' => 'Запрос обновлён',
     'join_request_updated_body' => 'Статус вашего запроса был обновлён.',
 
+    'verification_approved_title' => 'Вы верифицированы!',
+    'verification_approved_body' => 'Ваша фото-верификация одобрена. Теперь в профиле отображается значок верификации.',
+    'verification_rejected_title' => 'Верификация не пройдена',
+    'verification_rejected_body' => 'Ваша фото-верификация не была одобрена. Вы можете попробовать снова.',
+    'verification_reviewed_title' => 'Верификация рассмотрена',
+    'verification_reviewed_body' => 'Ваша фото-верификация была рассмотрена.',
+
     'discount_created_title' => 'Новая скидка!',
     'discount_created_body' => ':place предлагает скидку :percent%!',
 ];

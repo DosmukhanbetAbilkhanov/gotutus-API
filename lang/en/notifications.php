@@ -23,6 +23,13 @@ return [
     'photo_reviewed_title' => 'Photo Reviewed',
     'photo_reviewed_body' => 'Your photo has been reviewed.',
 
+    'verification_approved_title' => 'You\'re Verified!',
+    'verification_approved_body' => 'Your photo verification was approved. Your profile now shows a verified badge.',
+    'verification_rejected_title' => 'Verification Not Approved',
+    'verification_rejected_body' => 'Your photo verification was not approved. You can try again.',
+    'verification_reviewed_title' => 'Verification Reviewed',
+    'verification_reviewed_body' => 'Your photo verification has been reviewed.',
+
     'discount_created_title' => 'New Discount Available!',
     'discount_created_body' => ':place is offering :percent% off!',
 ];

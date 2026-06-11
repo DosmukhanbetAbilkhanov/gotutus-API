@@ -16,6 +16,13 @@ return [
     'join_request_updated_title' => 'Сұраныс жаңартылды',
     'join_request_updated_body' => 'Сұранысыңыздың күйі жаңартылды.',
 
+    'verification_approved_title' => 'Сіз расталдыңыз!',
+    'verification_approved_body' => 'Фото растауыңыз мақұлданды. Профиліңізде енді растау белгісі көрсетіледі.',
+    'verification_rejected_title' => 'Растау мақұлданбады',
+    'verification_rejected_body' => 'Фото растауыңыз мақұлданбады. Қайталап көруіңізге болады.',
+    'verification_reviewed_title' => 'Растау қаралды',
+    'verification_reviewed_body' => 'Фото растауыңыз қаралды.',
+
     'discount_created_title' => 'Жаңа жеңілдік!',
     'discount_created_body' => ':place :percent% жеңілдік ұсынады!',
 ];

@@ -31,6 +31,7 @@ class UserResource extends JsonResource
             'photos' => UserPhotoResource::collection($this->whenLoaded('photos')),
             'interests' => InterestResource::collection($this->whenLoaded('interests')),
             'phone_verified' => $this->isPhoneVerified(),
+            'photo_verified' => $this->isPhotoVerified(),
             'trust_score' => $this->trust_score,
             'ratings_count' => $this->ratings_count ?? 0,
             'average_rating' => $this->average_rating,

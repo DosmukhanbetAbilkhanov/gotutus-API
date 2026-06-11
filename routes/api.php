@@ -29,7 +29,9 @@ use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\UserInterestController;
 use App\Http\Controllers\Api\V1\UserPhotoController;
+use App\Http\Controllers\Api\V1\PhotoVerificationController;
 use App\Http\Controllers\Api\V1\Admin\AdminPhotoController;
+use App\Http\Controllers\Api\V1\Admin\AdminVerificationController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -122,6 +124,12 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
         Route::get('photos', [UserPhotoController::class, 'index']);
         Route::post('photos', [UserPhotoController::class, 'store']);
         Route::delete('photos/{photo}', [UserPhotoController::class, 'destroy']);
+
+        // Photo verification (live selfie + verified badge)
+        Route::get('verification', [PhotoVerificationController::class, 'show']);
+        Route::get('verification/pose', [PhotoVerificationController::class, 'pose']);
+        Route::post('verification', [PhotoVerificationController::class, 'store'])
+            ->middleware('throttle:3,60');
 
         // User's own hangouts and join requests
         Route::get('hangout-requests', [HangoutRequestController::class, 'myRequests']);
@@ -238,6 +246,7 @@ Route::middleware(['auth:sanctum', 'user.active', 'phone.verified', 'throttle:60
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::put('photos/{photo}/review', [AdminPhotoController::class, 'review']);
+    Route::put('verifications/{verification}/review', [AdminVerificationController::class, 'review']);
 });
 
 /*

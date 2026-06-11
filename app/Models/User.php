@@ -37,6 +37,7 @@ class User extends Authenticatable implements FilamentUser
         'status',
         'user_type_id',
         'phone_verified_at',
+        'photo_verified_at',
         'is_online',
         'last_seen_at',
         'public_offer_accepted_at',
@@ -56,6 +57,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'phone_verified_at' => 'datetime',
+            'photo_verified_at' => 'datetime',
             'password' => 'hashed',
             'age' => 'integer',
             'gender' => Gender::class,
@@ -98,6 +100,11 @@ class User extends Authenticatable implements FilamentUser
     public function photos(): HasMany
     {
         return $this->hasMany(UserPhoto::class);
+    }
+
+    public function photoVerifications(): HasMany
+    {
+        return $this->hasMany(PhotoVerification::class);
     }
 
     public function hangoutRequests(): HasMany
@@ -220,5 +227,10 @@ class User extends Authenticatable implements FilamentUser
     public function isPhoneVerified(): bool
     {
         return $this->phone_verified_at !== null;
+    }
+
+    public function isPhotoVerified(): bool
+    {
+        return $this->photo_verified_at !== null;
     }
 }
