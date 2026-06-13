@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\ActivityType;
 use App\Models\Goal;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 
 class GoalSeeder extends Seeder
 {
@@ -99,5 +100,10 @@ class GoalSeeder extends Seeder
             // sync() is authoritative: removes pivot goals no longer mapped.
             $activityType->goals()->sync($pivotGoalIds);
         }
+
+        // Bust the cached goal lists (GoalController caches `goals:{id}` and
+        // `goals:all` for 1h) so the updated mapping is served immediately.
+        Cache::forget('goals:all');
+        ActivityType::pluck('id')->each(fn ($id) => Cache::forget("goals:{$id}"));
     }
 }
