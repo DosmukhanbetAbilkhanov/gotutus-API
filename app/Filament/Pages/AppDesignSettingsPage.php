@@ -59,7 +59,11 @@ class AppDesignSettingsPage extends Page implements HasForms
                     ])
                     ->columnSpanFull(),
             ])
-            ->statePath('data');
+            ->statePath('data')
+            // Read-only: the app design (Fresh Meet) is managed in code via
+            // AppDesignSetting::defaults() + AppDesignSettingSeeder. This page is
+            // for reference only so it can't be changed accidentally here.
+            ->disabled();
     }
 
     protected function colorsTab(): Tab
@@ -233,26 +237,17 @@ class AppDesignSettingsPage extends Page implements HasForms
             ]);
     }
 
+    /**
+     * Saving is disabled — the design is managed in code (see AppDesignSetting
+     * defaults + AppDesignSettingSeeder). Kept as a guard in case the Livewire
+     * action is invoked directly despite the form being read-only.
+     */
     public function save(): void
     {
-        $formData = $this->form->getState();
-        $setting = AppDesignSetting::active();
-
-        if (! $setting) {
-            $setting = new AppDesignSetting(['is_active' => true]);
-        }
-
-        $setting->colors = $this->unflattenGroup($formData, 'colors');
-        $setting->typography = $this->unflattenTypography($formData);
-        $setting->spacing = $this->unflattenGroup($formData, 'spacing');
-        $setting->border_radius = $this->unflattenGroup($formData, 'border_radius');
-        $setting->save();
-
-        \Illuminate\Support\Facades\Cache::forget('app_design_settings:active');
-
         Notification::make()
-            ->title('Design settings saved')
-            ->success()
+            ->title('App design is read-only')
+            ->body('The design is managed in code and cannot be changed from the admin panel.')
+            ->warning()
             ->send();
     }
 
@@ -289,51 +284,6 @@ class AppDesignSettingsPage extends Page implements HasForms
         return $data;
     }
 
-    protected function unflattenGroup(array $formData, string $prefix): array
-    {
-        $result = [];
-
-        foreach ($formData as $key => $value) {
-            if (str_starts_with($key, "{$prefix}_")) {
-                $fieldName = substr($key, strlen("{$prefix}_"));
-                $result[$fieldName] = is_numeric($value) ? (float) $value : $value;
-            }
-        }
-
-        return $result;
-    }
-
-    protected function unflattenTypography(array $formData): array
-    {
-        $result = [];
-        $textStyles = ['h1', 'h2', 'h3', 'bodyLarge', 'bodyMedium', 'bodySmall', 'labelLarge', 'labelMedium', 'labelSmall', 'button', 'caption'];
-
-        // Font family
-        $result['fontFamily'] = $formData['typography_fontFamily'] ?? 'Inter';
-
-        // Text styles
-        foreach ($textStyles as $style) {
-            $styleData = [];
-            $props = ['fontSize', 'fontWeight', 'lineHeight', 'letterSpacing'];
-
-            foreach ($props as $prop) {
-                $key = "typography_{$style}_{$prop}";
-                if (isset($formData[$key]) && $formData[$key] !== '' && $formData[$key] !== null) {
-                    $styleData[$prop] = (float) $formData[$key];
-                }
-            }
-
-            if (! empty($styleData)) {
-                // Ensure fontWeight is integer
-                if (isset($styleData['fontWeight'])) {
-                    $styleData['fontWeight'] = (int) $styleData['fontWeight'];
-                }
-                $result[$style] = $styleData;
-            }
-        }
-
-        return $result;
-    }
 
     protected function getFormActions(): array
     {

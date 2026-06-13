@@ -1,15 +1,28 @@
 <x-filament-panels::page>
-    <form wire:submit="save">
-        <div>
-            {{ $this->form }}
+    <x-filament::section>
+        <div class="flex items-start gap-3">
+            <x-filament::icon
+                icon="heroicon-o-lock-closed"
+                class="h-5 w-5 mt-0.5 text-primary-600 dark:text-primary-400"
+            />
+            <div>
+                <p class="font-semibold text-gray-900 dark:text-white">
+                    Read-only — design is managed in code
+                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    The app design (Fresh Meet) is the single source of truth in
+                    <code>AppDesignSetting::defaults()</code> and is applied with
+                    <code>php artisan db:seed --class=AppDesignSettingSeeder</code>.
+                    These values are shown for reference only and cannot be edited here.
+                    To change the design, update the code and deploy.
+                </p>
+            </div>
         </div>
+    </x-filament::section>
 
-        <div class="mt-6">
-            <x-filament::button type="submit" size="lg">
-                Save Settings
-            </x-filament::button>
-        </div>
-    </form>
+    <div class="mt-6">
+        {{ $this->form }}
+    </div>
 
     {{-- Color Preview --}}
     {{-- @if($this->data)
