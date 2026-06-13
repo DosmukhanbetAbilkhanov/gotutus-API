@@ -17,22 +17,19 @@ class GoalSeeder extends Seeder
             ['slug' => 'networking', 'icon' => "\u{1F91D}", 'sort_order' => 2, 'en' => 'Networking', 'ru' => 'Нетворкинг', 'kk' => 'Нетворкинг (таныстық)'],
             ['slug' => 'new_people', 'icon' => "\u{1F44B}", 'sort_order' => 3, 'en' => 'Meet new people', 'ru' => 'Познакомиться с новыми людьми', 'kk' => 'Жаңа адамдармен танысу'],
             ['slug' => 'romantic', 'icon' => "\u{2764}\u{FE0F}", 'sort_order' => 4, 'en' => 'Romantic date', 'ru' => 'Романтическое свидание', 'kk' => 'Романтикалық кездесу'],
-            ['slug' => 'chemistry', 'icon' => "\u{2728}", 'sort_order' => 5, 'en' => 'Looking for chemistry', 'ru' => 'В поисках «искры»', 'kk' => 'Сезім іздеу («ұшқын»)'],
-            ['slug' => 'get_to_know', 'icon' => "\u{1FAC2}", 'sort_order' => 6, 'en' => 'Get to know each other', 'ru' => 'Узнать друг друга лучше', 'kk' => 'Бір-бірін жақсырақ тану'],
-            ['slug' => 'serious_rel', 'icon' => "\u{1F48D}", 'sort_order' => 7, 'en' => 'Serious relationship', 'ru' => 'Серьезные отношения', 'kk' => 'Маңызды қарым-қатынас'],
-            ['slug' => 'play_win', 'icon' => "\u{1F3C6}", 'sort_order' => 8, 'en' => 'Play to win', 'ru' => 'Играть на победу', 'kk' => 'Жеңіс үшін ойнау'],
-            ['slug' => 'teammate', 'icon' => "\u{1F91C}", 'sort_order' => 9, 'en' => 'Find a teammate', 'ru' => 'Найти партнера по команде', 'kk' => 'Командалас табу'],
-            ['slug' => 'friendly_match', 'icon' => "\u{1F3C5}", 'sort_order' => 10, 'en' => 'Friendly match', 'ru' => 'Товарищеский матч', 'kk' => 'Жолдастық кездесу'],
-            ['slug' => 'share_vibes', 'icon' => "\u{1F3B6}", 'sort_order' => 11, 'en' => 'Share the vibes', 'ru' => 'Разделить атмосферу', 'kk' => 'Көңіл-күймен бөлісу'],
-            ['slug' => 'watch_discuss', 'icon' => "\u{1F3AC}", 'sort_order' => 12, 'en' => 'Watch and discuss', 'ru' => 'Посмотреть и обсудить', 'kk' => 'Көру және талқылау'],
-            ['slug' => 'have_fun', 'icon' => "\u{1F389}", 'sort_order' => 13, 'en' => 'Have fun together', 'ru' => 'Повеселиться вместе', 'kk' => 'Бірге көңіл көтеру'],
-            ['slug' => 'relax', 'icon' => "\u{1F9D8}", 'sort_order' => 14, 'en' => 'Relax and recharge', 'ru' => 'Отдохнуть и перезагрузиться', 'kk' => 'Демалу және күш жинау'],
-            ['slug' => 'heart_talk', 'icon' => "\u{1F49C}", 'sort_order' => 15, 'en' => 'Heart-to-heart talk', 'ru' => 'Душевный разговор', 'kk' => 'Шынайы сырласу'],
-            ['slug' => 'fresh_air', 'icon' => "\u{1F33F}", 'sort_order' => 16, 'en' => 'Fresh air', 'ru' => 'Свежий воздух', 'kk' => 'Таза ауа'],
+            ['slug' => 'play_win', 'icon' => "\u{1F3C6}", 'sort_order' => 5, 'en' => 'Play to win', 'ru' => 'Играть на победу', 'kk' => 'Жеңіс үшін ойнау'],
+            ['slug' => 'teammate', 'icon' => "\u{1F91C}", 'sort_order' => 6, 'en' => 'Find a teammate', 'ru' => 'Найти партнера по команде', 'kk' => 'Командалас табу'],
+            ['slug' => 'friendly_match', 'icon' => "\u{1F3C5}", 'sort_order' => 7, 'en' => 'Friendly match', 'ru' => 'Товарищеский матч', 'kk' => 'Жолдастық кездесу'],
+            ['slug' => 'share_vibes', 'icon' => "\u{1F3B6}", 'sort_order' => 8, 'en' => 'Share the vibes', 'ru' => 'Разделить атмосферу', 'kk' => 'Көңіл-күймен бөлісу'],
+            ['slug' => 'watch_discuss', 'icon' => "\u{1F3AC}", 'sort_order' => 9, 'en' => 'Watch and discuss', 'ru' => 'Посмотреть и обсудить', 'kk' => 'Көру және талқылау'],
+            ['slug' => 'have_fun', 'icon' => "\u{1F389}", 'sort_order' => 10, 'en' => 'Have fun together', 'ru' => 'Повеселиться вместе', 'kk' => 'Бірге көңіл көтеру'],
+            ['slug' => 'relax', 'icon' => "\u{1F9D8}", 'sort_order' => 11, 'en' => 'Relax and recharge', 'ru' => 'Отдохнуть и перезагрузиться', 'kk' => 'Демалу және күш жинау'],
+            ['slug' => 'heart_talk', 'icon' => "\u{1F49C}", 'sort_order' => 12, 'en' => 'Heart-to-heart talk', 'ru' => 'Душевный разговор', 'kk' => 'Шынайы сырласу'],
+            ['slug' => 'fresh_air', 'icon' => "\u{1F33F}", 'sort_order' => 13, 'en' => 'Fresh air', 'ru' => 'Свежий воздух', 'kk' => 'Таза ауа'],
         ];
 
         foreach ($goals as $data) {
-            $goal = Goal::firstOrCreate(
+            $goal = Goal::updateOrCreate(
                 ['slug' => $data['slug']],
                 [
                     'icon' => $data['icon'],
@@ -42,23 +39,29 @@ class GoalSeeder extends Seeder
             );
 
             foreach (['en', 'ru', 'kk'] as $lang) {
-                $goal->translations()->firstOrCreate(
+                $goal->translations()->updateOrCreate(
                     ['language_code' => $lang],
                     ['name' => $data[$lang]],
                 );
             }
         }
 
-        // Pivot mapping: activity_type slug -> goal slugs
+        // Remove goals that are no longer defined. Cascades clean up their
+        // translations and activity_type_goal pivot rows; hangout_requests.goal_id
+        // is null-on-delete, so existing hangouts are not deleted.
+        Goal::whereNotIn('slug', array_column($goals, 'slug'))->get()
+            ->each(fn (Goal $goal) => $goal->delete());
+
+        // Pivot mapping: activity_type slug -> goal slugs (max 4 per type).
         $mapping = [
             // A. Social & Foodie
-            'beer'       => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'coffee'     => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'sushi'      => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'fast_food'  => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'kumys'      => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'hookah'     => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'restaurant' => ['just_chat', 'networking', 'new_people', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
+            'beer'       => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'coffee'     => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'sushi'      => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'fast_food'  => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'kumys'      => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'hookah'     => ['just_chat', 'new_people', 'networking', 'romantic'],
+            'restaurant' => ['just_chat', 'new_people', 'networking', 'romantic'],
             // B. Active & Competitive
             'bowling'     => ['play_win', 'teammate', 'friendly_match'],
             'billiards'   => ['play_win', 'teammate', 'friendly_match'],
@@ -68,10 +71,10 @@ class GoalSeeder extends Seeder
             'board-games' => ['play_win', 'teammate', 'friendly_match'],
             'pc_club'     => ['play_win', 'teammate', 'friendly_match'],
             // C. Entertainment & Vibes
-            'cinema'  => ['share_vibes', 'watch_discuss', 'have_fun', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'concert' => ['share_vibes', 'watch_discuss', 'have_fun', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'standup' => ['share_vibes', 'watch_discuss', 'have_fun', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
-            'karaoke' => ['share_vibes', 'watch_discuss', 'have_fun', 'romantic', 'chemistry', 'get_to_know', 'serious_rel'],
+            'cinema'  => ['share_vibes', 'have_fun', 'watch_discuss', 'romantic'],
+            'concert' => ['share_vibes', 'have_fun', 'watch_discuss', 'romantic'],
+            'standup' => ['share_vibes', 'have_fun', 'watch_discuss', 'romantic'],
+            'karaoke' => ['share_vibes', 'have_fun', 'watch_discuss', 'romantic'],
             // D. Wellness & Relax
             'bathhouse' => ['relax', 'heart_talk', 'fresh_air'],
             'walk'      => ['relax', 'heart_talk', 'fresh_air'],
@@ -93,7 +96,8 @@ class GoalSeeder extends Seeder
                 ->filter()
                 ->all();
 
-            $activityType->goals()->syncWithoutDetaching($pivotGoalIds);
+            // sync() is authoritative: removes pivot goals no longer mapped.
+            $activityType->goals()->sync($pivotGoalIds);
         }
     }
 }
