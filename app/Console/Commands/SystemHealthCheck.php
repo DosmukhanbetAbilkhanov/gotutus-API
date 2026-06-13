@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Mail\SystemHealthAlertMail;
+use App\Models\User;
+use App\Services\GenericFcmNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -13,12 +15,18 @@ use Illuminate\Support\Facades\Queue;
 
 class SystemHealthCheck extends Command
 {
-    protected $signature = 'system:health-check';
+    protected $signature = 'system:health-check
+        {--fcm-test= : Send a real test FCM push to the given user ID and report the result}';
 
     protected $description = 'Check Reverb, FCM and the queue; alert the admin when something is broken.';
 
     public function handle(): int
     {
+        // On-demand end-to-end FCM test (does not run the full health check / alerts).
+        if ($this->option('fcm-test') !== null) {
+            return $this->runFcmTest((int) $this->option('fcm-test'));
+        }
+
         $problems = [];
 
         // 1. Reverb websocket server reachable (server→Reverb publish path).
@@ -94,5 +102,45 @@ class SystemHealthCheck extends Command
         $this->error('Health check FAILED: '.implode('; ', $problems));
 
         return self::FAILURE;
+    }
+
+    /**
+     * Send a real FCM push to a user's devices and report the outcome.
+     */
+    private function runFcmTest(int $userId): int
+    {
+        $user = User::find($userId);
+        if (! $user) {
+            $this->error("User {$userId} not found.");
+
+            return self::FAILURE;
+        }
+
+        $tokens = $user->deviceTokens()->pluck('token');
+        $this->info("User {$user->id} ({$user->name}) has {$tokens->count()} device token(s).");
+
+        if ($tokens->isEmpty()) {
+            $this->warn('No device tokens registered — the user must open the app (logged in) so a token is stored. Nothing to send.');
+
+            return self::FAILURE;
+        }
+
+        try {
+            // GenericFcmNotification is not queued, so it sends synchronously and
+            // any failure (bad credentials, project mismatch, etc.) throws here.
+            $user->notify(new GenericFcmNotification(
+                title: 'Tanys test push',
+                body: 'If you see this, FCM is working ✅',
+                data: ['type' => 'health_test'],
+            ));
+
+            $this->info("✅ FCM push sent without error to {$tokens->count()} device(s). Check the phone and the Firebase console.");
+
+            return self::SUCCESS;
+        } catch (\Throwable $e) {
+            $this->error('❌ FCM push failed: '.$e->getMessage());
+
+            return self::FAILURE;
+        }
     }
 }
