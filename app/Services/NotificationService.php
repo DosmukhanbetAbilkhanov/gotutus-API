@@ -46,6 +46,13 @@ class NotificationService
                 'type' => $type,
                 'error' => $e->getMessage(),
             ]);
+
+            // Track recent failures so system:health-check can alert on FCM outages.
+            \Illuminate\Support\Facades\Cache::put(
+                'health:fcm_failures',
+                (int) \Illuminate\Support\Facades\Cache::get('health:fcm_failures', 0) + 1,
+                now()->addHour(),
+            );
         }
     }
 }

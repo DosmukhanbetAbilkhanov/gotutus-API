@@ -14,3 +14,4 @@ Schedule::command('sanctum:prune-expired --hours=24')->daily();
 Schedule::command('tokens:prune-expired-refresh')->daily();
 Schedule::command('feedback:send-requests')->dailyAt('10:00');
 Schedule::command('feedback:send-reminders')->dailyAt('14:00');
+Schedule::command('system:health-check')->everyFiveMinutes();

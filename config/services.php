@@ -33,4 +33,9 @@ return [
         'credentials' => env('FIREBASE_CREDENTIALS', storage_path('app/firebase-credentials.json')),
     ],
 
+    'health' => [
+        // Where system:health-check sends alerts when Reverb/FCM/queue break.
+        'alert_email' => env('HEALTH_ALERT_EMAIL', env('MOBIZON_ADMIN_EMAIL', 'administrator@tanys.app')),
+    ],
+
 ];
