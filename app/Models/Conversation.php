@@ -25,6 +25,15 @@ class Conversation extends Model
         return $this->belongsTo(HangoutRequest::class);
     }
 
+    /**
+     * A group conversation is the per-hangout room shared by all confirmed
+     * participants (it has no specific join_request_id).
+     */
+    public function isGroup(): bool
+    {
+        return $this->join_request_id === null;
+    }
+
     public function joinRequest(): BelongsTo
     {
         return $this->belongsTo(JoinRequest::class);

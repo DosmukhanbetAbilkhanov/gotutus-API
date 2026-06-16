@@ -46,6 +46,10 @@ class HangoutRequestResource extends JsonResource
                 $user !== null,
                 fn () => $this->my_conversation_id,
             ),
+            'group_conversation_id' => $this->when(
+                $user !== null,
+                fn () => $this->group_conversation_id,
+            ),
             'has_submitted_attendance' => $this->when(
                 $user !== null && $user->id === $this->user_id && $this->status?->value === 'completed',
                 fn () => $this->attendanceReports()->where('reporter_user_id', $user->id)->exists(),

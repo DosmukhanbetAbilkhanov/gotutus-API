@@ -30,6 +30,11 @@ class ConversationPolicy
      */
     private function isParticipant(User $user, Conversation $conversation): bool
     {
+        // Group conversation: membership is tracked in the conversation_user pivot.
+        if ($conversation->isGroup()) {
+            return $conversation->participants()->where('users.id', $user->id)->exists();
+        }
+
         $hangout = $conversation->hangoutRequest;
 
         // Owner of the hangout

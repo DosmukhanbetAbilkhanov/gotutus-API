@@ -19,11 +19,24 @@ class ConversationResource extends JsonResource
     {
         $user = $request->user();
 
+        $isGroup = $this->isGroup();
+
         return [
             'id' => $this->id,
+            'type' => $isGroup ? 'group' : 'direct',
             'hangout_request' => new HangoutRequestResource($this->whenLoaded('hangoutRequest')),
+            // Group rooms have many members; for direct chats this stays a single "other user".
+            'participants' => $this->when(
+                $isGroup && $this->relationLoaded('participants'),
+                fn () => UserResource::collection($this->participants),
+            ),
+            'participant_count' => $this->when(
+                $isGroup && $this->relationLoaded('participants'),
+                fn () => $this->participants->count(),
+            ),
+            // other_user / presence only make sense for 1:1 conversations.
             'other_user' => $this->when(
-                $this->relationLoaded('hangoutRequest'),
+                ! $isGroup && $this->relationLoaded('hangoutRequest'),
                 function () use ($user) {
                     $otherUser = $this->otherUserFor($user);
 
@@ -37,7 +50,7 @@ class ConversationResource extends JsonResource
                 fn () => $this->unreadCountFor($user->id),
             ),
             'is_online' => $this->when(
-                $this->relationLoaded('hangoutRequest'),
+                ! $isGroup && $this->relationLoaded('hangoutRequest'),
                 function () use ($user) {
                     $otherUser = $this->otherUserFor($user);
 
@@ -45,7 +58,7 @@ class ConversationResource extends JsonResource
                 },
             ),
             'last_seen_at' => $this->when(
-                $this->relationLoaded('hangoutRequest'),
+                ! $isGroup && $this->relationLoaded('hangoutRequest'),
                 function () use ($user) {
                     $otherUser = $this->otherUserFor($user);
 

@@ -18,6 +18,11 @@ Broadcast::channel('conversation.{conversationId}', function ($user, $conversati
         return false;
     }
 
+    // Group conversation: any confirmed participant (tracked in conversation_user).
+    if ($conversation->isGroup()) {
+        return $conversation->participants()->where('users.id', $user->id)->exists();
+    }
+
     // Owner of the hangout request
     if ($conversation->hangoutRequest->user_id === $user->id) {
         return true;

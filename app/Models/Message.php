@@ -16,6 +16,12 @@ class Message extends Model
 
     const UPDATED_AT = null;
 
+    /**
+     * Bump the parent conversation's updated_at on every new message so the
+     * conversation list (sorted by updated_at) surfaces recent activity.
+     */
+    protected $touches = ['conversation'];
+
     protected $fillable = [
         'conversation_id',
         'user_id',

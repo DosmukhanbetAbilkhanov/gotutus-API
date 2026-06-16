@@ -63,16 +63,27 @@ class MessageController extends Controller
 
         NewMessageBroadcast::dispatch($message);
 
-        // Send FCM push to the other participant
+        // Send FCM push to every other participant. Direct chats have a single
+        // recipient; group chats fan out to all confirmed members except the sender.
         $sender = $request->user();
-        $recipient = $conversation->otherUserFor($sender);
 
-        if ($recipient) {
+        if ($conversation->isGroup()) {
+            $recipients = $conversation->participants()
+                ->where('users.id', '!=', $sender->id)
+                ->get();
+        } else {
+            $other = $conversation->otherUserFor($sender);
+            $recipients = $other ? collect([$other]) : collect();
+        }
+
+        $body = \Illuminate\Support\Str::limit($message->message ?? __('message.image_sent'), 100);
+
+        foreach ($recipients as $recipient) {
             $this->notificationService->send(
                 user: $recipient,
                 type: 'new_message',
                 title: $sender->name,
-                body: \Illuminate\Support\Str::limit($message->message ?? __('message.image_sent'), 100),
+                body: $body,
                 data: [
                     'conversation_id' => $conversation->id,
                     'message_id' => $message->id,

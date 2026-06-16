@@ -17,6 +17,7 @@ class TypingBroadcast implements ShouldBroadcastNow
     public function __construct(
         public int $conversationId,
         public int $userId,
+        public ?string $userName = null,
     ) {}
 
     public function broadcastOn(): array
@@ -35,6 +36,7 @@ class TypingBroadcast implements ShouldBroadcastNow
     {
         return [
             'user_id' => $this->userId,
+            'user_name' => $this->userName,
         ];
     }
 }

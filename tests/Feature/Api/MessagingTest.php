@@ -20,13 +20,15 @@ beforeEach(function () {
         'activity_type_id' => $this->activityType->id,
     ]);
 
-    JoinRequest::factory()->confirmed()->create([
+    $this->joinRequest = JoinRequest::factory()->confirmed()->create([
         'hangout_request_id' => $this->hangout->id,
         'user_id' => $this->joiner->id,
     ]);
 
+    // A direct (1:1) conversation is tied to the joiner's join request.
     $this->conversation = Conversation::factory()->create([
         'hangout_request_id' => $this->hangout->id,
+        'join_request_id' => $this->joinRequest->id,
     ]);
 });
 

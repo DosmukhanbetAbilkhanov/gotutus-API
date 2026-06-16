@@ -166,6 +166,10 @@ class JoinRequestController extends Controller
             'confirmed_at' => now(),
         ]);
 
+        // Add the newly-confirmed participant to the hangout's group conversation
+        // (the room is created once a 2nd participant confirms).
+        $joinRequest->hangoutRequest->syncGroupConversation();
+
         JoinRequestStatusChanged::dispatch($joinRequest, 'confirmed');
 
         return response()->json([
@@ -189,6 +193,10 @@ class JoinRequestController extends Controller
                 $joinRequest->hangoutRequest->update(['status' => HangoutRequestStatus::Open]);
             }
         });
+
+        // Remove the leaving participant from the group conversation (history is
+        // preserved; their past messages remain).
+        $joinRequest->hangoutRequest->syncGroupConversation();
 
         return response()->json([
             'message' => __('join_request.cancelled'),

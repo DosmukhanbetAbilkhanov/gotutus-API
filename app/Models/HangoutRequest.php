@@ -85,6 +85,55 @@ class HangoutRequest extends Model
         return $this->hasMany(Conversation::class);
     }
 
+    /**
+     * The single group conversation for this hangout (join_request_id IS NULL).
+     */
+    public function groupConversation(): HasOne
+    {
+        return $this->hasOne(Conversation::class)->whereNull('join_request_id');
+    }
+
+    /**
+     * Ensure the per-hangout group conversation exists and its membership
+     * (host + all confirmed joiners) is in sync.
+     *
+     * A group room is only created once there are at least 2 confirmed joiners
+     * (so the room has host + 2 = 3 members) to avoid duplicating the 1:1
+     * join-request chat. If members drop below the threshold the existing room
+     * is kept (history preserved) but membership is still synced.
+     */
+    public function syncGroupConversation(): ?Conversation
+    {
+        $confirmedUserIds = $this->joinRequests()
+            ->where('status', JoinRequestStatus::Confirmed)
+            ->pluck('user_id')
+            ->all();
+
+        $conversation = $this->groupConversation()->first();
+
+        $memberIds = array_values(array_unique([$this->user_id, ...$confirmedUserIds]));
+
+        if (count($confirmedUserIds) < 2) {
+            // Below threshold: don't create a room, but keep an existing one in sync.
+            $conversation?->participants()->sync($memberIds);
+
+            return $conversation;
+        }
+
+        if (! $conversation) {
+            $conversation = Conversation::create([
+                'hangout_request_id' => $this->id,
+                'join_request_id' => null,
+            ]);
+        }
+
+        // sync() attaches new members, detaches removed ones, and leaves existing
+        // pivot rows (last_read_at) untouched.
+        $conversation->participants()->sync($memberIds);
+
+        return $conversation;
+    }
+
     public function confirmedJoinRequest(): HasOne
     {
         return $this->hasOne(JoinRequest::class)->confirmed();

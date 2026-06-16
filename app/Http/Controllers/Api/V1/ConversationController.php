@@ -25,14 +25,16 @@ class ConversationController extends Controller
         $conversations = Conversation::query()
             ->where(function ($q) use ($user) {
                 $q->whereHas('hangoutRequest', fn ($hq) => $hq->where('user_id', $user->id))
-                    ->orWhereHas('joinRequest', fn ($jq) => $jq->where('user_id', $user->id));
+                    ->orWhereHas('joinRequest', fn ($jq) => $jq->where('user_id', $user->id))
+                    ->orWhereHas('participants', fn ($p) => $p->where('users.id', $user->id));
             })
             ->with([
                 'hangoutRequest.user.photos',
                 'hangoutRequest.activityType.translations',
+                'hangoutRequest.place.translations',
                 'joinRequest.user.photos',
                 'latestMessage',
-                'participants',
+                'participants.photos',
             ])
             ->latest('updated_at')
             ->paginate(20);
@@ -47,8 +49,9 @@ class ConversationController extends Controller
         $conversation->load([
             'hangoutRequest.user.photos',
             'hangoutRequest.activityType.translations',
+            'hangoutRequest.place.translations',
             'joinRequest.user.photos',
-            'participants',
+            'participants.photos',
         ]);
 
         return new ConversationResource($conversation);
@@ -67,7 +70,7 @@ class ConversationController extends Controller
     {
         $this->authorize('view', $conversation);
 
-        TypingBroadcast::dispatch($conversation->id, $request->user()->id);
+        TypingBroadcast::dispatch($conversation->id, $request->user()->id, $request->user()->name);
 
         return response()->json(['message' => 'ok']);
     }

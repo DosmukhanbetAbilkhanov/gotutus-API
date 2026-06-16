@@ -74,6 +74,16 @@ class HangoutRequestController extends Controller
                         ->where('join_requests.user_id', $user->id)
                         ->whereIn('join_requests.status', ['approved', 'confirmed'])
                         ->limit(1),
+                    ])
+                    ->addSelect(['group_conversation_id' => Conversation::query()
+                        ->select('conversations.id')
+                        ->whereColumn('conversations.hangout_request_id', 'hangout_requests.id')
+                        ->whereNull('conversations.join_request_id')
+                        ->whereExists(fn ($sub) => $sub->select(DB::raw(1))
+                            ->from('conversation_user')
+                            ->whereColumn('conversation_user.conversation_id', 'conversations.id')
+                            ->where('conversation_user.user_id', $user->id))
+                        ->limit(1),
                     ]);
             })
             ->latest()
@@ -103,6 +113,11 @@ class HangoutRequestController extends Controller
             // Set conversation_id via the already-loaded join request
             $myJr = $hangoutRequest->myJoinRequest;
             $hangoutRequest->my_conversation_id = $myJr?->conversation?->id;
+
+            // Group conversation id (only when the viewer is a confirmed participant)
+            $hangoutRequest->group_conversation_id = $hangoutRequest->groupConversation()
+                ->whereHas('participants', fn ($p) => $p->where('users.id', $user->id))
+                ->value('id');
         }
 
         return new HangoutRequestResource($hangoutRequest);
@@ -226,6 +241,16 @@ class HangoutRequestController extends Controller
                 ->whereColumn('join_requests.hangout_request_id', 'hangout_requests.id')
                 ->where('join_requests.user_id', $user->id)
                 ->whereIn('join_requests.status', ['approved', 'confirmed'])
+                ->limit(1),
+            ])
+            ->addSelect(['group_conversation_id' => Conversation::query()
+                ->select('conversations.id')
+                ->whereColumn('conversations.hangout_request_id', 'hangout_requests.id')
+                ->whereNull('conversations.join_request_id')
+                ->whereExists(fn ($sub) => $sub->select(DB::raw(1))
+                    ->from('conversation_user')
+                    ->whereColumn('conversation_user.conversation_id', 'conversations.id')
+                    ->where('conversation_user.user_id', $user->id))
                 ->limit(1),
             ])
             ->latest()

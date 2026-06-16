@@ -18,7 +18,7 @@ class JoinRequestFactory extends Factory
         return [
             'hangout_request_id' => HangoutRequest::factory(),
             'user_id' => User::factory(),
-            'place_id' => null,
+            'suggested_place_id' => null,
             'status' => JoinRequestStatus::Pending,
             'message' => fake()->optional()->sentence(),
             'confirmed_at' => null,
@@ -28,7 +28,7 @@ class JoinRequestFactory extends Factory
     public function withPlace(): static
     {
         return $this->state(fn (array $attributes) => [
-            'place_id' => Place::factory(),
+            'suggested_place_id' => Place::factory(),
         ]);
     }
 
