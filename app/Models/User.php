@@ -34,6 +34,8 @@ class User extends Authenticatable implements FilamentUser
         'bio',
         'password',
         'city_id',
+        'registration_latitude',
+        'registration_longitude',
         'status',
         'user_type_id',
         'phone_verified_at',

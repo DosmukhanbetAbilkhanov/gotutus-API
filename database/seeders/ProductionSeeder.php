@@ -81,10 +81,10 @@ class ProductionSeeder extends Seeder
         $now = now();
 
         $cities = [
-            ['en' => 'Almaty', 'ru' => 'Алматы', 'kk' => 'Алматы'],
-            ['en' => 'Astana', 'ru' => 'Астана', 'kk' => 'Астана'],
-            ['en' => 'Aktobe', 'ru' => 'Актобе', 'kk' => 'Ақтөбе'],
-            ['en' => 'Aktau', 'ru' => 'Актау', 'kk' => 'Ақтау'],
+            ['en' => 'Almaty', 'ru' => 'Алматы', 'kk' => 'Алматы', 'lat' => 43.2389, 'lng' => 76.8897, 'radius_km' => 45],
+            ['en' => 'Astana', 'ru' => 'Астана', 'kk' => 'Астана', 'lat' => 51.1605, 'lng' => 71.4704, 'radius_km' => 45],
+            ['en' => 'Aktobe', 'ru' => 'Актобе', 'kk' => 'Ақтөбе', 'lat' => 50.2839, 'lng' => 57.1670, 'radius_km' => 40],
+            ['en' => 'Aktau', 'ru' => 'Актау', 'kk' => 'Ақтау', 'lat' => 43.6510, 'lng' => 51.1572, 'radius_km' => 40],
         ];
 
         $created = 0;
@@ -110,11 +110,25 @@ class ProductionSeeder extends Seeder
                     ]);
                 }
 
+                // Backfill geo for city-detection if not yet set.
+                DB::table('cities')
+                    ->where('id', $existingCityId)
+                    ->whereNull('center_latitude')
+                    ->update([
+                        'center_latitude' => $city['lat'],
+                        'center_longitude' => $city['lng'],
+                        'radius_km' => $city['radius_km'],
+                        'updated_at' => now(),
+                    ]);
+
                 continue;
             }
 
             $cityId = DB::table('cities')->insertGetId([
                 'is_active' => true,
+                'center_latitude' => $city['lat'],
+                'center_longitude' => $city['lng'],
+                'radius_km' => $city['radius_km'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

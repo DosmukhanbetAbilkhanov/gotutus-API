@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Auth\VerifyRegistrationCodeRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\LegalPage;
 use App\Models\User;
+use App\Services\CityResolver;
 use App\Services\MobizonSmsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
@@ -74,7 +75,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function complete(CompleteRegistrationRequest $request): JsonResponse
+    public function complete(CompleteRegistrationRequest $request, CityResolver $cityResolver): JsonResponse
     {
         $verificationToken = $request->validated('verification_token');
         $phone = Cache::get("registration_token:{$verificationToken}");
@@ -93,9 +94,31 @@ class RegisterController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        [$user, $tokenData] = DB::transaction(function () use ($request, $phone, $verificationToken) {
+        // Derive the city from the device's coordinates. A bot / out-of-area
+        // tester cannot self-assign a city they aren't physically in.
+        $city = $cityResolver->resolve(
+            (float) $request->validated('latitude'),
+            (float) $request->validated('longitude'),
+        );
+
+        if ($city === null) {
+            return response()->json([
+                'message' => __('cities.not_supported'),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        [$user, $tokenData] = DB::transaction(function () use ($request, $phone, $verificationToken, $city) {
             $user = User::create([
-                ...$request->safe()->except(['verification_token', 'password_confirmation', 'public_offer_accepted']),
+                ...$request->safe()->except([
+                    'verification_token',
+                    'password_confirmation',
+                    'public_offer_accepted',
+                    'latitude',
+                    'longitude',
+                ]),
+                'city_id' => $city->id,
+                'registration_latitude' => $request->validated('latitude'),
+                'registration_longitude' => $request->validated('longitude'),
                 'phone' => $phone,
                 'phone_verified_at' => now(),
                 'status' => \App\Enums\UserStatus::Active,

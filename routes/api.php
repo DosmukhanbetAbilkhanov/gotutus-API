@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
 */
 
 Route::get('cities', [CityController::class, 'index']);
+Route::post('cities/resolve', [CityController::class, 'resolve'])->middleware('throttle:30,1');
 Route::get('activity-types', [ActivityTypeController::class, 'index']);
 Route::get('app-design', [AppDesignSettingController::class, 'show']);
 Route::get('hangout-requests', [HangoutRequestController::class, 'index']);

@@ -120,11 +120,14 @@ describe('Registration', function () {
         it('creates a verified user', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
@@ -155,11 +158,14 @@ describe('Registration', function () {
         it('accepts other gender', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'Alex',
                 'email' => 'alex@example.com',
                 'age' => 22,
                 'gender' => 'other',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
@@ -175,11 +181,14 @@ describe('Registration', function () {
         it('accepts optional bio field', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
@@ -199,7 +208,8 @@ describe('Registration', function () {
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
@@ -210,11 +220,14 @@ describe('Registration', function () {
         it('consumes the verification token after use', function () {
             $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ])->assertStatus(201);
@@ -222,30 +235,75 @@ describe('Registration', function () {
             expect(Cache::has("registration_token:{$this->verificationToken}"))->toBeFalse();
         });
 
-        it('requires a valid city', function () {
+        it('requires coordinates', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => 999,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);
 
             $response->assertStatus(422)
-                ->assertJsonValidationErrors(['city_id']);
+                ->assertJsonValidationErrors(['latitude', 'longitude']);
+        });
+
+        it('rejects coordinates outside any supported city', function () {
+            // Far from the seeded Astana city → no supported city.
+            $response = $this->postJson('/api/v1/auth/register/complete', [
+                'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'age' => 25,
+                'gender' => 'male',
+                'latitude' => 48.8566, // Paris
+                'longitude' => 2.3522,
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+
+            $response->assertStatus(422);
+            expect(User::where('email', 'john@example.com')->exists())->toBeFalse();
+        });
+
+        it('assigns the city resolved from coordinates', function () {
+            $this->postJson('/api/v1/auth/register/complete', [
+                'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
+                'name' => 'Geo User',
+                'email' => 'geo@example.com',
+                'age' => 25,
+                'gender' => 'male',
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ])->assertStatus(201);
+
+            $this->assertDatabaseHas('users', [
+                'email' => 'geo@example.com',
+                'city_id' => $this->city->id,
+            ]);
         });
 
         it('requires password confirmation', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'different',
             ]);
@@ -257,10 +315,13 @@ describe('Registration', function () {
         it('requires email field', function () {
             $response = $this->postJson('/api/v1/auth/register/complete', [
                 'verification_token' => $this->verificationToken,
+                'public_offer_accepted' => true,
+                'public_offer_version' => '1.0',
                 'name' => 'John Doe',
                 'age' => 25,
                 'gender' => 'male',
-                'city_id' => $this->city->id,
+                'latitude' => 51.1605,
+                'longitude' => 71.4704,
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
             ]);

@@ -14,6 +14,10 @@ class CityFactory extends Factory
     {
         return [
             'is_active' => true,
+            // Default geo so city-resolution (GPS → city) works in tests.
+            'center_latitude' => 51.1605, // Astana
+            'center_longitude' => 71.4704,
+            'radius_km' => 40,
         ];
     }
 

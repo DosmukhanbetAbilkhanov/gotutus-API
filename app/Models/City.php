@@ -18,12 +18,18 @@ class City extends Model
     protected $fillable = [
         'is_active',
         'ad_frequency',
+        'center_latitude',
+        'center_longitude',
+        'radius_km',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'center_latitude' => 'float',
+            'center_longitude' => 'float',
+            'radius_km' => 'integer',
         ];
     }
 

@@ -35,6 +35,30 @@ class CityResource extends Resource
                     ->helperText('Show an advertisement after every N hangouts in the feed')
                     ->minValue(1)
                     ->maxValue(100),
+                \Filament\Schemas\Components\Section::make('Location (city detection)')
+                    ->description('Used to resolve a user\'s GPS coordinates to this city during onboarding.')
+                    ->schema([
+                        Forms\Components\TextInput::make('center_latitude')
+                            ->label('Center latitude')
+                            ->numeric()
+                            ->minValue(-90)
+                            ->maxValue(90)
+                            ->helperText('e.g. Astana = 51.1605'),
+                        Forms\Components\TextInput::make('center_longitude')
+                            ->label('Center longitude')
+                            ->numeric()
+                            ->minValue(-180)
+                            ->maxValue(180)
+                            ->helperText('e.g. Astana = 71.4704'),
+                        Forms\Components\TextInput::make('radius_km')
+                            ->label('Radius (km)')
+                            ->numeric()
+                            ->default(40)
+                            ->minValue(1)
+                            ->maxValue(500)
+                            ->helperText('A device within this distance of the center resolves to this city'),
+                    ])
+                    ->columns(3),
                 \Filament\Schemas\Components\Section::make('Translations')
                     ->schema([
                         Forms\Components\Repeater::make('translations')
