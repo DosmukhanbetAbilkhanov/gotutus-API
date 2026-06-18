@@ -29,9 +29,13 @@ class PasswordResetController extends Controller
         Cache::put("password_reset_code:{$phone}", $code, now()->addMinutes(5));
 
         try {
-            $this->smsService->send($phone, "Your password reset code: {$code}");
+            $sent = $this->smsService->send($phone, "Your password reset code: {$code}");
         } catch (\Throwable $e) {
             Log::error('SMS send failed during password reset', ['phone' => $phone, 'error' => $e->getMessage()]);
+            $sent = false;
+        }
+
+        if (! $sent) {
             Cache::forget("password_reset_code:{$phone}");
 
             return response()->json([

@@ -36,9 +36,15 @@ class RegisterController extends Controller
         Cache::put("registration_code:{$phone}", $code, now()->addMinutes(5));
 
         try {
-            $this->smsService->send($phone, "Your verification code: {$code}");
+            $sent = $this->smsService->send($phone, "Your verification code: {$code}");
         } catch (\Throwable $e) {
             Log::error('SMS send failed during registration', ['phone' => $phone, 'error' => $e->getMessage()]);
+            $sent = false;
+        }
+
+        // send() returns false (without throwing) on Mobizon/config errors —
+        // honor it so the client learns the code wasn't actually sent.
+        if (! $sent) {
             Cache::forget("registration_code:{$phone}");
 
             return response()->json([

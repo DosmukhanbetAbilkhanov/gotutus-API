@@ -2,10 +2,19 @@
 
 use App\Models\City;
 use App\Models\User;
+use App\Services\MobizonSmsService;
 use Illuminate\Support\Facades\Cache;
 
 beforeEach(function () {
     $this->city = City::factory()->create();
+
+    // SMS gateway isn't configured in tests — fake it so verification-code
+    // sends succeed (send() now returns false when unconfigured).
+    $this->mock(MobizonSmsService::class, function ($mock) {
+        $mock->shouldReceive('send')->andReturn(true);
+        $mock->shouldReceive('sendVerificationCode')->andReturn(true);
+        $mock->shouldReceive('getBalance')->andReturn(1000.0);
+    });
 });
 
 describe('Registration', function () {
@@ -19,6 +28,20 @@ describe('Registration', function () {
                 ->assertJsonStructure(['message']);
 
             expect(Cache::has('registration_code:+77001234567'))->toBeTrue();
+        });
+
+        it('returns 503 and clears the code when SMS fails to send', function () {
+            // Override the default (true) mock for this test.
+            $this->mock(MobizonSmsService::class, function ($mock) {
+                $mock->shouldReceive('send')->andReturn(false);
+            });
+
+            $response = $this->postJson('/api/v1/auth/register/send-code', [
+                'phone' => '+77001234599',
+            ]);
+
+            $response->assertStatus(503);
+            expect(Cache::has('registration_code:+77001234599'))->toBeFalse();
         });
 
         it('rejects an already verified phone', function () {

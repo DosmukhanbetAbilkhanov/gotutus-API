@@ -25,8 +25,11 @@ return [
 
     'mobizon' => [
         'api_key' => env('MOBIZON_API_KEY'),
+        'api_url' => env('MOBIZON_API_URL', 'https://api.mobizon.kz/service'),
         'sender_name' => env('MOBIZON_SENDER_NAME'),
         'admin_email' => env('MOBIZON_ADMIN_EMAIL'),
+        // system:health-check alerts when the balance drops below this (account currency, e.g. KZT).
+        'low_balance_threshold' => env('MOBIZON_LOW_BALANCE_THRESHOLD', 500),
     ],
 
     'fcm' => [

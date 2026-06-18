@@ -35,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(fn ($request) => $request->is('api/*'));
 
+        // Email the admin about unhandled, actionable 5xx errors (throttled).
+        $exceptions->report(function (\Throwable $e): void {
+            \App\Support\ExceptionAlerter::maybeAlert($e);
+        });
+
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([

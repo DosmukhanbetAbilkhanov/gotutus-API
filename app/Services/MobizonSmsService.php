@@ -76,6 +76,34 @@ class MobizonSmsService
     }
 
     /**
+     * Fetch the current account balance (in the account currency, e.g. KZT).
+     * Returns null when the key is missing or the request fails.
+     */
+    public function getBalance(): ?float
+    {
+        if (empty($this->apiKey)) {
+            return null;
+        }
+
+        try {
+            $response = $this->client()->get('/User/GetOwnBalance');
+            $data = $response->json();
+
+            if ($response->successful() && ($data['code'] ?? null) === 0) {
+                return (float) ($data['data']['balance'] ?? 0);
+            }
+
+            Log::warning('Failed to fetch Mobizon balance', ['response' => $data]);
+
+            return null;
+        } catch (\Throwable $e) {
+            Log::warning('Mobizon balance check failed', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+    }
+
+    /**
      * Generate a random verification code.
      */
     public function generateCode(int $length = 6): string

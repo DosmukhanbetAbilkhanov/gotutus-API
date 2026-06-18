@@ -76,6 +76,13 @@ class SystemHealthCheck extends Command
             $problems[] = "{$fcmFailures} FCM push failure(s) in the last hour";
         }
 
+        // 6. Low SMS balance (verification codes stop sending at zero).
+        $balance = app(\App\Services\MobizonSmsService::class)->getBalance();
+        $threshold = (float) config('services.mobizon.low_balance_threshold', 500);
+        if ($balance !== null && $balance < $threshold) {
+            $problems[] = "Low SMS balance: {$balance} (threshold {$threshold})";
+        }
+
         if (empty($problems)) {
             Cache::forget('health:alerted');
             $this->info('Health check passed.');

@@ -42,7 +42,9 @@ return [
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
-            'level' => env('LOG_LEVEL', 'critical'),
+            // Capture errors and above (not just critical) so adding `slack` to
+            // LOG_STACK surfaces unhandled exceptions in real time.
+            'level' => env('LOG_SLACK_LEVEL', 'error'),
             'replace_placeholders' => true,
         ],
 

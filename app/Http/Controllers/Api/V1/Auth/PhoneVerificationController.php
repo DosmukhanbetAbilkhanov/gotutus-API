@@ -25,9 +25,13 @@ class PhoneVerificationController extends Controller
         Cache::put("phone_verification:{$phone}", $code, now()->addMinutes(5));
 
         try {
-            $this->smsService->send($phone, "Your verification code: {$code}");
+            $sent = $this->smsService->send($phone, "Your verification code: {$code}");
         } catch (\Throwable $e) {
             Log::error('SMS send failed during phone verification', ['phone' => $phone, 'error' => $e->getMessage()]);
+            $sent = false;
+        }
+
+        if (! $sent) {
             Cache::forget("phone_verification:{$phone}");
 
             return response()->json([
