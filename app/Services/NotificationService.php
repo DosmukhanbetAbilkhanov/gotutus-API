@@ -53,6 +53,23 @@ class NotificationService
                 (int) \Illuminate\Support\Facades\Cache::get('health:fcm_failures', 0) + 1,
                 now()->addHour(),
             );
+
+            // Real-time Slack alert. Throttled so a burst of failures posts once
+            // per 15 minutes, and only when the Slack webhook is configured.
+            if (config('logging.channels.slack.url')
+                && \Illuminate\Support\Facades\Cache::add('slack:fcm_alert', true, now()->addMinutes(15))) {
+                try {
+                    \Illuminate\Support\Facades\Log::channel('slack')->error('FCM push failed', [
+                        'user_id' => $user->id,
+                        'type' => $type,
+                        'error' => $e->getMessage(),
+                    ]);
+                } catch (\Throwable $slackError) {
+                    \Illuminate\Support\Facades\Log::warning('Failed to post FCM failure to Slack', [
+                        'error' => $slackError->getMessage(),
+                    ]);
+                }
+            }
         }
     }
 }
