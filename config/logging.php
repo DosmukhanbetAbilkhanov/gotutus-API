@@ -40,7 +40,7 @@ return [
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
+            'username' => 'Slack Log',
             'emoji' => ':boom:',
             // Capture errors and above (not just critical) so adding `slack` to
             // LOG_STACK surfaces unhandled exceptions in real time.

@@ -118,7 +118,10 @@ class SystemHealthCheck extends Command
 
         $this->error('Health check FAILED: '.implode('; ', $problems));
 
-        return self::FAILURE;
+        // Return SUCCESS even when problems are found: this command alerts on its
+        // own (email + Slack), so a non-zero exit would make the scheduler log a
+        // duplicate, detail-less "Scheduled command failed" every 5 minutes.
+        return self::SUCCESS;
     }
 
     /**
