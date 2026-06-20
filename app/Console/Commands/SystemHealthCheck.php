@@ -96,12 +96,22 @@ class SystemHealthCheck extends Command
         // synchronously (not queued) so it still goes out if the queue is down.
         if (! Cache::has('health:alerted')) {
             Cache::put('health:alerted', true, now()->addMinutes(30));
+
             $email = config('services.health.alert_email');
             if ($email) {
                 try {
                     Mail::to($email)->send(new SystemHealthAlertMail($problems));
                 } catch (\Throwable $e) {
                     Log::error('Failed to send health alert email', ['error' => $e->getMessage()]);
+                }
+            }
+
+            // Also post to Slack (when configured) so ops alerts land in-channel.
+            if (config('logging.channels.slack.url')) {
+                try {
+                    Log::channel('slack')->error('System health check failed', ['problems' => $problems]);
+                } catch (\Throwable $e) {
+                    Log::warning('Failed to post health alert to Slack', ['error' => $e->getMessage()]);
                 }
             }
         }
