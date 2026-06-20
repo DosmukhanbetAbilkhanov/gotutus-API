@@ -12,6 +12,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:locale" content="{{ $lang ?? 'en' }}">
+    <meta property="og:image" content="@yield('og_image', asset('og-default.png'))">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('og_title', 'Tanys — Find Your Perfect Hangout Partner')">
+    <meta name="twitter:description" content="@yield('og_description', 'Create meetups, join activities, and meet new friends in your city.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('og-default.png'))">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
