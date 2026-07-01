@@ -3,6 +3,7 @@
 namespace App\Filament\CityManager\Resources;
 
 use App\Filament\CityManager\Resources\PlaceResource\Pages;
+use App\Models\ActivityType;
 use App\Models\Place;
 use Filament\Forms;
 use Filament\Schemas\Schema;
@@ -192,6 +193,20 @@ class PlaceResource extends Resource
             ])
             ->defaultSort('id')
             ->filters([
+                Tables\Filters\SelectFilter::make('activity_type')
+                    ->label('Activity Type')
+                    ->searchable()
+                    ->options(function () {
+                        return ActivityType::with('translations')->orderBy('slug')->get()->mapWithKeys(function ($type) {
+                            $name = $type->translations->firstWhere('language_code', 'en')?->name ?? $type->slug;
+                            return [$type->id => $name];
+                        });
+                    })
+                    ->query(function ($query, array $data) {
+                        if (! empty($data['value'])) {
+                            $query->whereHas('activityTypes', fn ($q) => $q->where('activity_types.id', $data['value']));
+                        }
+                    }),
                 Tables\Filters\TernaryFilter::make('has_discount')
                     ->label('Has Active Discount')
                     ->queries(

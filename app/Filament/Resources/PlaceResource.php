@@ -234,6 +234,20 @@ class PlaceResource extends Resource
                             return [$city->id => $name];
                         });
                     }),
+                Tables\Filters\SelectFilter::make('activity_type')
+                    ->label('Activity Type')
+                    ->searchable()
+                    ->options(function () {
+                        return ActivityType::with('translations')->orderBy('slug')->get()->mapWithKeys(function ($type) {
+                            $name = $type->translations->firstWhere('language_code', 'en')?->name ?? $type->slug;
+                            return [$type->id => $name];
+                        });
+                    })
+                    ->query(function ($query, array $data) {
+                        if (! empty($data['value'])) {
+                            $query->whereHas('activityTypes', fn ($q) => $q->where('activity_types.id', $data['value']));
+                        }
+                    }),
                 Tables\Filters\TernaryFilter::make('has_discount')
                     ->label('Has Active Discount')
                     ->queries(
