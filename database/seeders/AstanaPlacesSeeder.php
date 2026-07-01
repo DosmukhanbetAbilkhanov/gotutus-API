@@ -135,6 +135,7 @@ class AstanaPlacesSeeder extends Seeder
             DB::transaction(function () use ($r, $cityId, $name, $address, $ids, $hoursParser, $now) {
                 $place = Place::create([
                     'city_id' => $cityId,
+                    'order' => 1,
                     'latitude' => $r['latitude'] ?? null,
                     'longitude' => $r['longitude'] ?? null,
                     'phone' => $this->cleanPhone($r['phone'] ?? null),

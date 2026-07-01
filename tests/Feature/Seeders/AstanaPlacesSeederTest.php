@@ -61,6 +61,7 @@ describe('import', function () {
 
         $place = Place::with(['activityTypes', 'workingHours', 'translations'])->first();
         expect($place->city_id)->toBe($this->city->id)
+            ->and($place->order)->toBe(1)                         // seeded default order
             ->and((float) $place->latitude)->toBe(51.097749)
             ->and($place->phone)->toBe('+77773333333')           // first number only
             ->and($place->instagram)->toBe('okadzaki.kz');        // url stripped to handle

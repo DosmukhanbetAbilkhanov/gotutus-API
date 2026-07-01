@@ -21,6 +21,7 @@ class Place extends Model
 
     protected $fillable = [
         'city_id',
+        'order',
         'latitude',
         'longitude',
         'logo_path',
@@ -28,6 +29,10 @@ class Place extends Model
         'website',
         'instagram',
         'two_gis_url',
+    ];
+
+    protected $casts = [
+        'order' => 'integer',
     ];
 
     public function city(): BelongsTo

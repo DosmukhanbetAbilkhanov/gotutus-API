@@ -25,7 +25,9 @@ class PlaceController extends Controller
                 ->inCity($cityId)
                 ->when($activityTypeId, fn ($q, $id) => $q->forActivityType((int) $id))
                 ->get()
-                ->sortByDesc(fn ($place) => $place->activeDiscount !== null)
+                // Manual `order` first (higher = top), then places with an active
+                // discount, so admins control placement via the order column.
+                ->sortByDesc(fn ($place) => [$place->order, $place->activeDiscount !== null])
                 ->values();
         });
 

@@ -23,6 +23,29 @@ describe('GET /places', function () {
             ->assertJsonPath('data.0.id', $place->id);
     });
 
+    it('orders places by the order column (highest first)', function () {
+        $low = Place::factory()->create(['city_id' => $this->city->id, 'order' => 1]);
+        $high = Place::factory()->create(['city_id' => $this->city->id, 'order' => 10]);
+        $mid = Place::factory()->create(['city_id' => $this->city->id, 'order' => 5]);
+
+        $response = $this->actingAs($this->user)->getJson('/api/v1/places');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.id', $high->id)
+            ->assertJsonPath('data.1.id', $mid->id)
+            ->assertJsonPath('data.2.id', $low->id);
+    });
+
+    it('breaks ties by active discount when order is equal', function () {
+        Place::factory()->create(['city_id' => $this->city->id, 'order' => 5]);
+        $discounted = Place::factory()->create(['city_id' => $this->city->id, 'order' => 5]);
+        PlaceDiscount::create(['place_id' => $discounted->id, 'discount_percent' => 15, 'is_active' => true]);
+
+        $response = $this->actingAs($this->user)->getJson('/api/v1/places');
+
+        $response->assertOk()->assertJsonPath('data.0.id', $discounted->id);
+    });
+
     it('returns discount data for places with active discounts', function () {
         $place = Place::factory()->create(['city_id' => $this->city->id]);
         PlaceDiscount::create([

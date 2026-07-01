@@ -41,6 +41,13 @@ class PlaceResource extends Resource
                     ->relationship('activityTypes', 'slug')
                     ->label('Activity Types')
                     ->columns(2),
+                Forms\Components\TextInput::make('order')
+                    ->label('Order')
+                    ->helperText('Higher = shown first in the place picker. Default 1.')
+                    ->numeric()
+                    ->default(1)
+                    ->minValue(0)
+                    ->required(),
                 \Filament\Schemas\Components\Section::make('Logo & Contacts')
                     ->schema([
                         Forms\Components\FileUpload::make('logo_path')
@@ -168,6 +175,9 @@ class PlaceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('order')
+                    ->label('Order')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('logo_path')
                     ->label('Logo')
