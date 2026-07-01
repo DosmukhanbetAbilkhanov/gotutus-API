@@ -101,12 +101,14 @@ class PlaceResource extends Resource
                                     ->rows(3)
                                     ->maxLength(1000),
                             ])
-                            ->defaultItems(3)
-                            ->minItems(3)
+                            // Places may have 1–3 language rows (imported places are
+                            // Russian-only). Admins can add en/kk when needed.
+                            ->defaultItems(1)
+                            ->minItems(1)
                             ->maxItems(3)
                             ->reorderable(false)
-                            ->addable(false)
-                            ->deletable(false),
+                            ->addable(true)
+                            ->deletable(true),
                     ]),
                 \Filament\Schemas\Components\Section::make('Photos')
                     ->schema([
