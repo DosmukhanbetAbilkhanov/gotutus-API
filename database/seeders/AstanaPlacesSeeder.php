@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\DB;
  *
  * - Activity types are derived from the 2GIS category text (column E).
  * - Working hours (column G) are normalized via WorkingHoursParserService.
- * - Translations are stored in Russian only (app falls back to ru for kk/en).
+ * - Translations are stored for ru/en/kk (en/kk copy the Russian text — names
+ *   are proper nouns) so every place carries a full translation set.
  * - Idempotent: a place is matched by Russian name + address within Astana, so
  *   re-running skips existing rows (different branches of a chain differ by address).
  *
@@ -143,12 +144,16 @@ class AstanaPlacesSeeder extends Seeder
                     'instagram' => $this->cleanInstagram($r['instagram'] ?? null),
                 ]);
 
-                PlaceTranslation::create([
-                    'place_id' => $place->id,
-                    'language_code' => 'ru',
-                    'name' => $name,
-                    'address' => $address,
-                ]);
+                // Store all 3 languages (kk/en copy the Russian text — names are
+                // proper nouns) so places always carry a full translation set.
+                foreach (['ru', 'en', 'kk'] as $lang) {
+                    PlaceTranslation::create([
+                        'place_id' => $place->id,
+                        'language_code' => $lang,
+                        'name' => $name,
+                        'address' => $address,
+                    ]);
+                }
 
                 $place->activityTypes()->attach($ids);
 

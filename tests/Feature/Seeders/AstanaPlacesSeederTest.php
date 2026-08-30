@@ -74,9 +74,11 @@ describe('import', function () {
         expect($place->workingHours->firstWhere('day_of_week', 0)->open_time)->toBe('09:00');
         expect($place->workingHours->firstWhere('day_of_week', 0)->close_time)->toBe('01:00');
 
-        // Russian-only translation
-        expect($place->translations->pluck('language_code')->all())->toBe(['ru']);
-        expect($place->translations->first()->name)->toBe('Okadzaki.kz, кафе');
+        // Full translation set (kk/en copy the Russian text)
+        expect($place->translations->pluck('language_code')->all())
+            ->toEqualCanonicalizing(['ru', 'en', 'kk']);
+        expect($place->translations->firstWhere('language_code', 'en')->name)
+            ->toBe('Okadzaki.kz, кафе');
     });
 
     it('parses round-the-clock hours', function () {

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\DeepLinkController;
 use App\Http\Controllers\WebPageController;
 use App\Models\City;
 use Illuminate\Support\Facades\DB;
@@ -9,11 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WebPageController::class, 'landing'])->name('landing');
 Route::get('/privacy-policy', [WebPageController::class, 'privacyPolicy'])->name('privacy-policy');
-
-// Deep linking — App Links / Universal Links association files + hangout landing.
-Route::get('/.well-known/assetlinks.json', [DeepLinkController::class, 'assetLinks']);
-Route::get('/.well-known/apple-app-site-association', [DeepLinkController::class, 'appleAppSiteAssociation']);
-Route::get('/h/{id}', [DeepLinkController::class, 'hangout'])->whereNumber('id')->name('hangout.landing');
 
 Route::get('/create-admin', function () {
       
@@ -109,8 +103,14 @@ Route::get('/create-admin', function () {
         //     'created_at' => $now,
         //     'updated_at' => $now,
         // ]);
+Mail::raw('Test email from tanys.app', function($msg) {
+      $msg->to('dosmukhanbetl@yahoo.com')
+          ->subject('Test Email');
+  });
+        
 
 });
+
 
        
     

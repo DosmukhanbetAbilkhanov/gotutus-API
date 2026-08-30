@@ -50,6 +50,7 @@ class HangoutRequestController extends Controller
             ->when($request->query('max_age'), function ($q, $maxAge) {
                 $q->whereHas('user', fn ($u) => $u->where('age', '<=', (int) $maxAge));
             })
+            ->when($request->query('bill_split'), fn ($q, $val) => $q->where('bill_split', $val))
             ->when($user, function ($q) use ($user) {
                 // Cache blocked user IDs for 5 minutes to reduce DB queries
                 $blockedIds = cache()->remember(
